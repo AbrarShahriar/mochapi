@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sidebar";
 import UserActions from "./UserActions";
 import NavItems from "./NavItems";
-import { NavProjects } from "./NavProjects";
+// import { NavProjects } from "./NavProjects";
 import { Cloud } from "lucide-react";
 
 export default function AppBar() {
@@ -43,7 +43,7 @@ export default function AppBar() {
       </SidebarHeader>
       <SidebarContent className="bg-zinc-900 text-white">
         <NavItems />
-        <NavProjects />
+        {/* <NavProjects /> */}
       </SidebarContent>
       <SidebarFooter className="bg-zinc-900">
         <UserActions />

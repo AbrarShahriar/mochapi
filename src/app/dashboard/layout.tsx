@@ -17,7 +17,7 @@ export default function DashboardLayout({
       <AppBar />
       <SidebarInset className="bg-zinc-950 text-white">
         <Header />
-        <main>{children}</main>
+        <main className="w-full h-full p-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

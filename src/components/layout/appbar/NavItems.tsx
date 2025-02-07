@@ -13,7 +13,14 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { BookOpen, ChevronRight, Home, SquareTerminal } from "lucide-react";
+import {
+  BookOpen,
+  ChevronRight,
+  Folder,
+  FunctionSquare,
+  Home,
+  SquareTerminal,
+} from "lucide-react";
 import Link from "next/link";
 
 const items = [
@@ -21,7 +28,6 @@ const items = [
     title: "Playground",
     url: "#",
     icon: SquareTerminal,
-    isActive: true,
     items: [
       {
         title: "Templates",
@@ -65,13 +71,20 @@ export default function NavItems() {
             <Link href="/dashboard">Dashboard</Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
+        <SidebarMenuItem>
+          <SidebarMenuButton tooltip={"Dashboard"}>
+            <Folder />
+            <Link href="/dashboard/projects">Projects</Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          <SidebarMenuButton tooltip={"Functions"}>
+            <FunctionSquare />
+            <Link href="/dashboard/functions">Functions</Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
         {items.map((item) => (
-          <Collapsible
-            key={item.title}
-            asChild
-            defaultOpen={item.isActive}
-            className="group/collapsible"
-          >
+          <Collapsible key={item.title} asChild className="group/collapsible">
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={item.title}>
