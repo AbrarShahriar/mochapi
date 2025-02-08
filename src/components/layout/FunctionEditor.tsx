@@ -1,7 +1,8 @@
 "use client";
 
-import Editor from "@monaco-editor/react";
-import { useCallback, useState } from "react";
+import Editor, { OnMount } from "@monaco-editor/react";
+import * as monaco from "monaco-editor";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Copy, PlayCircle, Save } from "lucide-react";
 import {
@@ -9,6 +10,7 @@ import {
   safeContext,
   validator,
 } from "@/lib/code-executor/executor";
+import { useSidebar } from "../ui/sidebar";
 
 const editorDefaultState = `/*
 * Write your function from here.
@@ -30,6 +32,21 @@ export default function FunctionEditor() {
   const [output, setOutput] = useState<ExecutionResult | null>(null);
   const [error, setError] = useState("");
   const [isExecuting, setIsExecuting] = useState(false);
+
+  const { open } = useSidebar();
+  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const handleEditorDidMount: OnMount = (editor) => {
+    editorRef.current = editor;
+  };
+  useEffect(() => {
+    console.log(open);
+
+    if (editorRef.current) {
+      setTimeout(() => {
+        editorRef.current?.layout();
+      }, 100);
+    }
+  }, [open]);
 
   const handleEditorChange = (value: string) => {
     setFunctionBody(value);
@@ -79,9 +96,12 @@ export default function FunctionEditor() {
   return (
     <div
       id="function-body"
-      className=" border border-zinc-700 rounded-md  shadow"
+      className="border border-zinc-700 rounded-md  shadow w-full"
     >
       <div className="w-full flex items-center justify-end bg-[#1e1e1e] rounded-t-md">
+        <div className="mr-auto  text-sm text-blue-400 border-r-2 border-r-zinc-800 px-4 ">
+          <pre>main.js</pre>
+        </div>
         <Button
           onClick={executeFunction}
           className="rounded-none hover:bg-zinc-800 bg-transparent"
@@ -100,9 +120,14 @@ export default function FunctionEditor() {
         height={"50vh"}
         defaultLanguage="javascript"
         theme="vs-dark"
-        options={{ fontSize: 16, minimap: { enabled: false }, wordWrap: "on" }}
+        options={{
+          fontSize: 16,
+          minimap: { enabled: false },
+          wordWrap: "on",
+        }}
         defaultValue={editorDefaultState}
         onChange={(value) => handleEditorChange(value || "")}
+        onMount={handleEditorDidMount}
       />
 
       <div className="p-4 border border-zinc-600 rounded bg-zinc-800">
