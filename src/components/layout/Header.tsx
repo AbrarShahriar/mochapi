@@ -13,6 +13,7 @@ import {
 import { Button } from "../ui/button";
 import { Bell } from "lucide-react";
 import React from "react";
+import Notifications from "./Notifications";
 
 export default function Header() {
   const pathname = usePathname();
@@ -65,9 +66,7 @@ export default function Header() {
             ))}
           </BreadcrumbList>
         </Breadcrumb>
-        <Button className="ml-auto rounded-full p-2 size-8" variant={"outline"}>
-          <Bell />
-        </Button>
+        <Notifications />
         <Button variant={"outline"}>Feedback</Button>
       </div>
     </header>

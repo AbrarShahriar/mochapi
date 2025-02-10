@@ -13,6 +13,7 @@ import UserActions from "./UserActions";
 import NavItems from "./NavItems";
 // import { NavProjects } from "./NavProjects";
 import { Cloud } from "lucide-react";
+import Link from "next/link";
 
 export default function AppBar() {
   return (
@@ -27,8 +28,9 @@ export default function AppBar() {
               size="lg"
               className="cursor-default bg-zinc-800 "
               asChild
+              // isActive={}
             >
-              <a href="#">
+              <Link href="/dashboard">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Cloud className="size-8 p-1 rounded-md bg-blue-500" />
                 </div>
@@ -36,7 +38,7 @@ export default function AppBar() {
                   <span className="truncate font-semibold">Mochapi</span>
                   <span className="truncate text-xs">Create Mock APIs</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

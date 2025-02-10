@@ -3,7 +3,7 @@
 import { Editor } from "@monaco-editor/react";
 import { useMemo } from "react";
 import { Button } from "../ui/button";
-import { Copy } from "lucide-react";
+import { Copy, Sparkles } from "lucide-react";
 
 interface Props {
   generatedData: string;
@@ -21,6 +21,9 @@ export default function GeneratedDataViewer({ generatedData }: Props) {
         <div className="mr-auto  text-sm text-blue-400 border-r-2 border-r-zinc-800 px-4 ">
           <pre>data.json</pre>
         </div>
+        <Button className="rounded-none hover:bg-zinc-800 bg-transparent">
+          <Sparkles /> Generate
+        </Button>
         <Button className="rounded-none hover:bg-zinc-800 bg-transparent">
           <Copy />
           Copy Code

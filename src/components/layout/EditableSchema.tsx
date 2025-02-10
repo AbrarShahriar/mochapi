@@ -1,31 +1,10 @@
 "use client";
 
 import React from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash } from "lucide-react";
-
-const fakerFunctions = [
-  "faker:username",
-  "faker:name",
-  "faker:email",
-  "faker:phone",
-  "faker:address",
-  "faker:company",
-  "faker:lorem",
-  "faker:date",
-  "faker:number",
-  "faker:internet",
-  "faker:image",
-  "faker:post",
-];
+import { Plus, X } from "lucide-react";
+import { SelectWithSearch } from "./SelectWithSearch";
 
 interface SchemaField {
   key: string;
@@ -79,26 +58,16 @@ export function EditableSchema({
             onChange={(e) => updateField(index, "key", e.target.value)}
             className="bg-zinc-900/50 border border-zinc-800 focus-within:border-zinc-700 transition-colors"
           />
-          <Select
-            value={field.value}
-            onValueChange={(value) => updateField(index, "value", value)}
-          >
-            <SelectTrigger className="w-[200px] bg-zinc-900/50 border border-zinc-800 focus-within:border-zinc-700 transition-colors">
-              <SelectValue placeholder="Select function" />
-            </SelectTrigger>
-            <SelectContent className="bg-zinc-800 border-zinc-700 text-white">
-              {fakerFunctions.map((func) => (
-                <SelectItem key={func} value={func}>
-                  {func}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+
+          <SelectWithSearch
+            initialValue={field.value}
+            onSelect={(value) => updateField(index, "value", value)}
+          />
           <Button
             onClick={() => removeField(index)}
             className="text-red-400 hover:text-red-300 bg-transparent hover:bg-transparent"
           >
-            <Trash className="size-4" />
+            <X className="size-4" />
           </Button>
         </div>
       ))}

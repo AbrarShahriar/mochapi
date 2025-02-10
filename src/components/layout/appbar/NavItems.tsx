@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -22,6 +24,7 @@ import {
   SquareTerminal,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const items = [
   {
@@ -61,27 +64,44 @@ const items = [
 ];
 
 export default function NavItems() {
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip={"Dashboard"}>
-            <Home />
-            <Link href="/dashboard">Dashboard</Link>
-          </SidebarMenuButton>
+          <Link href="/dashboard">
+            <SidebarMenuButton
+              tooltip={"Dashboard"}
+              isActive={pathname === "/dashboard"}
+            >
+              <Home />
+              Dashboard
+            </SidebarMenuButton>
+          </Link>
         </SidebarMenuItem>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip={"Dashboard"}>
-            <Folder />
-            <Link href="/dashboard/projects">Projects</Link>
-          </SidebarMenuButton>
+          <Link href="/dashboard/projects">
+            <SidebarMenuButton
+              tooltip={"Projects"}
+              isActive={pathname.includes("/dashboard/projects")}
+            >
+              <Folder />
+              Projects
+            </SidebarMenuButton>
+          </Link>
         </SidebarMenuItem>
         <SidebarMenuItem>
-          <SidebarMenuButton tooltip={"Functions"}>
-            <FunctionSquare />
-            <Link href="/dashboard/functions">Functions</Link>
-          </SidebarMenuButton>
+          <Link href="/dashboard/functions">
+            <SidebarMenuButton
+              tooltip={"Functions"}
+              isActive={pathname.includes("/dashboard/functions")}
+            >
+              <FunctionSquare />
+              Functions
+            </SidebarMenuButton>
+          </Link>
         </SidebarMenuItem>
         {items.map((item) => (
           <Collapsible key={item.title} asChild className="group/collapsible">

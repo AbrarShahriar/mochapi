@@ -7,20 +7,138 @@ const projects = [
   {
     id: "fsijfaififiashfish",
     name: "Test API",
-    apiKey: "ihefheihihr",
-    routesCount: 3,
-    status: "active",
+    apiKey: "Apveg-ggdFSg-89ssggs-jdkhsdghj-henfsks",
     createdAt: new Date("2024-8-10"),
     updatedAt: new Date("2025-2-4"),
+    status: "active",
+    routes: [
+      {
+        id: "ihsdgs8",
+        name: "users",
+        numOfRows: 2,
+        isPublic: false,
+        createdAt: new Date("2025-1-24"),
+        updatedAt: new Date("2025-2-8"),
+        schema: JSON.stringify([
+          { key: "firstname", value: "faker:name" },
+          { key: "lastname", value: "faker:name" },
+          { key: "age", value: "faker:age" },
+          { key: "createdAt", value: "faker:date" },
+        ]),
+        generatedData: JSON.stringify([
+          {
+            firstname: "abrar",
+            lastname: "shahriar",
+            age: 22,
+            createdAt: new Date(),
+          },
+          {
+            firstname: "tahia",
+            lastname: "azam",
+            age: 21,
+            createdAt: new Date("2025-2-2"),
+          },
+        ]),
+      },
+      {
+        id: "ihsadfadadgs8",
+        name: "posts",
+        numOfRows: 3,
+        isPublic: false,
+        createdAt: new Date("2025-1-20"),
+        updatedAt: new Date("2025-2-6"),
+        schema: JSON.stringify([
+          { key: "username", value: "faker:name" },
+          { key: "post", value: "faker:lorem" },
+          { key: "createdAt", value: "faker:date" },
+        ]),
+        generatedData: JSON.stringify([
+          {
+            username: "abrarshariar",
+            post: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
+            createdAt: new Date(),
+          },
+          {
+            username: "tahiaazam",
+            post: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+            createdAt: new Date("2024-10-2"),
+          },
+          {
+            username: "abrarshariar",
+            post: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
+            createdAt: new Date("2025-2-8"),
+          },
+        ]),
+      },
+    ],
   },
   {
-    id: "uh734y3hf83",
-    name: "Test API 2",
-    apiKey: "fyfugschsdsh",
-    routesCount: 2,
+    id: "iahduhfa8dyu",
+    name: "Mock API",
+    apiKey: "7efwfaf-ggdFSg-jdkhsdghj-henfsks",
+    createdAt: new Date("2024-8-10"),
+    updatedAt: new Date("2025-2-4"),
     status: "paused",
-    createdAt: new Date("2024-10-10"),
-    updatedAt: new Date("2025-2-6"),
+    routes: [
+      {
+        id: "ihsdgs8",
+        name: "users",
+        numOfRows: 2,
+        isPublic: false,
+        createdAt: new Date("2025-1-24"),
+        updatedAt: new Date("2025-2-8"),
+        schema: JSON.stringify([
+          { key: "firstname", value: "faker:name" },
+          { key: "lastname", value: "faker:name" },
+          { key: "age", value: "faker:age" },
+          { key: "createdAt", value: "faker:date" },
+        ]),
+        generatedData: JSON.stringify([
+          {
+            firstname: "abrar",
+            lastname: "shahriar",
+            age: 22,
+            createdAt: new Date(),
+          },
+          {
+            firstname: "tahia",
+            lastname: "azam",
+            age: 21,
+            createdAt: new Date("2025-2-2"),
+          },
+        ]),
+      },
+      {
+        id: "ihsadfadadgs8",
+        name: "posts",
+        numOfRows: 3,
+        isPublic: false,
+        createdAt: new Date("2025-1-20"),
+        updatedAt: new Date("2025-2-6"),
+        schema: JSON.stringify([
+          { key: "username", value: "faker:name" },
+          { key: "post", value: "faker:lorem" },
+          { key: "createdAt", value: "faker:date" },
+        ]),
+        generatedData: JSON.stringify([
+          {
+            username: "abrarshariar",
+            post: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
+            createdAt: new Date(),
+          },
+          {
+            username: "tahiaazam",
+            post: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+            createdAt: new Date("2024-10-2"),
+          },
+          {
+            username: "abrarshariar",
+            post: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
+            createdAt: new Date("2025-2-8"),
+          },
+        ]),
+      },
+    ],
   },
 ];
 
@@ -71,7 +189,7 @@ export default function page() {
             <div className="flex flex-col items-start gap-2">
               <span>Routes:</span>
               <span className="text-sm  bg-blue-600 px-4 rounded-md">
-                {project.routesCount}/3
+                {project.routes.length}/3
               </span>
             </div>
 

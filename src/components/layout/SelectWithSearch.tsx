@@ -19,7 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const frameworks = [
+const functions = [
   {
     value: "faker:name",
     label: "faker:name",
@@ -29,18 +29,23 @@ const frameworks = [
     label: "faker:age",
   },
   {
-    value: "faker:address",
-    label: "faker:address",
+    value: "faker:lorem",
+    label: "faker:lorem",
   },
   {
-    value: "faker:email",
-    label: "faker:email",
+    value: "faker:date",
+    label: "faker:date",
   },
 ];
 
-export function ComboboxDemo() {
+interface Props {
+  initialValue: string;
+  onSelect: (newValue: string) => void;
+}
+
+export function SelectWithSearch({ initialValue, onSelect }: Props) {
   const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState(initialValue);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -49,26 +54,27 @@ export function ComboboxDemo() {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="min-w-[200px] max-w-[200px] justify-between"
         >
           {value
-            ? frameworks.find((framework) => framework.value === value)?.label
+            ? functions.find((func) => func.value === value)?.label
             : "Select framework..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[200px] p-0 ">
         <Command>
           <CommandInput placeholder="Search framework..." />
           <CommandList>
             <CommandEmpty>No framework found.</CommandEmpty>
             <CommandGroup>
-              {frameworks.map((framework) => (
+              {functions.map((framework) => (
                 <CommandItem
                   key={framework.value}
                   value={framework.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
+                  onSelect={(newValue) => {
+                    setValue(newValue === value ? "" : newValue);
+                    onSelect(newValue);
                     setOpen(false);
                   }}
                 >

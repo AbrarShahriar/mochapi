@@ -1,6 +1,6 @@
 "use client";
 
-import DashboardProjectCard from "@/components/layout/DashboardProjectCard";
+import DashboardCard from "@/components/layout/DashboardCard";
 import { RoutesListItem } from "@/components/layout/RoutesListItem";
 import { Button } from "@/components/ui/button";
 import { calculateResourceAllocation } from "@/lib/utils";
@@ -25,56 +25,59 @@ const dummyProject = {
   status: "active",
   routes: [
     {
-      id: "adgadgadga",
+      id: "ihsdgs8",
       name: "users",
       numOfRows: 2,
-      isPublic: true,
-      createdAt: new Date("2025-2-2"),
+      isPublic: false,
+      createdAt: new Date("2025-1-24"),
       updatedAt: new Date("2025-2-8"),
-      schema: JSON.stringify({
-        firstName: "faker:name",
-        lastName: "faker:name",
-        age: "faker:age",
-      }),
+      schema: JSON.stringify([
+        { key: "firstname", value: "faker:name" },
+        { key: "lastname", value: "faker:name" },
+        { key: "age", value: "faker:age" },
+        { key: "createdAt", value: "faker:date" },
+      ]),
       generatedData: JSON.stringify([
         {
-          firstName: "Abrar",
-          lastName: "Shahriar",
+          firstname: "abrar",
+          lastname: "shahriar",
           age: 22,
+          createdAt: new Date(),
         },
         {
-          firstName: "Tahia",
-          lastName: "Azam",
+          firstname: "tahia",
+          lastname: "azam",
           age: 21,
+          createdAt: new Date("2025-2-2"),
         },
       ]),
     },
     {
-      id: "ihsdgs8",
+      id: "ihsadfadadgs8",
       name: "posts",
       numOfRows: 3,
       isPublic: false,
       createdAt: new Date("2025-1-20"),
       updatedAt: new Date("2025-2-6"),
-      schema: JSON.stringify({
-        username: "faker:username",
-        post: "faker:post",
-        createdAt: "faker:date",
-      }),
+      schema: JSON.stringify([
+        { key: "username", value: "faker:name" },
+        { key: "post", value: "faker:lorem" },
+        { key: "createdAt", value: "faker:date" },
+      ]),
       generatedData: JSON.stringify([
         {
           username: "abrarshariar",
-          post: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio pariatur, optio itaque laboriosam, non accusantium enim corporis voluptatibus suscipit quisquam magnam! Vel facere nihil distinctio ducimus, molestiae deserunt harum impedit.",
+          post: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
           createdAt: new Date(),
         },
         {
           username: "tahiaazam",
-          post: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit ipsum consequuntur tempora quo numquam molestiae esse libero quod suscipit doloremque voluptatibus, blanditiis inventore, asperiores rerum culpa optio excepturi nesciunt consectetur eveniet ab perferendis, ipsa illo! Ut a rem ipsa quasi nisi, in voluptatem suscipit velit voluptates, quia neque amet! Sequi ad fuga officiis laborum dolorem a ipsa quas vitae, nemo repellendus, nostrum culpa hic perferendis sapiente animi voluptatem? Eligendi incidunt excepturi esse ad qui reiciendis reprehenderit debitis voluptatem at blanditiis maxime cum enim delectus itaque nesciunt ipsum quasi aut, dolore iusto officiis veritatis voluptate. Dolorum voluptatem explicabo quo vero quod?",
+          post: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
           createdAt: new Date("2024-10-2"),
         },
         {
           username: "abrarshariar",
-          post: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptate dolor explicabo tempora dolorem molestiae, excepturi ex quae vero fugiat exercitationem non nulla ad aperiam quia, aut vitae magni illum temporibus hic aspernatur aliquam magnam! Blanditiis eum et veritatis expedita ipsum non, rem minima, quo aut unde dolores temporibus sed dolore.",
+          post: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
           createdAt: new Date("2025-2-8"),
         },
       ]),
@@ -98,7 +101,7 @@ export default function Page({ params }: { params: { projectId: string } }) {
         {/* Overview */}
         <div className="grid grid-cols-3 items-center gap-6 mb-6">
           {/* Route Count */}
-          <DashboardProjectCard
+          <DashboardCard
             title={<span>Routes</span>}
             Icon={Network}
             value={project.routes.length}
@@ -110,7 +113,7 @@ export default function Page({ params }: { params: { projectId: string } }) {
           />
 
           {/* Uptime */}
-          <DashboardProjectCard
+          <DashboardCard
             title={
               <div className="flex items-center gap-1">
                 <span>Uptime</span>
@@ -132,7 +135,7 @@ export default function Page({ params }: { params: { projectId: string } }) {
           />
 
           {/* Resources */}
-          <DashboardProjectCard
+          <DashboardCard
             title={<span>Resource Allocation</span>}
             Icon={HardDrive}
             value={calculateResourceAllocation(project.routes)}

@@ -33,3 +33,7 @@ export const LoginFormSchema = z.object({
     message: "Password field must not be empty.",
   }),
 });
+
+export type ChartDataType = {
+  [key: string]: string | number;
+};
