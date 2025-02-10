@@ -11,7 +11,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "../ui/button";
-import { Bell } from "lucide-react";
 import React from "react";
 import Notifications from "./Notifications";
 
