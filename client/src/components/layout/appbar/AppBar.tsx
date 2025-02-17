@@ -7,15 +7,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import UserActions from "./UserActions";
 import NavItems from "./NavItems";
-// import { NavProjects } from "./NavProjects";
 import { Cloud } from "lucide-react";
 import Link from "next/link";
-import { getProfile } from "@/lib/actions";
+import { currentUser } from "@clerk/nextjs/server";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { AvatarImage } from "@radix-ui/react-avatar";
 
 export default async function AppBar() {
-  const res = await getProfile();
+  const user = await currentUser();
   return (
     <Sidebar
       collapsible="icon"
@@ -45,11 +45,24 @@ export default async function AppBar() {
       </SidebarHeader>
       <SidebarContent className="bg-zinc-900 text-white">
         <NavItems />
-        {JSON.stringify(res)}
+
         {/* <NavProjects /> */}
       </SidebarContent>
-      <SidebarFooter className="bg-zinc-900">
-        <UserActions res={res} />
+      <SidebarFooter className="bg-zinc-800 flex-row items-center gap-4 ">
+        <Avatar>
+          <AvatarImage src={user?.imageUrl} />
+          <AvatarFallback>
+            {user?.firstName && user.firstName[0]}
+          </AvatarFallback>
+        </Avatar>
+        <div className="grid flex-1 text-left text-sm leading-tight">
+          <span className="truncate font-semibold">
+            {user?.firstName} {user?.lastName}
+          </span>
+          <span className="truncate text-xs">
+            {user?.emailAddresses[0].emailAddress}
+          </span>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

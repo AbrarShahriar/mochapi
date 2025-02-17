@@ -2,32 +2,33 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { User } from './user/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { LoggingMiddleware } from './middleware/logging.middleware';
+import { typeormConfig } from './typeorm.config';
+import { AuthModule } from './auth/auth.module';
+import { ProjectModule } from './project/project.module';
+import { EndpointModule } from './endpoint/endpoint.module';
+import { ClerkClientProvider } from './auth/providers/clerk-client.provider';
+import { APP_GUARD } from '@nestjs/core';
+import { ClerkAuthGuard } from './auth/guards/clerk-auth.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'ep-soft-bread-a18bvchi.ap-southeast-1.aws.neon.tech',
-      username: 'mochapi_owner',
-      password: 'YLvjge1Xcyb9',
-      database: 'mochapi',
-      ssl: true,
-      entities: [User],
-      synchronize: false,
-      migrations: ['./migrations/*{.ts}'],
-      logger: 'advanced-console',
-    }),
+    TypeOrmModule.forRoot(typeormConfig),
     AuthModule,
-    UserModule,
+    ProjectModule,
+    EndpointModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    ClerkClientProvider,
+    {
+      provide: APP_GUARD,
+      useClass: ClerkAuthGuard,
+    },
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

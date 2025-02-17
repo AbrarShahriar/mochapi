@@ -13,6 +13,7 @@ import {
 import { Button } from "../ui/button";
 import React from "react";
 import Notifications from "./Notifications";
+import { UserButton } from "@clerk/nextjs";
 
 export default function Header() {
   const pathname = usePathname();
@@ -67,6 +68,17 @@ export default function Header() {
         </Breadcrumb>
         <Notifications />
         <Button variant={"outline"}>Feedback</Button>
+
+        <UserButton
+          appearance={{
+            elements: {
+              avatarBox: {
+                width: "32px",
+                height: "32px",
+              },
+            },
+          }}
+        />
       </div>
     </header>
   );

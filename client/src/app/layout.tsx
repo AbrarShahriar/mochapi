@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import NextTopLoader from "nextjs-toploader";
+import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 
 export const metadata: Metadata = {
   title: "Mochapi",
@@ -15,8 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased font-geist`}>
-        <NextTopLoader showSpinner={false} />
-        {children}
+        <ClerkProvider appearance={{ baseTheme: dark }}>
+          <NextTopLoader showSpinner={false} />
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );

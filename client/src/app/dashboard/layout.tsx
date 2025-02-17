@@ -1,7 +1,7 @@
 import AppBar from "@/components/layout/appbar/AppBar";
 import Header from "@/components/layout/Header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { getSession } from "@/lib/session";
+import { auth } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
@@ -14,11 +14,9 @@ export default async function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getSession();
+  const { userId } = await auth();
 
-  if (!session || !session.user) redirect("/auth/signin");
-  console.log({ session });
-
+  if (!userId) redirect("/sign-in");
   return (
     <SidebarProvider>
       <AppBar />

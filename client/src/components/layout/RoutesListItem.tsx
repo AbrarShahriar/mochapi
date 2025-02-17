@@ -1,6 +1,4 @@
-import { useState } from "react";
 import Link from "next/link";
-import { Switch } from "@/components/ui/switch";
 import { Globe, Lock, ChevronRight, Clock } from "lucide-react";
 import { formatDistanceToNow, format, isAfter, subDays } from "date-fns";
 import {
@@ -16,7 +14,7 @@ interface Props {
   name: string;
   url: string;
   numOfRows: number;
-  initialIsPublic: boolean;
+  isPublic: boolean;
   projectId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -27,18 +25,11 @@ export function RoutesListItem({
   name,
   url,
   numOfRows,
-  initialIsPublic,
+  isPublic,
   projectId,
   createdAt,
   updatedAt,
 }: Props) {
-  const [isPublic, setIsPublic] = useState(initialIsPublic);
-
-  const handleSwitchChange = (checked: boolean) => {
-    setIsPublic(checked);
-    // Here you would typically update the server state
-  };
-
   const createdAgo = formatDistanceToNow(createdAt, { addSuffix: true });
   const updatedAgo = formatDistanceToNow(updatedAt, { addSuffix: true });
   const isRecentlyUpdated = isAfter(updatedAt, subDays(new Date(), 1));
@@ -97,13 +88,12 @@ export function RoutesListItem({
           <ChevronRight className="text-gray-400" size={20} />
         </div>
       </Link>
-      <div className="flex items-center space-x-2 ml-4">
+      <div className="flex items-center space-x-2 mx-4">
         {isPublic ? (
           <Globe className="text-green-500" size={16} />
         ) : (
           <Lock className="text-red-500" size={16} />
         )}
-        <Switch checked={isPublic} onCheckedChange={handleSwitchChange} />
       </div>
     </div>
   );
