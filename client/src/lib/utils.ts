@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { format, intervalToDuration, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -23,14 +24,20 @@ export function calculateResourceAllocation(
   return formatByteSize(totalBytes);
 }
 
-export function formatDate(date: Date) {
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 export function capitalize(str: string) {
   return str[0].toUpperCase() + str.substring(1, str.length);
+}
+
+export function formatDate(date: string, formatter: string = "PP") {
+  return format(parseISO(date), formatter);
+}
+
+export function calculateUptime(start: string, end: Date = new Date()) {
+  const duration = intervalToDuration({
+    start: parseISO(start),
+    end,
+  });
+  return duration.minutes
+    ? `${duration.hours ? duration.hours + "h" : ""} ${duration.minutes}m`
+    : "0s";
 }

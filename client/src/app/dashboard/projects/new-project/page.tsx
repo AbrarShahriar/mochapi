@@ -1,7 +1,31 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
 import { Input } from "@/components/ui/input";
+import SubmitButton from "@/components/ui/submitButton";
+import { createProject } from "@/lib/actions/project-actions";
+import { useToast } from "@/hooks/use-toast";
 
 export default function NewProjectPage() {
+  const { toast } = useToast();
+
+  async function onSubmit(formData: FormData) {
+    const result = await createProject(formData);
+
+    if (result.success) {
+      toast({
+        variant: "success",
+        title: "Success :)",
+        description: result.message,
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Failure :(",
+        description: result.message,
+      });
+    }
+  }
+
   return (
     <section className="flex items-center justify-center w-full h-full">
       <div className="bg-zinc-900 shadow-md rounded-md m-auto p-6 max-w-[50%]">
@@ -10,17 +34,14 @@ export default function NewProjectPage() {
           Fill up the necessary information and create your project. Wait a few
           moment, it takes some time to setup your API.
         </p>
-
-        <form className="flex flex-col gap-4 mt-8 ">
+        <form action={onSubmit} className="flex flex-col gap-4 mt-8 ">
           <Input
             className="border border-zinc-600"
             placeholder="Project Name"
             name="project-name"
             id="project-name"
           />
-          <Button className="bg-green-600 hover:bg-green-500 font-bold">
-            Create
-          </Button>
+          <SubmitButton>Create</SubmitButton>
         </form>
       </div>
     </section>

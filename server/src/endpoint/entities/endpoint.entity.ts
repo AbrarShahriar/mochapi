@@ -1,10 +1,12 @@
-import { EndpointSchema } from 'src/types/database-types';
+import { Project } from '../../project/entities/project.entity';
+import { EndpointSchema } from '../../types/database-types';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity()
@@ -37,9 +39,12 @@ export class Endpoint {
   })
   numOfRows: number;
 
-  @CreateDateColumn()
+  @ManyToOne(() => Project, (project) => project.endpoints)
+  project: Project;
+
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 }

@@ -4,8 +4,10 @@ import Chart_Bar from "@/components/layout/Chart_Bar";
 import Chart_FunctionPerf from "@/components/layout/Chart_FunctionPerf";
 import Chart_Pie from "@/components/layout/Chart_Pie";
 import DashboardCard from "@/components/layout/DashboardCard";
+import { BACKEND_URL } from "@/lib/constants";
 import { calculateByte, formatByteSize } from "@/lib/utils";
 import { Braces, Database, Layers } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
 
 const userData = {
   functions: [
@@ -190,6 +192,17 @@ return arr[Math.floor(Math.random() * 3)]`,
 };
 
 export default async function Dashboard() {
+  const { getToken } = await auth();
+  const token = await getToken();
+
+  const data = await fetch(`${BACKEND_URL}/projects/all`, {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  });
+  const res = await data.json();
+  console.log(res);
+
   return (
     <main className="w-full h-full">
       <h1 className="text-3xl font-semibold">Overview</h1>

@@ -1,3 +1,4 @@
+import { Endpoint } from '../../endpoint/entities/endpoint.entity';
 import { ProjectStatus } from '../../types/database-types';
 import {
   Entity,
@@ -5,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -28,9 +30,12 @@ export class Project {
   })
   status: ProjectStatus;
 
-  @CreateDateColumn()
+  @OneToMany(() => Endpoint, (endpoint) => endpoint.project)
+  endpoints: Endpoint[];
+
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 }
