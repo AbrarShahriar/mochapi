@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { User } from '@clerk/backend';
 import { CreateProjectDTO } from './dto/project.dto';
@@ -6,6 +6,15 @@ import { CreateProjectDTO } from './dto/project.dto';
 @Controller('projects')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
+
+  @Get('one/:projectId')
+  async getOne(@Param() params: { projectId: string }, @Req() req) {
+    const user: User = req.user;
+    return await this.projectService.getOne(
+      user.emailAddresses[0].emailAddress,
+      params.projectId,
+    );
+  }
 
   @Get('all')
   async getAll(@Req() req) {

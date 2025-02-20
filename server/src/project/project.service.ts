@@ -23,6 +23,27 @@ export class ProjectService {
     });
   }
 
+  async getOne(email: string, projectId: string) {
+    const project = await this.projectRepo.findOne({
+      where: {
+        userEmail: email,
+        id: projectId,
+      },
+      relations: {
+        endpoints: true,
+      },
+    });
+
+    if (!project) {
+      return { success: false, message: 'No project found.' };
+    }
+
+    return {
+      success: true,
+      payload: project,
+    };
+  }
+
   async create(email: string, projectDto: CreateProjectDTO) {
     const projects = await this.projectRepo.find({
       where: {

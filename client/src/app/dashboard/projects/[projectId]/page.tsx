@@ -3,7 +3,11 @@
 import DashboardCard from "@/components/layout/DashboardCard";
 import { RoutesListItem } from "@/components/layout/RoutesListItem";
 import { Button } from "@/components/ui/button";
-import { calculateResourceAllocation } from "@/lib/utils";
+import {
+  calculateResourceAllocation,
+  calculateUptime,
+  formatDate,
+} from "@/lib/utils";
 import {
   Activity,
   AlertCircle,
@@ -14,81 +18,65 @@ import {
   Network,
   Plus,
 } from "lucide-react";
-import { useState } from "react";
-
-const dummyProject = {
-  id: "fsijfaififiashfish",
-  name: "Test API",
-  apiKey: "Apveg-ggdFSg-89ssggs-jdkhsdghj-henfsks",
-  createdAt: new Date("2024-8-10"),
-  updatedAt: new Date("2025-2-4"),
-  status: "active",
-  routes: [
-    {
-      id: "ihsdgs8",
-      name: "users",
-      numOfRows: 2,
-      isPublic: false,
-      createdAt: new Date("2025-1-24"),
-      updatedAt: new Date("2025-2-8"),
-      schema: JSON.stringify([
-        { key: "firstname", value: "faker:name" },
-        { key: "lastname", value: "faker:name" },
-        { key: "age", value: "faker:age" },
-        { key: "createdAt", value: "faker:date" },
-      ]),
-      generatedData: JSON.stringify([
-        {
-          firstname: "abrar",
-          lastname: "shahriar",
-          age: 22,
-          createdAt: new Date(),
-        },
-        {
-          firstname: "tahia",
-          lastname: "azam",
-          age: 21,
-          createdAt: new Date("2025-2-2"),
-        },
-      ]),
-    },
-    {
-      id: "ihsadfadadgs8",
-      name: "posts",
-      numOfRows: 3,
-      isPublic: false,
-      createdAt: new Date("2025-1-20"),
-      updatedAt: new Date("2025-2-6"),
-      schema: JSON.stringify([
-        { key: "username", value: "faker:name" },
-        { key: "post", value: "faker:lorem" },
-        { key: "createdAt", value: "faker:date" },
-      ]),
-      generatedData: JSON.stringify([
-        {
-          username: "abrarshariar",
-          post: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
-          createdAt: new Date(),
-        },
-        {
-          username: "tahiaazam",
-          post: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-          createdAt: new Date("2024-10-2"),
-        },
-        {
-          username: "abrarshariar",
-          post: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
-          createdAt: new Date("2025-2-8"),
-        },
-      ]),
-    },
-  ],
-};
+import { useEffect, useState } from "react";
+import { BackendResponse, Project } from "@/lib/type";
+import { authFetch } from "@/lib/actions/helper";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import SubmitButton from "@/components/ui/submitButton";
+import { createEndpoint } from "@/lib/actions/project-actions";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Page({ params }: { params: { projectId: string } }) {
-  const [project] = useState(dummyProject);
+  const [project, setProject] = useState<Project | null>(null);
   const [showApiKey, setShowApiKey] = useState(false);
-  console.log(params.projectId);
+  const [callEffect, setCallEffect] = useState(0);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const getProject = async () => {
+      const res = await authFetch<BackendResponse<Project>>(
+        `/projects/one/${params.projectId}`
+      );
+
+      if (res.success) {
+        const result = res.payload as Project;
+        setProject(result);
+      }
+    };
+    getProject();
+  }, [callEffect]);
+
+  if (!project) {
+    return <p>No Project Found.</p>;
+  }
+
+  const onSubmit = async (formData: FormData) => {
+    const result = await createEndpoint(formData, params.projectId);
+
+    if (result.success) {
+      toast({
+        variant: "success",
+        title: "Success :)",
+        description: result.message,
+      });
+      setCallEffect((prev) => prev + 1);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Failure :(",
+        description: result.message,
+      });
+    }
+  };
 
   return (
     <main className="w-full h-full">
@@ -104,11 +92,11 @@ export default function Page({ params }: { params: { projectId: string } }) {
           <DashboardCard
             title={<span>Routes</span>}
             Icon={Network}
-            value={project.routes.length}
+            value={project.endpoints.length}
             subtitle={
-              project.routes.length == 3
+              project.endpoints.length == 3
                 ? "You have reached the maximum route limit."
-                : `You can create ${3 - project.routes.length} more route.`
+                : `You can create ${3 - project.endpoints.length} more route.`
             }
           />
 
@@ -130,15 +118,15 @@ export default function Page({ params }: { params: { projectId: string } }) {
               </div>
             }
             Icon={Activity}
-            value={`${new Date().getHours() - project.updatedAt.getHours()}h`}
-            subtitle={`Created at ${project.createdAt.toDateString()}`}
+            value={calculateUptime(project.updatedAt)}
+            subtitle={`Created at ${formatDate(project.createdAt)}`}
           />
 
           {/* Resources */}
           <DashboardCard
             title={<span>Resource Allocation</span>}
             Icon={HardDrive}
-            value={calculateResourceAllocation(project.routes)}
+            value={calculateResourceAllocation(project.endpoints)}
             subtitle={`Total resources allocated for your data`}
           />
         </div>
@@ -175,22 +163,55 @@ export default function Page({ params }: { params: { projectId: string } }) {
         {/* Routes */}
         <h1 className="text-xl font-semibold mb-2">Routes</h1>
         <div className="flex flex-col gap-4 mb-4">
-          {project.routes.map((route, i) => (
-            <RoutesListItem
-              key={i}
-              routeId={route.id}
-              name={route.name}
-              url={`/abrarshahriar/${project.id}/${route.id}`}
-              numOfRows={route.numOfRows}
-              initialIsPublic={route.isPublic}
-              projectId={project.id}
-              createdAt={route.createdAt}
-              updatedAt={route.updatedAt}
-            />
-          ))}
-          <Button className="bg-green-600 hover:bg-green-500 font-bold ml-auto">
-            <Plus /> Add Route
-          </Button>
+          {project.endpoints.length == 0 ? (
+            <p>No Endpoints.</p>
+          ) : (
+            project.endpoints.map(
+              (endpoint, i) =>
+                endpoint && (
+                  <RoutesListItem
+                    key={i}
+                    routeId={endpoint.id}
+                    name={endpoint.name}
+                    url={`/abrarshahriar/${project.id}/${endpoint.id}`}
+                    numOfRows={endpoint.numOfRows}
+                    isPublic={endpoint.isPublic}
+                    projectId={project.id}
+                    createdAt={endpoint.createdAt}
+                    updatedAt={endpoint.updatedAt}
+                  />
+                )
+            )
+          )}
+          <Dialog>
+            <DialogTrigger className="flex items-center gap-2 rounded-md py-2 px-4 bg-green-600 hover:bg-green-500 font-semibold  ml-auto">
+              <Plus size={16} /> Add Endpoint
+            </DialogTrigger>
+            <DialogContent className="bg-zinc-950 border-zinc-800">
+              <DialogHeader>
+                <DialogTitle>Create An Endpoint</DialogTitle>
+                <DialogDescription>
+                  Write the name of the endpoint.
+                </DialogDescription>
+              </DialogHeader>
+              <form action={onSubmit} className="flex flex-col gap-4">
+                <div className="flex gap-2 w-full">
+                  <Label htmlFor="endpoint-name" className="sr-only">
+                    Name
+                  </Label>
+                  <Input
+                    className="w-full"
+                    id="endpoint-name"
+                    placeholder="Name of the endpoint..."
+                    name="endpoint-name"
+                  />
+                </div>
+                <SubmitButton className="px-3 bg-green-600 hover:bg-green-500 w-full">
+                  Create
+                </SubmitButton>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </main>

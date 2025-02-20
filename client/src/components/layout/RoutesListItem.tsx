@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 interface Props {
   routeId: string;
@@ -16,8 +16,8 @@ interface Props {
   numOfRows: number;
   isPublic: boolean;
   projectId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export function RoutesListItem({
@@ -77,7 +77,7 @@ export function RoutesListItem({
                   Updated {updatedAgo}
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Last updated on {format(updatedAt, "PPpp")}</p>
+                  <p>Last updated on {formatDate(updatedAt, "PPpp")}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

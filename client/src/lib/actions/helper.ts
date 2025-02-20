@@ -3,7 +3,10 @@
 import { currentUser, auth } from "@clerk/nextjs/server";
 import { BACKEND_URL } from "../constants";
 
-export async function authFetch(url: string, options?: RequestInit) {
+export async function authFetch<T>(
+  url: string,
+  options?: RequestInit
+): Promise<T> {
   const user = await currentUser();
   if (!user) throw new Error("User is not logged in.");
 

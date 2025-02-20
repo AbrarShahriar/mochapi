@@ -1,20 +1,13 @@
 import ProjectAction from "@/components/layout/ProjectAction";
 import { Button } from "@/components/ui/button";
-import { BACKEND_URL } from "@/lib/constants";
+import { authFetch } from "@/lib/actions/helper";
 import { Project } from "@/lib/type";
 import { calculateUptime, formatDate } from "@/lib/utils";
-import { auth } from "@clerk/nextjs/server";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
 export default async function page() {
-  const { getToken } = await auth();
-  const token = await getToken();
-
-  const res = await fetch(`${BACKEND_URL}/projects/all`, {
-    headers: { authorization: `Bearer ${token}` },
-  });
-  const projects: Project[] = await res.json();
+  const projects = await authFetch<Project[]>(`/projects/all`);
 
   return (
     <main className="w-full h-full">

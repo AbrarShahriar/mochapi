@@ -19,5 +19,24 @@ export type Project = {
   updatedAt: string;
   schema: string;
   generatedData: string;
-  endpoints: never[];
+  endpoints: Endpoint[];
+};
+
+export type Endpoint = {
+  id: string;
+  projectId: string;
+  userEmail: string;
+  name: string;
+  schema: string;
+  generatedData: string;
+  isPublic: boolean;
+  numOfRows: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type BackendResponse<T> = {
+  success: boolean;
+  message?: string;
+  payload?: T;
 };
