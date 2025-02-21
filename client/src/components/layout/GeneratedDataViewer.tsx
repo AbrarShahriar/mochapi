@@ -77,7 +77,7 @@ export default function GeneratedDataViewer({
           wordWrap: "on",
           readOnly: true,
         }}
-        value={JSON.stringify(editorValue, null, 2)}
+        value={JSON.stringify(editorValue, null, 3)}
       />
     </section>
   );
