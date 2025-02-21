@@ -8,7 +8,7 @@ import { capitalize } from "@/lib/utils";
 import GeneratedDataViewer from "@/components/layout/GeneratedDataViewer";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
-import { BackendResponse, Endpoint, SchemaField } from "@/lib/type";
+import { BackendResponse, Endpoint } from "@/lib/type";
 import { authFetch } from "@/lib/actions/helper";
 import { useToast } from "@/hooks/use-toast";
 import { updateEndpoint } from "@/lib/actions/project-actions";
@@ -37,7 +37,6 @@ export default function RoutePage({
 
       if (res.success) {
         const result = res.payload as Endpoint;
-        console.log(result);
 
         setRouteData(result);
         setIsPublic(result.isPublic);
@@ -60,16 +59,6 @@ export default function RoutePage({
     setDataUpdated(true);
   };
 
-  const handleSchemaChange = (newSchema: SchemaField[]) => {
-    const newData = {
-      ...routeData,
-      schema: newSchema,
-    };
-    setRouteData(newData as Endpoint);
-
-    setDataUpdated(true);
-  };
-
   const handleNumOfRowsChange = (event: ChangeEvent<HTMLInputElement>) => {
     try {
       if (event.target.value == "") {
@@ -84,9 +73,13 @@ export default function RoutePage({
         const newRows = parseInt(event.target.value);
         setNumOfRows(newRows);
         if (routeData) {
-          setRouteData({
-            ...routeData,
-            numOfRows: newRows,
+          setRouteData((prev) => {
+            return (
+              prev && {
+                ...prev,
+                numOfRows: newRows,
+              }
+            );
           });
         }
       }
@@ -180,10 +173,7 @@ export default function RoutePage({
       {/* Schema */}
       <div className="mb-12">
         <h3 className="text-lg font-semibold mb-2 text-zinc-100">Schema</h3>
-        <EditableSchema
-          schema={routeData.schema}
-          onSchemaChange={handleSchemaChange}
-        />
+        <EditableSchema routeData={routeData} setRouteData={setRouteData} />
       </div>
 
       {/* Generated Data */}
@@ -193,7 +183,13 @@ export default function RoutePage({
             Generated Data
           </h3>
         </div>
-        <GeneratedDataViewer generatedData={routeData.generatedData} />
+        <GeneratedDataViewer
+          numOfRows={routeData.numOfRows}
+          schema={routeData.schema}
+          generatedData={routeData.generatedData}
+          setDataUpdated={setDataUpdated}
+          setRouteData={setRouteData}
+        />
       </div>
 
       {/* Save or Reset */}

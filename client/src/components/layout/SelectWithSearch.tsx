@@ -18,23 +18,28 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { FunctionSignatures } from "@/lib/generators/available-functions";
 
-const functions = [
+const functions: { value: FunctionSignatures; label: FunctionSignatures }[] = [
   {
-    value: "faker:name",
-    label: "faker:name",
+    value: "Name",
+    label: "Name",
   },
   {
-    value: "faker:age",
-    label: "faker:age",
+    value: "Bio",
+    label: "Bio",
   },
   {
-    value: "faker:lorem",
-    label: "faker:lorem",
+    value: "Gender",
+    label: "Gender",
   },
   {
-    value: "faker:date",
-    label: "faker:date",
+    value: "Job",
+    label: "Job",
+  },
+  {
+    value: "Zodiac Sign",
+    label: "Zodiac Sign",
   },
 ];
 

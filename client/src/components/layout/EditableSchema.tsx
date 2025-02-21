@@ -1,36 +1,39 @@
 "use client";
 
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
 import { SelectWithSearch } from "./SelectWithSearch";
-import { SchemaField } from "@/lib/type";
+import { Endpoint, SchemaField } from "@/lib/type";
 
 interface EditableSchemaProps {
-  schema: SchemaField[];
-  onSchemaChange: (newSchema: SchemaField[]) => void;
+  routeData: Endpoint;
+  setRouteData: Dispatch<SetStateAction<Endpoint | null>>;
 }
 
 export function EditableSchema({
-  schema,
-  onSchemaChange,
+  routeData,
+  setRouteData,
 }: EditableSchemaProps) {
   const updateSchema = (newSchema: SchemaField[]) => {
-    onSchemaChange(newSchema);
+    setRouteData((prev) => prev && { ...prev, schema: newSchema });
   };
 
   const addField = () => {
-    updateSchema([...schema, { fieldName: "", functionSignature: "" }]);
+    updateSchema([
+      ...routeData.schema,
+      { fieldName: "", functionSignature: "" },
+    ]);
   };
 
   const removeField = (index: number) => {
-    const newSchema = schema.filter((_, i) => i !== index);
+    const newSchema = routeData.schema.filter((_, i) => i !== index);
     updateSchema(newSchema);
   };
 
   const updateField = (index: number, key: string, value: string) => {
-    const newSchema = schema.map((field, i) => {
+    const newSchema = routeData.schema.map((field, i) => {
       if (i === index) {
         return { ...field, [key]: value };
       }
@@ -41,7 +44,7 @@ export function EditableSchema({
 
   return (
     <div className="flex flex-col gap-2 ">
-      {schema.map((field, index) => (
+      {routeData.schema.map((field, index) => (
         <div key={index} className="flex items-center gap-4">
           <Input
             required

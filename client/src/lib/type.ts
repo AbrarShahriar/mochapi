@@ -1,3 +1,5 @@
+import { FunctionSignatures } from "./generators/available-functions";
+
 export type ChartDataType = {
   [key: string]: string | number;
 };
@@ -24,7 +26,7 @@ export type Project = {
 
 export type SchemaField = {
   fieldName: string;
-  functionSignature: string;
+  functionSignature: FunctionSignatures | "";
 };
 
 export type Endpoint = {
@@ -33,7 +35,7 @@ export type Endpoint = {
   userEmail: string;
   name: string;
   schema: SchemaField[];
-  generatedData: Record<string, never>;
+  generatedData: Record<string, unknown>[];
   isPublic: boolean;
   numOfRows: number;
   createdAt: string;
