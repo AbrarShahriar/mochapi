@@ -1,81 +1,138 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Copy, Globe, Lock, RefreshCcw, Save, Trash } from "lucide-react";
+import { Copy, Globe, Lock, Save, Trash } from "lucide-react";
 import { EditableSchema } from "@/components/layout/EditableSchema";
 import { capitalize } from "@/lib/utils";
 import GeneratedDataViewer from "@/components/layout/GeneratedDataViewer";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
+import { BackendResponse, Endpoint, SchemaField } from "@/lib/type";
+import { authFetch } from "@/lib/actions/helper";
+import { useToast } from "@/hooks/use-toast";
+import { updateEndpoint } from "@/lib/actions/project-actions";
 
-const initialMockApiData = {
-  id: "ihsdgs8",
-  name: "posts",
-  numOfRows: 3,
-  isPublic: false,
-  createdAt: new Date("2025-1-20"),
-  updatedAt: new Date("2025-2-6"),
-  schema: JSON.stringify([
-    { key: "username", value: "faker:name" },
-    { key: "post", value: "faker:lorem" },
-    { key: "createdAt", value: "faker:date" },
-  ]),
-  generatedData: JSON.stringify([
-    {
-      username: "abrarshariar",
-      post: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
-      createdAt: new Date(),
-    },
-    {
-      username: "tahiaazam",
-      post: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-      createdAt: new Date("2024-10-2"),
-    },
-    {
-      username: "abrarshariar",
-      post: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
-      createdAt: new Date("2025-2-8"),
-    },
-  ]),
-};
+export default function RoutePage({
+  params,
+}: {
+  params: { endpointId: string };
+}) {
+  const projectId = location.pathname.split("/")[3];
 
-export default function RoutePage() {
-  const [routeData, setRouteData] = useState(initialMockApiData);
-  const [isPublic, setIsPublic] = useState(routeData.isPublic);
-  const [numOfRows, setNumOfRows] = useState(routeData.numOfRows);
+  const [routeData, setRouteData] = useState<Endpoint | null>(null);
+  const [isPublic, setIsPublic] = useState(false);
+  const [numOfRows, setNumOfRows] = useState(1);
   const [dataUpdated, setDataUpdated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [savedLoading, setSavedLoading] = useState(false);
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const getProject = async () => {
+      const res = await authFetch<BackendResponse<Endpoint>>(
+        `/endpoints/one/${params.endpointId}`
+      );
+
+      if (res.success) {
+        const result = res.payload as Endpoint;
+        console.log(result);
+
+        setRouteData(result);
+        setIsPublic(result.isPublic);
+        setNumOfRows(result.numOfRows);
+      }
+
+      setLoading(false);
+    };
+    getProject();
+  }, [params.endpointId]);
 
   const handleSwitchChange = (checked: boolean) => {
     setIsPublic(checked);
-    // Here you would typically update the server state
-  };
-
-  const handleSchemaChange = (newSchema: string) => {
-    setRouteData((prevData) => ({
-      ...prevData,
-      schema: newSchema,
-      updatedAt: new Date(),
-    }));
+    if (routeData) {
+      setRouteData({
+        ...routeData,
+        isPublic: checked,
+      });
+    }
     setDataUpdated(true);
   };
 
-  // const show = () => console.log(JSON.parse(routeData.schema));
+  const handleSchemaChange = (newSchema: SchemaField[]) => {
+    const newData = {
+      ...routeData,
+      schema: newSchema,
+    };
+    setRouteData(newData as Endpoint);
+
+    setDataUpdated(true);
+  };
+
   const handleNumOfRowsChange = (event: ChangeEvent<HTMLInputElement>) => {
     try {
       if (event.target.value == "") {
-        setNumOfRows(0);
+        setNumOfRows(1);
+        if (routeData) {
+          setRouteData({
+            ...routeData,
+            numOfRows: 1,
+          });
+        }
       } else {
-        setNumOfRows(parseInt(event.target.value));
+        const newRows = parseInt(event.target.value);
+        setNumOfRows(newRows);
+        if (routeData) {
+          setRouteData({
+            ...routeData,
+            numOfRows: newRows,
+          });
+        }
       }
+
       setDataUpdated(true);
     } catch (error: unknown) {
       if (typeof error === "object") {
         alert("something went wrong");
-        setNumOfRows(routeData.numOfRows);
+        setNumOfRows((prev) => prev);
       }
     }
   };
+
+  const handleSave = async () => {
+    setSavedLoading(true);
+    const res = await updateEndpoint(
+      routeData as Endpoint,
+      projectId,
+      params.endpointId
+    );
+
+    if (res.success) {
+      toast({
+        variant: "success",
+        title: "Success :)",
+        description: res.message,
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Failure :(",
+        description: res.message,
+      });
+    }
+
+    setDataUpdated(false);
+    setSavedLoading(false);
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!routeData) {
+    return <p>No Endpoint found</p>;
+  }
 
   return (
     <main className="w-full h-full">
@@ -89,7 +146,7 @@ export default function RoutePage() {
         <div className="col-span-2 border border-zinc-700 rounded-md">
           <div className="flex items-center">
             <pre className="text-white/70 overflow-x-scroll p-4">
-              {`https://api.mochapi.com/v1?projectId=aabeaetaet&routeId=${routeData.id}&apiKey=adagdgae-sfa-dafdg-adg`}
+              {`https://api.mochapi.com/v1?projectId=${projectId}&routeId=${routeData.id}&apiKey=adagdgae-sfa-dafdg-adg`}
             </pre>
             <Button className="bg-transparent mx-2" size={"sm"}>
               <Copy />
@@ -127,7 +184,6 @@ export default function RoutePage() {
           schema={routeData.schema}
           onSchemaChange={handleSchemaChange}
         />
-        {/* <Button onClick={show}>Show</Button> */}
       </div>
 
       {/* Generated Data */}
@@ -143,19 +199,13 @@ export default function RoutePage() {
       {/* Save or Reset */}
       <div className="flex items-center justify-between gap-4">
         <Button
-          onClick={() => setDataUpdated(false)}
-          disabled={!dataUpdated}
+          onClick={handleSave}
+          disabled={!dataUpdated || savedLoading}
           className="bg-green-600 hover:bg-green-600/90"
         >
-          <Save /> Save
+          <Save /> {savedLoading ? "Saving..." : "Save"}
         </Button>
-        <Button
-          onClick={() => setDataUpdated(false)}
-          disabled={!dataUpdated}
-          className="bg-blue-600 hover:bg-blue-600/90"
-        >
-          <RefreshCcw /> Reset
-        </Button>
+
         <Button className="border border-red-500 text-red-500 bg-transparent ml-auto">
           <Trash /> Delete Route
         </Button>

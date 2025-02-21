@@ -12,7 +12,7 @@ export class ProjectService {
   ) {}
 
   async getAll(email: string) {
-    return await this.projectRepo.find({
+    const projects = await this.projectRepo.find({
       where: {
         userEmail: email,
       },
@@ -21,6 +21,10 @@ export class ProjectService {
       },
       order: { createdAt: 'DESC' },
     });
+    return {
+      success: true,
+      payload: projects,
+    };
   }
 
   async getOne(email: string, projectId: string) {

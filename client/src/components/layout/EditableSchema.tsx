@@ -5,41 +5,32 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
 import { SelectWithSearch } from "./SelectWithSearch";
-
-interface SchemaField {
-  key: string;
-  value: string;
-}
+import { SchemaField } from "@/lib/type";
 
 interface EditableSchemaProps {
-  schema: string;
-  onSchemaChange: (newSchema: string) => void;
+  schema: SchemaField[];
+  onSchemaChange: (newSchema: SchemaField[]) => void;
 }
 
 export function EditableSchema({
   schema,
   onSchemaChange,
 }: EditableSchemaProps) {
-  const parsedSchema: SchemaField[] = React.useMemo(
-    () => JSON.parse(schema),
-    [schema]
-  );
-
   const updateSchema = (newSchema: SchemaField[]) => {
-    onSchemaChange(JSON.stringify(newSchema));
+    onSchemaChange(newSchema);
   };
 
   const addField = () => {
-    updateSchema([...parsedSchema, { key: "", value: "" }]);
+    updateSchema([...schema, { fieldName: "", functionSignature: "" }]);
   };
 
   const removeField = (index: number) => {
-    const newSchema = parsedSchema.filter((_, i) => i !== index);
+    const newSchema = schema.filter((_, i) => i !== index);
     updateSchema(newSchema);
   };
 
   const updateField = (index: number, key: string, value: string) => {
-    const newSchema = parsedSchema.map((field, i) => {
+    const newSchema = schema.map((field, i) => {
       if (i === index) {
         return { ...field, [key]: value };
       }
@@ -50,18 +41,19 @@ export function EditableSchema({
 
   return (
     <div className="flex flex-col gap-2 ">
-      {parsedSchema.map((field, index) => (
+      {schema.map((field, index) => (
         <div key={index} className="flex items-center gap-4">
           <Input
+            required
             placeholder="Field name"
-            value={field.key}
-            onChange={(e) => updateField(index, "key", e.target.value)}
+            value={field.fieldName}
+            onChange={(e) => updateField(index, "fieldName", e.target.value)}
             className="bg-zinc-900/50 border border-zinc-800 focus-within:border-zinc-700 transition-colors"
           />
 
           <SelectWithSearch
-            initialValue={field.value}
-            onSelect={(value) => updateField(index, "value", value)}
+            initialValue={field.functionSignature}
+            onSelect={(value) => updateField(index, "functionSignature", value)}
           />
           <Button
             onClick={() => removeField(index)}

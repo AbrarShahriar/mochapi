@@ -1,5 +1,5 @@
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
-import { CreateEndpointDTO } from './dto/endpoint.dto';
+import { CreateEndpointDTO, UpdateEndpointDTO } from './dto/endpoint.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Endpoint } from './entities/endpoint.entity';
 import { Repository } from 'typeorm';
@@ -42,6 +42,44 @@ export class EndpointService {
       throw new ServiceUnavailableException(
         `Couldn't create ${endpointDto.name}`,
       );
+    }
+  }
+
+  async getOne(email: string, endpointId: string) {
+    const endpoint = await this.endpointRepo.findOne({
+      where: {
+        userEmail: email,
+        id: endpointId,
+      },
+    });
+
+    if (!endpoint) {
+      return { success: false, message: 'No endpoint found.' };
+    }
+
+    return {
+      success: true,
+      payload: endpoint,
+    };
+  }
+
+  async update(email: string, updateEndpointDto: UpdateEndpointDTO) {
+    try {
+      const updatedEndpoint = await this.endpointRepo.update(
+        { id: updateEndpointDto.id, userEmail: email },
+        {
+          ...updateEndpointDto,
+        },
+      );
+
+      return {
+        success: true,
+        message:
+          'Enpoint updated. Wait a few seconds before making any request to the endpoint.',
+        payload: updatedEndpoint.raw[0],
+      };
+    } catch (error) {
+      return { success: false, message: (error as Error).message };
     }
   }
 }

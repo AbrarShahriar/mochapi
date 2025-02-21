@@ -22,13 +22,18 @@ export type Project = {
   endpoints: Endpoint[];
 };
 
+export type SchemaField = {
+  fieldName: string;
+  functionSignature: string;
+};
+
 export type Endpoint = {
   id: string;
   projectId: string;
   userEmail: string;
   name: string;
-  schema: string;
-  generatedData: string;
+  schema: SchemaField[];
+  generatedData: Record<string, never>;
   isPublic: boolean;
   numOfRows: number;
   createdAt: string;

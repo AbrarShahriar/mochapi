@@ -27,7 +27,7 @@ export class Endpoint {
     type: 'simple-json',
     default: [],
   })
-  generatedData: Record<string, any>[];
+  generatedData: Record<string, unknown>[];
 
   @Column({
     default: true,

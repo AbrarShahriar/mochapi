@@ -1,6 +1,6 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
 import { EndpointService } from './endpoint.service';
-import { CreateEndpointDTO } from './dto/endpoint.dto';
+import { CreateEndpointDTO, UpdateEndpointDTO } from './dto/endpoint.dto';
 import { User } from '@clerk/backend';
 
 @Controller('endpoints')
@@ -13,6 +13,24 @@ export class EndpointController {
     return await this.endpointService.create(
       user.emailAddresses[0].emailAddress,
       body,
+    );
+  }
+
+  @Get('one/:endpointId')
+  async getOne(@Param() params: { endpointId: string }, @Req() req) {
+    const user: User = req.user;
+    return await this.endpointService.getOne(
+      user.emailAddresses[0].emailAddress,
+      params.endpointId,
+    );
+  }
+
+  @Patch('update')
+  async update(@Body() updateEndpointDto: UpdateEndpointDTO, @Req() req) {
+    const user: User = req.user;
+    return await this.endpointService.update(
+      user.emailAddresses[0].emailAddress,
+      updateEndpointDto,
     );
   }
 }

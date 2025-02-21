@@ -39,6 +39,7 @@ export default function Page({ params }: { params: { projectId: string } }) {
   const [project, setProject] = useState<Project | null>(null);
   const [showApiKey, setShowApiKey] = useState(false);
   const [callEffect, setCallEffect] = useState(0);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -49,11 +50,19 @@ export default function Page({ params }: { params: { projectId: string } }) {
 
       if (res.success) {
         const result = res.payload as Project;
+        console.log(result);
+
         setProject(result);
       }
+
+      setLoading(false);
     };
     getProject();
-  }, [callEffect]);
+  }, [callEffect, params.projectId]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   if (!project) {
     return <p>No Project Found.</p>;
@@ -183,35 +192,37 @@ export default function Page({ params }: { params: { projectId: string } }) {
                 )
             )
           )}
-          <Dialog>
-            <DialogTrigger className="flex items-center gap-2 rounded-md py-2 px-4 bg-green-600 hover:bg-green-500 font-semibold  ml-auto">
-              <Plus size={16} /> Add Endpoint
-            </DialogTrigger>
-            <DialogContent className="bg-zinc-950 border-zinc-800">
-              <DialogHeader>
-                <DialogTitle>Create An Endpoint</DialogTitle>
-                <DialogDescription>
-                  Write the name of the endpoint.
-                </DialogDescription>
-              </DialogHeader>
-              <form action={onSubmit} className="flex flex-col gap-4">
-                <div className="flex gap-2 w-full">
-                  <Label htmlFor="endpoint-name" className="sr-only">
-                    Name
-                  </Label>
-                  <Input
-                    className="w-full"
-                    id="endpoint-name"
-                    placeholder="Name of the endpoint..."
-                    name="endpoint-name"
-                  />
-                </div>
-                <SubmitButton className="px-3 bg-green-600 hover:bg-green-500 w-full">
-                  Create
-                </SubmitButton>
-              </form>
-            </DialogContent>
-          </Dialog>
+          {project.endpoints.length < 3 && (
+            <Dialog>
+              <DialogTrigger className="flex items-center gap-2 rounded-md py-2 px-4 bg-green-600 hover:bg-green-500 font-semibold  ml-auto">
+                <Plus size={16} /> Add Endpoint
+              </DialogTrigger>
+              <DialogContent className="bg-zinc-950 border-zinc-800">
+                <DialogHeader>
+                  <DialogTitle>Create An Endpoint</DialogTitle>
+                  <DialogDescription>
+                    Write the name of the endpoint.
+                  </DialogDescription>
+                </DialogHeader>
+                <form action={onSubmit} className="flex flex-col gap-4">
+                  <div className="flex gap-2 w-full">
+                    <Label htmlFor="endpoint-name" className="sr-only">
+                      Name
+                    </Label>
+                    <Input
+                      className="w-full"
+                      id="endpoint-name"
+                      placeholder="Name of the endpoint..."
+                      name="endpoint-name"
+                    />
+                  </div>
+                  <SubmitButton className="px-3 bg-green-600 hover:bg-green-500 w-full">
+                    Create
+                  </SubmitButton>
+                </form>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </div>
     </main>

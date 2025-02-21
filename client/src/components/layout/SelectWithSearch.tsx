@@ -58,7 +58,7 @@ export function SelectWithSearch({ initialValue, onSelect }: Props) {
         >
           {value
             ? functions.find((func) => func.value === value)?.label
-            : "Select framework..."}
+            : "Select Function..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -66,7 +66,7 @@ export function SelectWithSearch({ initialValue, onSelect }: Props) {
         <Command>
           <CommandInput placeholder="Search framework..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No function found.</CommandEmpty>
             <CommandGroup>
               {functions.map((framework) => (
                 <CommandItem

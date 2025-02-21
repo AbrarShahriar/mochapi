@@ -50,3 +50,24 @@ export async function createEndpoint(formData: FormData, projectId: string) {
     return { success: false, message: (error as Error).message };
   }
 }
+
+export async function updateEndpoint(
+  body: Endpoint,
+  projectId: string,
+  endpointId: string
+) {
+  try {
+    const res = await authFetch<BackendResponse<unknown>>(`/endpoints/update`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    });
+
+    revalidatePath(`/dashboard`);
+    revalidatePath(`/dashboard/projects`);
+    revalidatePath(`/dashboard/projects/${projectId}`);
+    revalidatePath(`/dashboard/projects/${projectId}/${endpointId}`);
+    return res;
+  } catch (error) {
+    return { success: false, message: (error as Error).message };
+  }
+}

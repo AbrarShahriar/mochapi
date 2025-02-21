@@ -1,20 +1,14 @@
 "use client";
 
 import { Editor } from "@monaco-editor/react";
-import { useMemo } from "react";
 import { Button } from "../ui/button";
 import { Copy, Sparkles } from "lucide-react";
 
 interface Props {
-  generatedData: string;
+  generatedData: Record<string, never>;
 }
 
 export default function GeneratedDataViewer({ generatedData }: Props) {
-  const data = useMemo(
-    () => JSON.stringify(JSON.parse(generatedData), null, 2),
-    [generatedData]
-  );
-
   return (
     <section className="border border-zinc-700 rounded-md  shadow">
       <div className="w-full flex items-center justify-end bg-[#1e1e1e] rounded-t-md">
@@ -40,7 +34,7 @@ export default function GeneratedDataViewer({ generatedData }: Props) {
           wordWrap: "on",
           readOnly: true,
         }}
-        defaultValue={data}
+        defaultValue={JSON.stringify(generatedData)}
       />
     </section>
   );

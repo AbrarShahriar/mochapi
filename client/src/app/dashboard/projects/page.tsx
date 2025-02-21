@@ -1,13 +1,68 @@
-import ProjectAction from "@/components/layout/ProjectAction";
-import { Button } from "@/components/ui/button";
-import { authFetch } from "@/lib/actions/helper";
-import { Project } from "@/lib/type";
-import { calculateUptime, formatDate } from "@/lib/utils";
-import { Plus } from "lucide-react";
-import Link from "next/link";
+"use client";
 
-export default async function page() {
-  const projects = await authFetch<Project[]>(`/projects/all`);
+import ProjectsListItem from "@/components/layout/ProjectsListItem";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import SubmitButton from "@/components/ui/submitButton";
+import { useToast } from "@/hooks/use-toast";
+import { authFetch } from "@/lib/actions/helper";
+import { createProject } from "@/lib/actions/project-actions";
+import { BackendResponse, Project } from "@/lib/type";
+import { Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+
+export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [callEffect, setCallEffect] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const getProjects = async () => {
+      const res = await authFetch<BackendResponse<Project[]>>(`/projects/all`);
+
+      if (res.success) {
+        const result = res.payload as Project[];
+        setProjects(result);
+      }
+
+      setLoading(false);
+    };
+
+    getProjects();
+  }, [callEffect]);
+
+  async function onSubmit(formData: FormData) {
+    const result = await createProject(formData);
+
+    if (result.success) {
+      toast({
+        variant: "success",
+        title: "Success :)",
+        description: result.message,
+      });
+      setCallEffect((prev) => prev + 1);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Failure :(",
+        description: result.message,
+      });
+    }
+  }
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <main className="w-full h-full">
@@ -18,63 +73,45 @@ export default async function page() {
       {projects.length == 0 ? (
         <p>No projects created yet.</p>
       ) : (
-        <div className="flex flex-col items-center rounded-md bg-zinc-900 [&_div:last-child]:border-0 border border-zinc-700 shadow-sm">
+        <div className="flex flex-col items-center rounded-md bg-zinc-900 [&_div:last-child]:border-0 border border-zinc-700 shadow-sm mb-4">
           {projects.map((project, i) => (
-            <div
-              key={i}
-              className="flex items-start justify-between border-b border-zinc-700 w-full p-6"
-            >
-              {/* Name & Created At */}
-              <div className="flex flex-col items-start gap-2">
-                <span className="font-semibold">{project.name}</span>
-                <span className="text-sm text-white/70">
-                  {formatDate(project.createdAt)}
-                </span>
-              </div>
-              {/* Uptime */}
-              <div className="flex flex-col items-start gap-2">
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`aspect-square size-[8px] rounded-full ${
-                      project.status == "active"
-                        ? "bg-green-400"
-                        : "bg-yellow-400"
-                    }`}
-                  ></div>{" "}
-                  <span className="text-sm">
-                    {project.status[0].toUpperCase()}
-                    {project.status.substring(1, project.status.length)}
-                  </span>
-                </div>
-                {project.status == "paused" ? (
-                  <span className="text-sm text-white/70">Project at halt</span>
-                ) : (
-                  <span className="text-sm text-white/70">
-                    Uptime: {calculateUptime(project.updatedAt, new Date())}
-                  </span>
-                )}
-              </div>
-              {/* Created At */}
-              <div className="flex flex-col items-start gap-2">
-                <span>Routes:</span>
-                <span className="text-sm  bg-blue-600 px-4 rounded-md">
-                  {project.endpoints.length}/3
-                </span>
-              </div>
-
-              {/* Action */}
-              <ProjectAction projectId={project.id} apiKey={project.apiKey} />
-            </div>
+            <ProjectsListItem key={i} {...project} />
           ))}
         </div>
       )}
+
       {projects.length < 3 && (
-        <Link href={"/dashboard/projects/new-project"}>
-          <Button className="bg-green-600/90 font-semibold flex items-center justify-center mt-6 ml-auto hover:bg-green-600">
-            <Plus strokeWidth={3} size={20} />
+        <Dialog>
+          <DialogTrigger className="flex items-center gap-2 rounded-md py-2 px-4 bg-green-600 hover:bg-green-500 font-semibold  ml-auto">
+            <Plus size={16} />
             Create Project
-          </Button>
-        </Link>
+          </DialogTrigger>
+          <DialogContent className="bg-zinc-950 border-zinc-800">
+            <DialogHeader>
+              <DialogTitle>Create a new project</DialogTitle>
+              <DialogDescription>
+                Fill up the necessary information and create your project. Wait
+                a few moment, it takes some time to setup your API.
+              </DialogDescription>
+            </DialogHeader>
+            <form action={onSubmit} className="flex flex-col gap-4">
+              <div className="flex gap-2 w-full">
+                <Label htmlFor="project-name" className="sr-only">
+                  Name
+                </Label>
+                <Input
+                  className="border border-zinc-600"
+                  placeholder="Project Name..."
+                  name="project-name"
+                  id="project-name"
+                />
+              </div>
+              <SubmitButton className="px-3 bg-green-600 hover:bg-green-500 w-full">
+                Create
+              </SubmitButton>
+            </form>
+          </DialogContent>
+        </Dialog>
       )}
     </main>
   );

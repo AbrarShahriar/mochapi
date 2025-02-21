@@ -17,10 +17,13 @@ export function formatByteSize(bytes: number) {
 }
 
 export function calculateResourceAllocation(
-  routes: { generatedData: string }[]
+  endpoints: { generatedData: Record<string, never> }[]
 ) {
   let totalBytes = 0;
-  routes.forEach((route) => (totalBytes += calculateByte(route.generatedData)));
+  endpoints.forEach(
+    (endpoint) =>
+      (totalBytes += calculateByte(JSON.stringify(endpoint.generatedData)))
+  );
   return formatByteSize(totalBytes);
 }
 
