@@ -40,6 +40,16 @@ export type Endpoint = {
   updatedAt: string;
 };
 
+export type FunctionType = {
+  id: string;
+  name: string;
+  description: string;
+  callSignature: string;
+  functionBody: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type BackendResponse<T> = {
   success: boolean;
   message?: string;

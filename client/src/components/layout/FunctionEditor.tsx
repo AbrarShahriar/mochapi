@@ -2,7 +2,14 @@
 
 import Editor, { OnMount } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "../ui/button";
 import { Copy, PlayCircle, Save } from "lucide-react";
 import {
@@ -12,23 +19,20 @@ import {
 } from "@/lib/code-executor/executor";
 import { useSidebar } from "../ui/sidebar";
 
-const editorDefaultState = `/*
-* Write your function from here.
-* The "Call Signature" is the function name.
-* Write the function body below.
-*/
-
-const names = ["Abrar", "Shahriar", "Kabir"];
-const randomIndex = Math.floor(Math.random() * names.length);
-return names[randomIndex];`;
-
 interface ExecutionResult {
   data: string;
   executionTime: number;
 }
 
-export default function FunctionEditor() {
-  const [functionBody, setFunctionBody] = useState(editorDefaultState);
+interface Props {
+  functionBody: string;
+  setFunctionBody: Dispatch<SetStateAction<string>>;
+}
+
+export default function FunctionEditor({
+  functionBody,
+  setFunctionBody,
+}: Props) {
   const [output, setOutput] = useState<ExecutionResult | null>(null);
   const [error, setError] = useState("");
   const [isExecuting, setIsExecuting] = useState(false);
@@ -39,8 +43,6 @@ export default function FunctionEditor() {
     editorRef.current = editor;
   };
   useEffect(() => {
-    console.log(open);
-
     if (editorRef.current) {
       setTimeout(() => {
         editorRef.current?.layout();
@@ -103,15 +105,22 @@ export default function FunctionEditor() {
           <pre>main.js</pre>
         </div>
         <Button
+          type="button"
           onClick={executeFunction}
           className="rounded-none hover:bg-zinc-800 bg-transparent"
         >
           <PlayCircle /> Run
         </Button>
-        <Button className="rounded-none hover:bg-zinc-800 bg-transparent">
+        <Button
+          type="button"
+          className="rounded-none hover:bg-zinc-800 bg-transparent"
+        >
           <Save /> Save Draft
         </Button>
-        <Button className="rounded-none hover:bg-zinc-800 bg-transparent">
+        <Button
+          type="button"
+          className="rounded-none hover:bg-zinc-800 bg-transparent"
+        >
           <Copy />
           Copy Code
         </Button>
@@ -125,7 +134,7 @@ export default function FunctionEditor() {
           minimap: { enabled: false },
           wordWrap: "on",
         }}
-        defaultValue={editorDefaultState}
+        defaultValue={functionBody}
         onChange={(value) => handleEditorChange(value || "")}
         onMount={handleEditorDidMount}
       />

@@ -1,30 +1,49 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { FunctionsService } from './functions.service';
-import { CreateFunctionDto } from './dto/create-function.dto';
-import { UpdateFunctionDto } from './dto/update-function.dto';
+import { CreateFunctionDto, UpdateFunctionDto } from './dto/functions.dto';
+import { User } from '@clerk/backend';
 
 @Controller('functions')
 export class FunctionsController {
   constructor(private readonly functionsService: FunctionsService) {}
 
-  @Post()
-  create(@Body() createFunctionDto: CreateFunctionDto) {
-    return this.functionsService.create(createFunctionDto);
+  @Post('create')
+  create(@Body() createFunctionDto: CreateFunctionDto, @Req() req) {
+    const user: User = req.user;
+
+    return this.functionsService.create(
+      user.emailAddresses[0].emailAddress,
+      createFunctionDto,
+    );
   }
 
-  @Get()
-  findAll() {
-    return this.functionsService.findAll();
+  @Get('all')
+  findAll(@Req() req) {
+    const user: User = req.user;
+    return this.functionsService.findAll(user.emailAddresses[0].emailAddress);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.functionsService.findOne(+id);
+  @Get('one/:functionId')
+  findOne(@Param('functionId') functionId: string) {
+    return this.functionsService.findOne(functionId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFunctionDto: UpdateFunctionDto) {
-    return this.functionsService.update(+id, updateFunctionDto);
+  @Patch('update')
+  update(@Body() updateFunctionDto: UpdateFunctionDto, @Req() req) {
+    const user: User = req.user;
+    return this.functionsService.update(
+      user.emailAddresses[0].emailAddress,
+      updateFunctionDto,
+    );
   }
 
   @Delete(':id')

@@ -8,25 +8,24 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import Link from "next/link";
 
 interface Props {
+  id: string;
   name: string;
   description: string;
   callSignature: string;
   functionBody: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function FunctionCard({
+  id,
   name,
   description,
   callSignature,
-}: //   functionBody,
-//   callSignature,
-//   createdAt,
-//   updatedAt,
-Props) {
+}: Props) {
   return (
     <Card className="h-full text-left overflow-hidden">
       <CardHeader>
@@ -35,7 +34,7 @@ Props) {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-1 text-sm font-semibold  rounded-md ">
-          <span className="">Signature: </span>
+          <span>Signature: </span>
           <div className="flex items-center justify-between ">
             <pre className="bg-blue-500/25 py-1 px-2  text-[12px] rounded-md w-fit ">
               {callSignature}
@@ -45,9 +44,11 @@ Props) {
       </CardContent>
       <CardFooter>
         <div className="flex items-center justify-between gap-2 w-full">
-          <Button size={"sm"} className="text-blue-500">
-            <Edit /> Edit
-          </Button>
+          <Link href={`/dashboard/functions/${id}`}>
+            <Button size={"sm"} className="text-blue-500">
+              <Edit /> Edit
+            </Button>
+          </Link>
           <Button size={"sm"} className="text-red-500 ">
             <Trash /> Delete
           </Button>

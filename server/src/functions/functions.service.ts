@@ -1,23 +1,92 @@
 import { Injectable } from '@nestjs/common';
-import { CreateFunctionDto } from './dto/create-function.dto';
-import { UpdateFunctionDto } from './dto/update-function.dto';
+import { CreateFunctionDto, UpdateFunctionDto } from './dto/functions.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Function } from './entities/function.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FunctionsService {
-  create(createFunctionDto: CreateFunctionDto) {
-    return 'This action adds a new function';
+  constructor(
+    @InjectRepository(Function)
+    private readonly functionRepo: Repository<Function>,
+  ) {}
+
+  async create(email: string, createFunctionDto: CreateFunctionDto) {
+    const functionFound = await this.functionRepo.findOne({
+      where: {
+        callSignature: createFunctionDto.callSignature,
+      },
+    });
+
+    if (functionFound) {
+      return {
+        success: false,
+        message: `A function with the same call signature already exists. Please choose a differant call signature.`,
+      };
+    }
+
+    try {
+      await this.functionRepo.insert({
+        ...createFunctionDto,
+        userEmail: email,
+        callSignature: `${email.split('@')[0]}:${createFunctionDto.callSignature}`,
+      });
+      return {
+        success: true,
+        message: `Function "${createFunctionDto.name}" has been created. Please wait a few seconds as we deploy it."`,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: (error as Error).message,
+      };
+    }
   }
 
-  findAll() {
-    return `This action returns all functions`;
+  async findAll(email: string) {
+    const functions = await this.functionRepo.find({
+      where: {
+        userEmail: email,
+      },
+    });
+    return { success: true, payload: functions };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} function`;
+  async findOne(functionId: string) {
+    const functionFound = await this.functionRepo.findOne({
+      where: {
+        id: functionId,
+      },
+    });
+
+    if (!functionFound) {
+      return { success: false, message: 'No function found.' };
+    }
+
+    return {
+      success: true,
+      payload: functionFound,
+    };
   }
 
-  update(id: number, updateFunctionDto: UpdateFunctionDto) {
-    return `This action updates a #${id} function`;
+  async update(email: string, updateFunctionDto: UpdateFunctionDto) {
+    try {
+      const updatedFunction = await this.functionRepo.update(
+        { id: updateFunctionDto.id, userEmail: email },
+        {
+          ...updateFunctionDto,
+        },
+      );
+
+      return {
+        success: true,
+        message:
+          'Function updated. Wait a few seconds before making any request to the endpoint.',
+        payload: updatedFunction.raw[0],
+      };
+    } catch (error) {
+      return { success: false, message: (error as Error).message };
+    }
   }
 
   remove(id: number) {
