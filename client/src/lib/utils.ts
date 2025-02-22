@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { format, intervalToDuration, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
+import { Endpoint } from "./type";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -16,9 +17,7 @@ export function formatByteSize(bytes: number) {
   else return (bytes / 1073741824).toFixed(3) + " GiB";
 }
 
-export function calculateResourceAllocation(
-  endpoints: { generatedData: Record<string, never> }[]
-) {
+export function calculateResourceAllocation(endpoints: Endpoint[]) {
   let totalBytes = 0;
   endpoints.forEach(
     (endpoint) =>

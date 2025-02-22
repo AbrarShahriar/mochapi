@@ -91,12 +91,12 @@ export default function Page({ params }: { params: { projectId: string } }) {
     <main className="w-full h-full">
       <h1 className="text-3xl font-semibold">{project.name}</h1>
       <p className="mb-8 text-white/70">
-        Manage your project, routes, schemas and generated data.
+        Manage your project, endpoints, schemas and generated data.
       </p>
 
       <div>
         {/* Overview */}
-        <div className="grid grid-cols-3 items-center gap-6 mb-6">
+        <div className="grid grid-cols-3 gap-6 mb-6">
           {/* Route Count */}
           <DashboardCard
             title={<span>Routes</span>}
@@ -127,7 +127,11 @@ export default function Page({ params }: { params: { projectId: string } }) {
               </div>
             }
             Icon={Activity}
-            value={calculateUptime(project.updatedAt)}
+            value={
+              project.status == "active"
+                ? calculateUptime(project.updatedAt)
+                : "Project halted"
+            }
             subtitle={`Created at ${formatDate(project.createdAt)}`}
           />
 

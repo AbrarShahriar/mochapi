@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -18,39 +17,122 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { FunctionSignatures } from "@/lib/generators/available-functions";
+import { useState, useEffect, useRef } from "react";
 
-const functions: { value: FunctionSignatures; label: FunctionSignatures }[] = [
+const defaultFunctions = [
   {
-    value: "Name",
+    value: "faker:name",
     label: "Name",
   },
   {
-    value: "Bio",
+    value: "faker:bio",
     label: "Bio",
   },
   {
-    value: "Gender",
+    value: "faker:gender",
     label: "Gender",
   },
   {
-    value: "Job",
+    value: "faker:job",
     label: "Job",
   },
   {
-    value: "Zodiac Sign",
+    value: "faker:zodiacSign",
     label: "Zodiac Sign",
   },
 ];
 
 interface Props {
+  worker: Worker;
   initialValue: string;
   onSelect: (newValue: string) => void;
 }
 
-export function SelectWithSearch({ initialValue, onSelect }: Props) {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState(initialValue);
+const fetchUserFunctions = async (workerRef: Worker) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const fetchedFunctions = [
+    {
+      name: "Generate Number",
+      description: "Generate random addresses based on location.",
+      callSignature: "abrarshahriarcee55e:generateName",
+      functionBody: `const arr = ["abrar", "biday", "chhaya"];
+return arr[Math.floor(Math.random() * 3)]`,
+      createdAt: new Date("2024-8-10"),
+      updatedAt: new Date("2025-2-4"),
+    },
+    {
+      name: "Generate Month",
+      description: "Generate random Month.",
+      callSignature: "abrarshahriarcee55e:generateMonth",
+      functionBody: `const arr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+return arr[Math.floor(Math.random() * 6)]`,
+      createdAt: new Date("2024-8-10"),
+      updatedAt: new Date("2025-2-4"),
+    },
+  ];
+
+  const result = fetchedFunctions.map((el) => {
+    workerRef.postMessage({
+      type: "ADD_FUNCTION",
+      payload: {
+        functionToAdd: {
+          functionBody: el.functionBody,
+          callSignature: el.callSignature,
+        },
+      },
+    });
+    workerRef.postMessage({
+      type: "GENERATE_DATA",
+    });
+    return {
+      value: el.callSignature,
+      label: el.name,
+    };
+  });
+
+  return result;
+};
+
+export function SelectWithSearch({ initialValue, onSelect, worker }: Props) {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(initialValue);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const hasLoadedRef = useRef(false);
+
+  const [functions, setFunctions] =
+    useState<{ value: string; label: string }[]>(defaultFunctions);
+
+  useEffect(() => {
+    if (open && !hasLoadedRef.current) {
+      const loadMoreOptions = async () => {
+        setIsLoading(true);
+        try {
+          const newOptions = await fetchUserFunctions(worker);
+          setFunctions((prev) => [...prev, ...newOptions]);
+          hasLoadedRef.current = true;
+        } catch (error) {
+          console.error("Failed to fetch options:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      loadMoreOptions();
+    }
+  }, [open]);
+
+  const handleLabel = () => {
+    if (value) {
+      const foundLabel = functions.find((el) => el.value === value)?.label;
+      if (!foundLabel) {
+        return "Custom function...";
+      }
+      return foundLabel;
+    }
+
+    return "Select Function...";
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -61,15 +143,13 @@ export function SelectWithSearch({ initialValue, onSelect }: Props) {
           aria-expanded={open}
           className="min-w-[200px] max-w-[200px] justify-between"
         >
-          {value
-            ? functions.find((func) => func.value === value)?.label
-            : "Select Function..."}
+          {handleLabel()}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0 ">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search function..." />
           <CommandList>
             <CommandEmpty>No function found.</CommandEmpty>
             <CommandGroup>
@@ -92,6 +172,9 @@ export function SelectWithSearch({ initialValue, onSelect }: Props) {
                   />
                 </CommandItem>
               ))}
+              {isLoading && (
+                <CommandItem disabled>Loading more options...</CommandItem>
+              )}
             </CommandGroup>
           </CommandList>
         </Command>

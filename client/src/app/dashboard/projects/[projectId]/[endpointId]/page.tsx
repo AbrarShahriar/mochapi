@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Copy, Globe, Lock, Save, Trash } from "lucide-react";
 import { EditableSchema } from "@/components/layout/EditableSchema";
@@ -29,7 +29,13 @@ export default function RoutePage({
 
   const { toast } = useToast();
 
+  const workerRef = useRef<Worker>();
+
   useEffect(() => {
+    workerRef.current = new Worker(
+      new URL("../../../../../worker/dataGenerator.worker.ts", import.meta.url)
+    );
+
     const getProject = async () => {
       const res = await authFetch<BackendResponse<Endpoint>>(
         `/endpoints/one/${params.endpointId}`
@@ -46,6 +52,10 @@ export default function RoutePage({
       setLoading(false);
     };
     getProject();
+
+    return () => {
+      workerRef.current?.terminate();
+    };
   }, [params.endpointId]);
 
   const handleSwitchChange = (checked: boolean) => {
@@ -173,7 +183,11 @@ export default function RoutePage({
       {/* Schema */}
       <div className="mb-12">
         <h3 className="text-lg font-semibold mb-2 text-zinc-100">Schema</h3>
-        <EditableSchema routeData={routeData} setRouteData={setRouteData} />
+        <EditableSchema
+          worker={workerRef.current as Worker}
+          routeData={routeData}
+          setRouteData={setRouteData}
+        />
       </div>
 
       {/* Generated Data */}
@@ -184,6 +198,7 @@ export default function RoutePage({
           </h3>
         </div>
         <GeneratedDataViewer
+          worker={workerRef.current as Worker}
           numOfRows={routeData.numOfRows}
           schema={routeData.schema}
           generatedData={routeData.generatedData}

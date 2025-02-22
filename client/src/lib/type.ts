@@ -1,5 +1,3 @@
-import { FunctionSignatures } from "./generators/available-functions";
-
 export type ChartDataType = {
   [key: string]: string | number;
 };
@@ -26,7 +24,7 @@ export type Project = {
 
 export type SchemaField = {
   fieldName: string;
-  functionSignature: FunctionSignatures | "";
+  functionSignature: string;
 };
 
 export type Endpoint = {

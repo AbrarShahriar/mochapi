@@ -67,6 +67,7 @@ export default function ProjectsPage() {
   return (
     <main className="w-full h-full">
       <h1 className="text-3xl font-semibold">Projects</h1>
+
       <p className="mb-8 text-white/70">
         Manage your projects and quickly take necessary actions.
       </p>

@@ -4,7 +4,7 @@ import { Editor } from "@monaco-editor/react";
 import { Button } from "../ui/button";
 import { Copy, Sparkles } from "lucide-react";
 import { Endpoint, SchemaField } from "@/lib/type";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface Props {
   generatedData: Record<string, unknown>[];
@@ -12,6 +12,7 @@ interface Props {
   schema: SchemaField[];
   setDataUpdated: (val: boolean) => void;
   setRouteData: Dispatch<SetStateAction<Endpoint | null>>;
+  worker: Worker;
 }
 
 export default function GeneratedDataViewer({
@@ -20,17 +21,13 @@ export default function GeneratedDataViewer({
   schema,
   setDataUpdated,
   setRouteData,
+  worker,
 }: Props) {
   const [editorValue, setEditorValue] =
     useState<Record<string, unknown>[]>(generatedData);
 
-  const workerRef = useRef<Worker>();
-
   useEffect(() => {
-    workerRef.current = new Worker(
-      new URL("../../worker/dataGenerator.worker.ts", import.meta.url)
-    );
-    workerRef.current.onmessage = (
+    worker.onmessage = (
       event: MessageEvent<{ payload: Record<string, unknown>[] }>
     ) => {
       setEditorValue(event.data.payload);
@@ -39,13 +36,13 @@ export default function GeneratedDataViewer({
         return prev && { ...prev, generatedData: event.data.payload };
       });
     };
-    return () => {
-      workerRef.current?.terminate();
-    };
   }, []);
 
   const handleGenerateClick = () => {
-    workerRef.current?.postMessage({ payload: { numOfRows, schema } });
+    worker.postMessage({
+      type: "GENERATE_DATA",
+      payload: { numOfRows, schema },
+    });
   };
 
   return (

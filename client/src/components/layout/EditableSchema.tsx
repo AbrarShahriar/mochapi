@@ -8,11 +8,13 @@ import { SelectWithSearch } from "./SelectWithSearch";
 import { Endpoint, SchemaField } from "@/lib/type";
 
 interface EditableSchemaProps {
+  worker: Worker;
   routeData: Endpoint;
   setRouteData: Dispatch<SetStateAction<Endpoint | null>>;
 }
 
 export function EditableSchema({
+  worker,
   routeData,
   setRouteData,
 }: EditableSchemaProps) {
@@ -55,6 +57,7 @@ export function EditableSchema({
           />
 
           <SelectWithSearch
+            worker={worker}
             initialValue={field.functionSignature}
             onSelect={(value) => updateField(index, "functionSignature", value)}
           />

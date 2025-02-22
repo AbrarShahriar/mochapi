@@ -1,6 +1,7 @@
 import { Project } from "@/lib/type";
 import { calculateUptime, formatDate } from "@/lib/utils";
 import ProjectAction from "./ProjectAction";
+import PulseRing from "./PulseRing";
 
 export default function ProjectsListItem(project: Project) {
   return (
@@ -15,11 +16,14 @@ export default function ProjectsListItem(project: Project) {
       {/* Uptime */}
       <div className="flex flex-col items-start gap-2 col-span-2">
         <div className="flex items-center gap-2">
-          <div
+          {/* <div
             className={`aspect-square size-[8px] rounded-full ${
               project.status == "active" ? "bg-green-400" : "bg-yellow-400"
             }`}
-          ></div>{" "}
+          ></div>{" "} */}
+          <PulseRing
+            variant={project.status == "active" ? "success" : "warning"}
+          />
           <span className="text-sm">
             {project.status[0].toUpperCase()}
             {project.status.substring(1, project.status.length)}

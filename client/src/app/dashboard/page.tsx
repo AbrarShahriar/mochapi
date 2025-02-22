@@ -1,13 +1,11 @@
-// "use client";
-
 import Chart_Bar from "@/components/layout/Chart_Bar";
 import Chart_FunctionPerf from "@/components/layout/Chart_FunctionPerf";
 import Chart_Pie from "@/components/layout/Chart_Pie";
 import DashboardCard from "@/components/layout/DashboardCard";
-import { BACKEND_URL } from "@/lib/constants";
 import { calculateByte, formatByteSize } from "@/lib/utils";
 import { Braces, Database, Layers } from "lucide-react";
-import { auth } from "@clerk/nextjs/server";
+import { authFetch } from "@/lib/actions/helper";
+import { BackendResponse, Project } from "@/lib/type";
 
 const userData = {
   functions: [
@@ -51,157 +49,16 @@ return arr[Math.floor(Math.random() * 3)]`,
       updatedAt: new Date("2025-2-4"),
     },
   ],
-  projects: [
-    {
-      id: "fsijfaififiashfish",
-      name: "Test API",
-      apiKey: "Apveg-ggdFSg-89ssggs-jdkhsdghj-henfsks",
-      createdAt: new Date("2024-8-10"),
-      updatedAt: new Date("2025-2-4"),
-      status: "active",
-      routes: [
-        {
-          id: "ihsdgs8",
-          name: "users",
-          numOfRows: 2,
-          isPublic: false,
-          createdAt: new Date("2025-1-24"),
-          updatedAt: new Date("2025-2-8"),
-          schema: JSON.stringify([
-            { key: "firstname", value: "faker:name" },
-            { key: "lastname", value: "faker:name" },
-            { key: "age", value: "faker:age" },
-            { key: "createdAt", value: "faker:date" },
-          ]),
-          generatedData: JSON.stringify([
-            {
-              firstname: "abrar",
-              lastname: "shahriar",
-              age: 22,
-              createdAt: new Date(),
-            },
-            {
-              firstname: "tahia",
-              lastname: "azam",
-              age: 21,
-              createdAt: new Date("2025-2-2"),
-            },
-          ]),
-        },
-        {
-          id: "ihsadfadadgs8",
-          name: "posts",
-          numOfRows: 3,
-          isPublic: false,
-          createdAt: new Date("2025-1-20"),
-          updatedAt: new Date("2025-2-6"),
-          schema: JSON.stringify([
-            { key: "username", value: "faker:name" },
-            { key: "post", value: "faker:lorem" },
-            { key: "createdAt", value: "faker:date" },
-          ]),
-          generatedData: JSON.stringify([
-            {
-              username: "abrarshariar",
-              post: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
-              createdAt: new Date(),
-            },
-            {
-              username: "tahiaazam",
-              post: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-              createdAt: new Date("2024-10-2"),
-            },
-            {
-              username: "abrarshariar",
-              post: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
-              createdAt: new Date("2025-2-8"),
-            },
-          ]),
-        },
-      ],
-    },
-    {
-      id: "iahduhfa8dyu",
-      name: "Mock API",
-      apiKey: "7efwfaf-ggdFSg-jdkhsdghj-henfsks",
-      createdAt: new Date("2024-8-10"),
-      updatedAt: new Date("2025-2-4"),
-      status: "paused",
-      routes: [
-        {
-          id: "ihsdgs8",
-          name: "users",
-          numOfRows: 2,
-          isPublic: false,
-          createdAt: new Date("2025-1-24"),
-          updatedAt: new Date("2025-2-8"),
-          schema: JSON.stringify([
-            { key: "firstname", value: "faker:name" },
-            { key: "lastname", value: "faker:name" },
-            { key: "age", value: "faker:age" },
-            { key: "createdAt", value: "faker:date" },
-          ]),
-          generatedData: JSON.stringify([
-            {
-              firstname: "abrar",
-              lastname: "shahriar",
-              age: 22,
-              createdAt: new Date(),
-            },
-            {
-              firstname: "tahia",
-              lastname: "azam",
-              age: 21,
-              createdAt: new Date("2025-2-2"),
-            },
-          ]),
-        },
-        {
-          id: "ihsadfadadgs8",
-          name: "posts",
-          numOfRows: 3,
-          isPublic: false,
-          createdAt: new Date("2025-1-20"),
-          updatedAt: new Date("2025-2-6"),
-          schema: JSON.stringify([
-            { key: "username", value: "faker:name" },
-            { key: "post", value: "faker:lorem" },
-            { key: "createdAt", value: "faker:date" },
-          ]),
-          generatedData: JSON.stringify([
-            {
-              username: "abrarshariar",
-              post: "Lorem, ipsum dolor sit amet consectetur adipisicing elit.",
-              createdAt: new Date(),
-            },
-            {
-              username: "tahiaazam",
-              post: "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
-              createdAt: new Date("2024-10-2"),
-            },
-            {
-              username: "abrarshariar",
-              post: "Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
-              createdAt: new Date("2025-2-8"),
-            },
-          ]),
-        },
-      ],
-    },
-  ],
 };
 
 export default async function Dashboard() {
-  const { getToken } = await auth();
-  const token = await getToken();
+  const projectsRes = await authFetch<BackendResponse<Project[]>>(
+    `/projects/all`
+  );
 
-  const data = await fetch(`${BACKEND_URL}/projects/all`, {
-    headers: {
-      authorization: `Bearer ${token}`,
-    },
-  });
-  const res = await data.json();
-  console.log(res);
+  if (!projectsRes.success) {
+    return <p>Something went wrong!</p>;
+  }
 
   return (
     <main className="w-full h-full">
@@ -210,60 +67,68 @@ export default async function Dashboard() {
         An overview of your entire workspace.
       </p>
 
-      <div className="grid grid-cols-3 items-center gap-6 mb-8">
-        <DashboardCard
-          Icon={Layers}
-          title={<span>Total Projects</span>}
-          value={userData.projects.length}
-          subtitle={
-            userData.projects.length == 3
-              ? "You have reached the maximum project limit."
-              : `You can create ${
-                  3 - userData.projects.length
-                } more project(s).`
-          }
-        />
+      <div className="grid grid-cols-3 gap-6 mb-8">
+        {projectsRes.payload && (
+          <DashboardCard
+            Icon={Layers}
+            title={<span>Total Projects</span>}
+            value={projectsRes.payload?.length}
+            subtitle={
+              projectsRes.payload.length == 3
+                ? "You have reached the maximum project limit."
+                : `You can create ${
+                    3 - projectsRes.payload.length
+                  } more project(s).`
+            }
+          />
+        )}
         <DashboardCard
           Icon={Braces}
           title={<span>Total Functions</span>}
           value={userData.functions.length}
           subtitle="You can deploy unlimited functions."
         />
-        <DashboardCard
-          Icon={Database}
-          title={<span>Total Routes</span>}
-          value={userData.projects.reduce(
-            (project, p) => project + p.routes.length,
-            0
-          )}
-          subtitle="Endpoints of each project."
-        />
+        {projectsRes.payload && (
+          <DashboardCard
+            Icon={Database}
+            title={<span>Total Routes</span>}
+            value={projectsRes.payload.reduce(
+              (project, p) => project + p.endpoints.length,
+              0
+            )}
+            subtitle="Endpoints of each project."
+          />
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-8 mb-8">
         {/* Route Distribution */}
-        <Chart_Bar
-          data={userData.projects.map((project) => ({
-            name: project.name,
-            routes: project.routes.length,
-          }))}
-          title="Route Distribution"
-          desc="Number of routes per project"
-        />
+        {projectsRes.payload && (
+          <Chart_Bar
+            data={projectsRes.payload.map((project) => ({
+              name: project.name,
+              routes: project.endpoints.length,
+            }))}
+            title="Route Distribution"
+            desc="Number of routes per project"
+          />
+        )}
         {/* Disk Usage */}
-        <Chart_Pie
-          data={userData.projects.map((project) => ({
-            name: project.name,
-            size: calculateByte(JSON.stringify(project)),
-          }))}
-          title="Estimated Disk Usage"
-          desc={`Total: ${formatByteSize(
-            userData.projects.reduce(
-              (acc, project) => acc + calculateByte(JSON.stringify(project)),
-              0
-            )
-          )}`}
-        />
+        {projectsRes.payload && (
+          <Chart_Pie
+            data={projectsRes.payload.map((project) => ({
+              name: project.name,
+              size: calculateByte(JSON.stringify(project)),
+            }))}
+            title="Estimated Disk Usage"
+            desc={`Total: ${formatByteSize(
+              projectsRes.payload.reduce(
+                (acc, project) => acc + calculateByte(JSON.stringify(project)),
+                0
+              )
+            )}`}
+          />
+        )}
       </div>
 
       <Chart_FunctionPerf
