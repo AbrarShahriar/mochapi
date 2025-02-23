@@ -12,6 +12,7 @@ import { ClerkClientProvider } from './auth/providers/clerk-client.provider';
 import { APP_GUARD } from '@nestjs/core';
 import { ClerkAuthGuard } from './auth/guards/clerk-auth.guard';
 import { FunctionsModule } from './functions/functions.module';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FunctionsModule } from './functions/functions.module';
     ProjectModule,
     EndpointModule,
     FunctionsModule,
+    ApiModule,
   ],
   controllers: [AppController],
   providers: [

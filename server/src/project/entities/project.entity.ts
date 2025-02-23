@@ -20,7 +20,7 @@ export class Project {
   @Column({ nullable: false })
   name: string;
 
-  @Column({ nullable: false, unique: true })
+  @Column({ nullable: true, unique: true })
   apiKey: string;
 
   @Column({

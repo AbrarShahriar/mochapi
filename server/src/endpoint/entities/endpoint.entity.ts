@@ -39,7 +39,9 @@ export class Endpoint {
   })
   numOfRows: number;
 
-  @ManyToOne(() => Project, (project) => project.endpoints)
+  @ManyToOne(() => Project, (project) => project.endpoints, {
+    onDelete: 'CASCADE',
+  })
   project: Project;
 
   @CreateDateColumn({ type: 'timestamptz' })

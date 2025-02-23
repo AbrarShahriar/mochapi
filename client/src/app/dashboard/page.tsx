@@ -5,58 +5,17 @@ import DashboardCard from "@/components/layout/DashboardCard";
 import { calculateByte, formatByteSize } from "@/lib/utils";
 import { Braces, Database, Layers } from "lucide-react";
 import { authFetch } from "@/lib/actions/helper";
-import { BackendResponse, Project } from "@/lib/type";
-
-const userData = {
-  functions: [
-    {
-      name: "Generate Name",
-      description:
-        "Generate random names based on real first name and last name.",
-      callSignature: "abrarshahriarcee55e:generateName",
-      functionBody: `const arr = ["abrar", "biday", "chhaya"];
-return arr[Math.floor(Math.random() * 3)]`,
-      createdAt: new Date("2024-8-10"),
-      updatedAt: new Date("2025-2-4"),
-    },
-    {
-      name: "Generate Age",
-      description: "Generate random age based on real age.",
-      callSignature: "abrarshahriarcee55e:generateName",
-      functionBody: `const arr = [18,20,21,24,25];
-return arr[Math.floor(Math.random() * 5)]`,
-      createdAt: new Date("2024-8-10"),
-      updatedAt: new Date("2025-2-4"),
-    },
-    {
-      name: "Generate Random Number Array",
-      description: "Generate an array of random numbers",
-      callSignature: "abrarshahriar:generateName",
-      functionBody: `return Array.from({ length: 3 }, () => ({
-value: Math.floor(Math.random() * 100),
-probability: Math.random()
-}));`,
-      createdAt: new Date("2024-8-10"),
-      updatedAt: new Date("2025-2-4"),
-    },
-    {
-      name: "Generate Number",
-      description: "Generate random addresses based on location.",
-      callSignature: "abrarshahriarcee55e:generateName",
-      functionBody: `const arr = ["abrar", "biday", "chhaya"];
-return arr[Math.floor(Math.random() * 3)]`,
-      createdAt: new Date("2024-8-10"),
-      updatedAt: new Date("2025-2-4"),
-    },
-  ],
-};
+import { BackendResponse, FunctionType, Project } from "@/lib/type";
 
 export default async function Dashboard() {
   const projectsRes = await authFetch<BackendResponse<Project[]>>(
     `/projects/all`
   );
+  const functionsRes = await authFetch<BackendResponse<FunctionType[]>>(
+    `/functions/all`
+  );
 
-  if (!projectsRes.success) {
+  if (!projectsRes.success || !functionsRes.success) {
     return <p>Something went wrong!</p>;
   }
 
@@ -82,12 +41,14 @@ export default async function Dashboard() {
             }
           />
         )}
-        <DashboardCard
-          Icon={Braces}
-          title={<span>Total Functions</span>}
-          value={userData.functions.length}
-          subtitle="You can deploy unlimited functions."
-        />
+        {functionsRes.payload && (
+          <DashboardCard
+            Icon={Braces}
+            title={<span>Total Functions</span>}
+            value={functionsRes.payload?.length}
+            subtitle="You can deploy unlimited functions."
+          />
+        )}
         {projectsRes.payload && (
           <DashboardCard
             Icon={Database}
@@ -131,11 +92,13 @@ export default async function Dashboard() {
         )}
       </div>
 
-      <Chart_FunctionPerf
-        data={userData.functions}
-        title="Function Performance Analysis"
-        desc="Comparing execution times across 1000 iterations."
-      />
+      {functionsRes.payload && (
+        <Chart_FunctionPerf
+          data={functionsRes.payload}
+          title="Function Performance Analysis"
+          desc="Comparing execution times across 1000 iterations."
+        />
+      )}
     </main>
   );
 }

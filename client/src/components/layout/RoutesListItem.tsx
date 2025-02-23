@@ -11,22 +11,19 @@ import { cn, formatDate } from "@/lib/utils";
 
 interface Props {
   routeId: string;
-  name: string;
-  url: string;
+  endpointName: string;
   numOfRows: number;
   isPublic: boolean;
-  projectId: string;
+  projectName: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export function RoutesListItem({
-  routeId,
-  name,
-  url,
+  endpointName,
   numOfRows,
   isPublic,
-  projectId,
+  projectName,
   createdAt,
   updatedAt,
 }: Props) {
@@ -43,19 +40,21 @@ export function RoutesListItem({
   return (
     <div className="flex items-center justify-between p-4 hover:bg-zinc-900/50 border border-zinc-800 rounded-lg transition-colors">
       <Link
-        href={`/dashboard/projects/${projectId}/${routeId}`}
+        href={`/dashboard/projects/${projectName}/${endpointName}`}
         className="flex-1 flex items-center"
       >
         <div className="flex-1">
           <div className="flex items-center mb-2">
-            <h3 className="text-lg font-semibold">{name}</h3>
+            <h3 className="text-lg font-semibold">{endpointName}</h3>
             {isRecentlyUpdated && (
               <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
                 Recently Updated
               </span>
             )}
           </div>
-          <p className="text-sm text-gray-500 mb-2">{url}</p>
+          <p className="text-sm text-gray-500 mb-2">
+            /{projectName}/{endpointName}
+          </p>
           <div className="flex items-center mt-1 text-xs space-x-4">
             <TooltipProvider>
               <Tooltip>

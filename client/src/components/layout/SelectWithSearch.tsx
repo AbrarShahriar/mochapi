@@ -17,113 +17,32 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState, useEffect, useRef } from "react";
-
-const defaultFunctions = [
-  {
-    value: "faker:name",
-    label: "Name",
-  },
-  {
-    value: "faker:bio",
-    label: "Bio",
-  },
-  {
-    value: "faker:gender",
-    label: "Gender",
-  },
-  {
-    value: "faker:job",
-    label: "Job",
-  },
-  {
-    value: "faker:zodiacSign",
-    label: "Zodiac Sign",
-  },
-];
+import { useState } from "react";
 
 interface Props {
-  worker: Worker;
+  functionsLoading: boolean;
   initialValue: string;
+  functions: { value: string; label: string }[];
   onSelect: (newValue: string) => void;
 }
 
-const fetchUserFunctions = async (workerRef: Worker) => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  const fetchedFunctions = [
-    {
-      name: "Generate Number",
-      description: "Generate random addresses based on location.",
-      callSignature: "abrarshahriarcee55e:generateName",
-      functionBody: `const arr = ["abrar", "biday", "chhaya"];
-return arr[Math.floor(Math.random() * 3)]`,
-      createdAt: new Date("2024-8-10"),
-      updatedAt: new Date("2025-2-4"),
-    },
-    {
-      name: "Generate Month",
-      description: "Generate random Month.",
-      callSignature: "abrarshahriarcee55e:generateMonth",
-      functionBody: `const arr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
-return arr[Math.floor(Math.random() * 6)]`,
-      createdAt: new Date("2024-8-10"),
-      updatedAt: new Date("2025-2-4"),
-    },
-  ];
-
-  const result = fetchedFunctions.map((el) => {
-    workerRef.postMessage({
-      type: "ADD_FUNCTION",
-      payload: {
-        functionToAdd: {
-          functionBody: el.functionBody,
-          callSignature: el.callSignature,
-        },
-      },
-    });
-    workerRef.postMessage({
-      type: "GENERATE_DATA",
-    });
-    return {
-      value: el.callSignature,
-      label: el.name,
-    };
-  });
-
-  return result;
-};
-
-export function SelectWithSearch({ initialValue, onSelect, worker }: Props) {
+export function SelectWithSearch({
+  initialValue,
+  onSelect,
+  functionsLoading,
+  functions,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(initialValue);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const hasLoadedRef = useRef(false);
-
-  const [functions, setFunctions] =
-    useState<{ value: string; label: string }[]>(defaultFunctions);
-
-  useEffect(() => {
-    if (open && !hasLoadedRef.current) {
-      const loadMoreOptions = async () => {
-        setIsLoading(true);
-        try {
-          const newOptions = await fetchUserFunctions(worker);
-          setFunctions((prev) => [...prev, ...newOptions]);
-          hasLoadedRef.current = true;
-        } catch (error) {
-          console.error("Failed to fetch options:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      loadMoreOptions();
-    }
-  }, [open]);
 
   const handleLabel = () => {
+    if (functionsLoading) {
+      return "Loading functions...";
+    }
+
     if (value) {
+      console.log(functions);
+
       const foundLabel = functions.find((el) => el.value === value)?.label;
       if (!foundLabel) {
         return "Custom function...";
@@ -172,9 +91,6 @@ export function SelectWithSearch({ initialValue, onSelect, worker }: Props) {
                   />
                 </CommandItem>
               ))}
-              {isLoading && (
-                <CommandItem disabled>Loading more options...</CommandItem>
-              )}
             </CommandGroup>
           </CommandList>
         </Command>

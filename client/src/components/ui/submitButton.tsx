@@ -13,7 +13,7 @@ export default function SubmitButton({
   const { pending } = useFormStatus();
   return (
     <Button
-      className={cn("bg-green-600 hover:bg-green-500 font-bold", className)}
+      className={cn("bg-green-600 hover:bg-green-500 font-semibold", className)}
       type="submit"
       aria-disabled={pending}
       disabled={pending || disabled}

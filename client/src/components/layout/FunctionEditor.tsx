@@ -132,7 +132,7 @@ export default function FunctionEditor({
         options={{
           fontSize: 16,
           minimap: { enabled: false },
-          wordWrap: "on",
+          wordWrap: "bounded",
         }}
         defaultValue={functionBody}
         onChange={(value) => handleEditorChange(value || "")}

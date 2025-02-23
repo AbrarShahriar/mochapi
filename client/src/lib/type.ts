@@ -20,6 +20,7 @@ export type Project = {
   schema: string;
   generatedData: string;
   endpoints: Endpoint[];
+  region: string;
 };
 
 export type SchemaField = {
@@ -29,7 +30,6 @@ export type SchemaField = {
 
 export type Endpoint = {
   id: string;
-  projectId: string;
   userEmail: string;
   name: string;
   schema: SchemaField[];
@@ -38,6 +38,7 @@ export type Endpoint = {
   numOfRows: number;
   createdAt: string;
   updatedAt: string;
+  project: Project;
 };
 
 export type FunctionType = {

@@ -51,6 +51,7 @@ export class EndpointService {
         userEmail: email,
         id: endpointId,
       },
+      relations: { project: true },
     });
 
     if (!endpoint) {

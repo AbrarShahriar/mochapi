@@ -1,14 +1,18 @@
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateProjectDTO } from './dto/project.dto';
+import { ConfigService } from '@nestjs/config';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
+    private readonly configService: ConfigService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async getAll(email: string) {
@@ -23,7 +27,10 @@ export class ProjectService {
     });
     return {
       success: true,
-      payload: projects,
+      payload: projects.map((project) => ({
+        ...project,
+        region: this.configService.get('DB_REGION'),
+      })),
     };
   }
 
@@ -63,12 +70,26 @@ export class ProjectService {
     }
 
     try {
-      const apiKey = crypto.randomUUID();
-      await this.projectRepo.insert({
-        userEmail: email,
-        name: projectDto.name,
-        apiKey,
+      await this.dataSource.transaction(async (manager) => {
+        // Insert the project inside the transaction
+        const insertResult = await manager.insert(Project, {
+          userEmail: email,
+          name: projectDto.name,
+        });
+
+        // Get the inserted project ID
+        const projectId = insertResult.identifiers[0].id;
+
+        // Generate the API key
+        const apiKey = jwt.sign(
+          { projectId },
+          this.configService.get('API_JWT_SECRET'),
+        );
+
+        // Update the project with the API key
+        await manager.update(Project, projectId, { apiKey });
       });
+
       return {
         success: true,
         message: `Project ${projectDto.name} successfully created.`,
@@ -78,6 +99,25 @@ export class ProjectService {
       throw new ServiceUnavailableException(
         `Couldn't create ${projectDto.name}`,
       );
+    }
+  }
+
+  async deleteProject(email: string, projectId: string) {
+    const project = await this.projectRepo.findOne({
+      where: {
+        userEmail: email,
+        id: projectId,
+      },
+    });
+    if (!project) {
+      return { success: false, message: 'Project not found.' };
+    }
+
+    try {
+      await this.projectRepo.delete({ userEmail: email, id: projectId });
+      return { success: true, message: `Project "${project.name}" deleted.` };
+    } catch (error) {
+      return { success: false, message: (error as Error).message };
     }
   }
 }

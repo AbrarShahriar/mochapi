@@ -1,11 +1,40 @@
 "use client";
 
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
 import { SelectWithSearch } from "./SelectWithSearch";
-import { Endpoint, SchemaField } from "@/lib/type";
+import {
+  BackendResponse,
+  Endpoint,
+  FunctionType,
+  SchemaField,
+} from "@/lib/type";
+import { authFetch } from "@/lib/actions/helper";
+
+const defaultFunctions = [
+  {
+    value: "faker:name",
+    label: "Name",
+  },
+  {
+    value: "faker:bio",
+    label: "Bio",
+  },
+  {
+    value: "faker:gender",
+    label: "Gender",
+  },
+  {
+    value: "faker:job",
+    label: "Job",
+  },
+  {
+    value: "faker:zodiacSign",
+    label: "Zodiac Sign",
+  },
+];
 
 interface EditableSchemaProps {
   worker: Worker;
@@ -18,6 +47,52 @@ export function EditableSchema({
   routeData,
   setRouteData,
 }: EditableSchemaProps) {
+  const [functions, setFunctions] = useState(defaultFunctions);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getFunctions = async () => {
+      const functionsRes = await authFetch<BackendResponse<FunctionType[]>>(
+        "/functions/all"
+      );
+
+      if (!functionsRes.success || !functionsRes.payload) {
+      } else {
+        const result = functionsRes.payload;
+        const newFn: { value: string; label: string }[] = [];
+
+        result.forEach((fetchedFn) => {
+          worker.postMessage({
+            type: "ADD_FUNCTION",
+            payload: {
+              functionToAdd: {
+                functionBody: fetchedFn.functionBody,
+                callSignature: fetchedFn.callSignature,
+              },
+            },
+          });
+          newFn.push({
+            label: fetchedFn.name,
+            value: fetchedFn.callSignature,
+          });
+        });
+
+        setFunctions((prev) => {
+          let fnsToAdd = prev;
+          newFn.forEach((fn) => {
+            if (!prev.find((prevFns) => prevFns.value === fn.value)) {
+              fnsToAdd = [...prev, fn];
+            }
+          });
+          return fnsToAdd;
+        });
+        setLoading(false);
+      }
+    };
+
+    getFunctions();
+  }, []);
+
   const updateSchema = (newSchema: SchemaField[]) => {
     setRouteData((prev) => prev && { ...prev, schema: newSchema });
   };
@@ -57,7 +132,8 @@ export function EditableSchema({
           />
 
           <SelectWithSearch
-            worker={worker}
+            functionsLoading={loading}
+            functions={functions}
             initialValue={field.functionSignature}
             onSelect={(value) => updateField(index, "functionSignature", value)}
           />

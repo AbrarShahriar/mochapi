@@ -20,28 +20,7 @@ interface NotificationType {
   createdAt: Date;
 }
 
-const notifications: Array<NotificationType> = [
-  {
-    type: "feat",
-    content: "Added table view on the generated data view section",
-    createdAt: new Date("2025-2-2"),
-  },
-  {
-    type: "fix",
-    content: "Fixed function execution time analysis calculation.",
-    createdAt: new Date("2025-1-20"),
-  },
-  {
-    type: "notice",
-    content: "Request: Please dont use the app for the next 7days",
-    createdAt: new Date("2025-2-9"),
-  },
-  {
-    type: "convo",
-    content: "Something new is coming!!",
-    createdAt: new Date("2024-12-30"),
-  },
-];
+const notifications: Array<NotificationType> = [];
 
 export default function Notifications() {
   const handleNotiType = (noti: NotificationType) => {
@@ -87,20 +66,26 @@ export default function Notifications() {
           Notifications
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {notifications.map((noti, i) => (
-          <DropdownMenuItem
-            key={i}
-            className="border-b border-zinc-800 rounded-none p-4 flex items-center gap-4"
-          >
-            {handleNotiType(noti)}
-            <div className="text-left">
-              <p>{noti.content}</p>
-              <p className="text-muted-foreground text-sm">
-                {noti.createdAt.toDateString()}
-              </p>
-            </div>
+        {notifications.length === 0 ? (
+          <DropdownMenuItem className="border-b border-zinc-800 rounded-none p-4">
+            No Notifications.
           </DropdownMenuItem>
-        ))}
+        ) : (
+          notifications.map((noti, i) => (
+            <DropdownMenuItem
+              key={i}
+              className="border-b border-zinc-800 rounded-none p-4 flex items-center gap-4"
+            >
+              {handleNotiType(noti)}
+              <div className="text-left">
+                <p>{noti.content}</p>
+                <p className="text-muted-foreground text-sm">
+                  {noti.createdAt.toDateString()}
+                </p>
+              </div>
+            </DropdownMenuItem>
+          ))
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

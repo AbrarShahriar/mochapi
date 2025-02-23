@@ -71,7 +71,7 @@ export default function GeneratedDataViewer({
         options={{
           fontSize: 16,
           minimap: { enabled: false },
-          wordWrap: "on",
+          wordWrap: "bounded",
           readOnly: true,
         }}
         value={JSON.stringify(editorValue, null, 3)}

@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Copy, Globe, Lock, Save, Trash } from "lucide-react";
 import { EditableSchema } from "@/components/layout/EditableSchema";
-import { capitalize } from "@/lib/utils";
+import { capitalize, copyToClipboard } from "@/lib/utils";
 import GeneratedDataViewer from "@/components/layout/GeneratedDataViewer";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
@@ -12,14 +12,13 @@ import { BackendResponse, Endpoint } from "@/lib/type";
 import { authFetch } from "@/lib/actions/helper";
 import { useToast } from "@/hooks/use-toast";
 import { updateEndpoint } from "@/lib/actions/project-actions";
+import { API_BACKEND_URL } from "@/lib/constants";
 
 export default function RoutePage({
   params,
 }: {
   params: { endpointId: string };
 }) {
-  const projectId = location.pathname.split("/")[3];
-
   const [routeData, setRouteData] = useState<Endpoint | null>(null);
   const [isPublic, setIsPublic] = useState(false);
   const [numOfRows, setNumOfRows] = useState(1);
@@ -97,7 +96,11 @@ export default function RoutePage({
       setDataUpdated(true);
     } catch (error: unknown) {
       if (typeof error === "object") {
-        alert("something went wrong");
+        toast({
+          variant: "destructive",
+          title: "Failure :(",
+          description: "Something went wrong.",
+        });
         setNumOfRows((prev) => prev);
       }
     }
@@ -105,11 +108,7 @@ export default function RoutePage({
 
   const handleSave = async () => {
     setSavedLoading(true);
-    const res = await updateEndpoint(
-      routeData as Endpoint,
-      projectId,
-      params.endpointId
-    );
+    const res = await updateEndpoint(routeData as Endpoint, params.endpointId);
 
     if (res.success) {
       toast({
@@ -137,6 +136,19 @@ export default function RoutePage({
     return <p>No Endpoint found</p>;
   }
 
+  const handleCopy = async () => {
+    await copyToClipboard(
+      `${API_BACKEND_URL}/api/v1/${routeData.project.name
+        .split(" ")
+        .join("-")}/${routeData.name.split(" ").join("-")}`
+    );
+    toast({
+      variant: "default",
+      title: "Copied",
+      description: "Endpoint URL copied",
+    });
+  };
+
   return (
     <main className="w-full h-full">
       <h1 className="text-3xl font-semibold">{capitalize(routeData.name)} </h1>
@@ -149,9 +161,15 @@ export default function RoutePage({
         <div className="col-span-2 border border-zinc-700 rounded-md">
           <div className="flex items-center">
             <pre className="text-white/70 overflow-x-scroll p-4">
-              {`https://api.mochapi.com/v1?projectId=${projectId}&routeId=${routeData.id}&apiKey=adagdgae-sfa-dafdg-adg`}
+              {`${API_BACKEND_URL}/api/v1/${routeData.project.name
+                .split(" ")
+                .join("-")}/${routeData.name.split(" ").join("-")}`}
             </pre>
-            <Button className="bg-transparent mx-2" size={"sm"}>
+            <Button
+              onClick={handleCopy}
+              className="bg-transparent mx-2"
+              size={"sm"}
+            >
               <Copy />
             </Button>
           </div>

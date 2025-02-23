@@ -25,6 +25,19 @@ export async function createProject(formData: FormData) {
   }
 }
 
+export async function deleteProject(projectId: string) {
+  const res = await authFetch<BackendResponse<null>>(
+    `/projects/delete/${projectId}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/projects");
+  return res;
+}
+
 export async function createEndpoint(formData: FormData, projectId: string) {
   const endpointName = formData.get("endpoint-name");
   if (!endpointName || endpointName == "")
@@ -51,11 +64,7 @@ export async function createEndpoint(formData: FormData, projectId: string) {
   }
 }
 
-export async function updateEndpoint(
-  body: Endpoint,
-  projectId: string,
-  endpointId: string
-) {
+export async function updateEndpoint(body: Endpoint, endpointId: string) {
   try {
     const res = await authFetch<BackendResponse<unknown>>(`/endpoints/update`, {
       method: "PATCH",
@@ -64,8 +73,8 @@ export async function updateEndpoint(
 
     revalidatePath(`/dashboard`);
     revalidatePath(`/dashboard/projects`);
-    revalidatePath(`/dashboard/projects/${projectId}`);
-    revalidatePath(`/dashboard/projects/${projectId}/${endpointId}`);
+    revalidatePath(`/dashboard/projects/${body.project.id}`);
+    revalidatePath(`/dashboard/projects/${body.project.id}/${endpointId}`);
     return res;
   } catch (error) {
     return { success: false, message: (error as Error).message };

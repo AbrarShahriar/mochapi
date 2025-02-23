@@ -43,3 +43,7 @@ export function calculateUptime(start: string, end: Date = new Date()) {
     ? `${duration.hours ? duration.hours + "h" : ""} ${duration.minutes}m`
     : "0s";
 }
+
+export async function copyToClipboard(text: string) {
+  await navigator.clipboard.writeText(text);
+}

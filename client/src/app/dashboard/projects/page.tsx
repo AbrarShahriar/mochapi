@@ -12,6 +12,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import SubmitButton from "@/components/ui/submitButton";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { authFetch } from "@/lib/actions/helper";
 import { createProject } from "@/lib/actions/project-actions";
@@ -74,10 +81,29 @@ export default function ProjectsPage() {
       {projects.length == 0 ? (
         <p>No projects created yet.</p>
       ) : (
-        <div className="flex flex-col items-center rounded-md bg-zinc-900 [&_div:last-child]:border-0 border border-zinc-700 shadow-sm mb-4">
-          {projects.map((project, i) => (
-            <ProjectsListItem key={i} {...project} />
-          ))}
+        <div className="rounded-md mb-4 bg-zinc-900/50 border border-zinc-800 overflow-hidden">
+          <Table>
+            <TableHeader className="bg-zinc-900">
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Region</TableHead>
+                <TableHead>Created At</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Uptime</TableHead>
+                <TableHead>Routes</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="">
+              {projects.map((project, i) => (
+                <ProjectsListItem
+                  key={i}
+                  project={project}
+                  setCallEffect={setCallEffect}
+                />
+              ))}
+            </TableBody>
+          </Table>
         </div>
       )}
 
