@@ -59,7 +59,7 @@ export default function GeneratedDataViewer({
         </Button>
         <Button className="rounded-none hover:bg-zinc-800 bg-transparent">
           <Copy />
-          Copy Code
+          Copy Data
         </Button>
       </div>
 

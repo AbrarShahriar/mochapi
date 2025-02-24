@@ -1,4 +1,4 @@
-import { Copy, Edit, Trash } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Card,
@@ -44,17 +44,11 @@ export default function FunctionCard({
       </CardContent>
       <CardFooter>
         <div className="flex items-center justify-between gap-2 w-full">
-          <Link href={`/dashboard/functions/${id}`}>
-            <Button size={"sm"} className="text-blue-500">
+          <Link href={`/dashboard/functions/${id}`} className="w-full">
+            <Button size={"sm"} className="text-blue-500 w-full">
               <Edit /> Edit
             </Button>
           </Link>
-          <Button size={"sm"} className="text-red-500 ">
-            <Trash /> Delete
-          </Button>
-          <Button className="ml-auto bg-transparent hover:bg-transparent">
-            <Copy />
-          </Button>
         </div>
       </CardFooter>
     </Card>
