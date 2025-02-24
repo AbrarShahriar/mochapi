@@ -193,7 +193,8 @@ export default function Page({ params }: { params: { projectId: string } }) {
                   endpoint && (
                     <RoutesListItem
                       key={i}
-                      routeId={endpoint.id}
+                      projectId={project.id}
+                      endpointId={endpoint.id}
                       endpointName={endpoint.name}
                       numOfRows={endpoint.numOfRows}
                       isPublic={endpoint.isPublic}

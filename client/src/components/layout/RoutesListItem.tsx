@@ -10,7 +10,8 @@ import {
 import { cn, formatDate } from "@/lib/utils";
 
 interface Props {
-  routeId: string;
+  endpointId: string;
+  projectId: string;
   endpointName: string;
   numOfRows: number;
   isPublic: boolean;
@@ -23,6 +24,8 @@ export function RoutesListItem({
   endpointName,
   numOfRows,
   isPublic,
+  projectId,
+  endpointId,
   projectName,
   createdAt,
   updatedAt,
@@ -40,7 +43,7 @@ export function RoutesListItem({
   return (
     <div className="flex items-center justify-between p-4 hover:bg-zinc-900/50 border border-zinc-800 rounded-lg transition-colors">
       <Link
-        href={`/dashboard/projects/${projectName}/${endpointName}`}
+        href={`/dashboard/projects/${projectId}/${endpointId}`}
         className="flex-1 flex items-center"
       >
         <div className="flex-1">
