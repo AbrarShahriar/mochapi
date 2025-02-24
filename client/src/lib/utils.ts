@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { format, intervalToDuration, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { Endpoint } from "./type";
+import { LOCALSTORAGE_FUNCTION_DRAFT_KEY } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -46,4 +47,12 @@ export function calculateUptime(start: string, end: Date = new Date()) {
 
 export async function copyToClipboard(text: string) {
   await navigator.clipboard.writeText(text);
+}
+
+export function saveFunctionToDraft(fnBody: string) {
+  localStorage.setItem(LOCALSTORAGE_FUNCTION_DRAFT_KEY, fnBody);
+}
+
+export function loadFunctionFromDraft(): string | null {
+  return localStorage.getItem(LOCALSTORAGE_FUNCTION_DRAFT_KEY);
 }

@@ -18,6 +18,7 @@ interface Props {
   functionBody: string;
   createdAt: string;
   updatedAt: string;
+  customAction?: React.ReactNode;
 }
 
 export default function FunctionCard({
@@ -25,6 +26,7 @@ export default function FunctionCard({
   name,
   description,
   callSignature,
+  customAction,
 }: Props) {
   return (
     <Card className="h-full text-left overflow-hidden">
@@ -44,11 +46,15 @@ export default function FunctionCard({
       </CardContent>
       <CardFooter>
         <div className="flex items-center justify-between gap-2 w-full">
-          <Link href={`/dashboard/functions/${id}`} className="w-full">
-            <Button size={"sm"} className="text-blue-500 w-full">
-              <Edit /> Edit
-            </Button>
-          </Link>
+          {customAction ? (
+            customAction
+          ) : (
+            <Link href={`/dashboard/functions/${id}`} className="w-full">
+              <Button size={"sm"} className="text-blue-500 w-full">
+                <Edit /> Edit
+              </Button>
+            </Link>
+          )}
         </div>
       </CardFooter>
     </Card>

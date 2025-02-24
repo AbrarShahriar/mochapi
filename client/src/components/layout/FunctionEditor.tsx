@@ -11,13 +11,15 @@ import {
   useState,
 } from "react";
 import { Button } from "../ui/button";
-import { Copy, PlayCircle, Save } from "lucide-react";
+import { FileDown, PlayCircle, Save } from "lucide-react";
 import {
   injectFunctionBody,
   safeContext,
   validator,
 } from "@/lib/code-executor/executor";
 import { useSidebar } from "../ui/sidebar";
+import { useToast } from "@/hooks/use-toast";
+import { loadFunctionFromDraft, saveFunctionToDraft } from "@/lib/utils";
 
 interface ExecutionResult {
   data: string;
@@ -33,6 +35,8 @@ export default function FunctionEditor({
   functionBody,
   setFunctionBody,
 }: Props) {
+  const { toast } = useToast();
+
   const [output, setOutput] = useState<ExecutionResult | null>(null);
   const [error, setError] = useState("");
   const [isExecuting, setIsExecuting] = useState(false);
@@ -95,6 +99,25 @@ export default function FunctionEditor({
     }
   }, [functionBody, isExecuting, validateCode, createSafeAPI]);
 
+  const handleLoadFromDraft = () => {
+    setFunctionBody(loadFunctionFromDraft() || "");
+    toast({
+      variant: "default",
+      title: "Loaded!",
+      description: "Your last saved draft has been loaded.",
+    });
+  };
+
+  const handleSaveToDraft = () => {
+    saveFunctionToDraft(functionBody);
+    toast({
+      variant: "default",
+      title: "Saved!",
+      description:
+        "Your function has been saved to the draft. If you clear your browsing data, the draft will be lost.",
+    });
+  };
+
   return (
     <div
       id="function-body"
@@ -112,17 +135,19 @@ export default function FunctionEditor({
           <PlayCircle /> Run
         </Button>
         <Button
+          onClick={handleSaveToDraft}
           type="button"
           className="rounded-none hover:bg-zinc-800 bg-transparent"
         >
           <Save /> Save Draft
         </Button>
         <Button
+          onClick={handleLoadFromDraft}
           type="button"
           className="rounded-none hover:bg-zinc-800 bg-transparent"
         >
-          <Copy />
-          Copy Code
+          <FileDown />
+          Load Draft
         </Button>
       </div>
       <Editor
@@ -134,7 +159,8 @@ export default function FunctionEditor({
           minimap: { enabled: false },
           wordWrap: "bounded",
         }}
-        defaultValue={functionBody}
+        value={functionBody}
+        // defaultValue={functionBody}
         onChange={(value) => handleEditorChange(value || "")}
         onMount={handleEditorDidMount}
       />
