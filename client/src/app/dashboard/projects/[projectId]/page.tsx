@@ -34,6 +34,7 @@ import { Input } from "@/components/ui/input";
 import SubmitButton from "@/components/ui/submitButton";
 import { createEndpoint } from "@/lib/actions/project-actions";
 import { useToast } from "@/hooks/use-toast";
+import Loader from "@/components/layout/Loader";
 
 export default function Page({ params }: { params: { projectId: string } }) {
   const [project, setProject] = useState<Project | null>(null);
@@ -61,7 +62,7 @@ export default function Page({ params }: { params: { projectId: string } }) {
   }, [callEffect, params.projectId]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (!project) {

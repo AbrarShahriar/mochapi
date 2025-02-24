@@ -13,6 +13,7 @@ import { authFetch } from "@/lib/actions/helper";
 import { useToast } from "@/hooks/use-toast";
 import { updateEndpoint } from "@/lib/actions/project-actions";
 import { API_BACKEND_URL } from "@/lib/constants";
+import Loader from "@/components/layout/Loader";
 
 export default function RoutePage({
   params,
@@ -129,7 +130,7 @@ export default function RoutePage({
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (!routeData) {

@@ -1,6 +1,7 @@
 "use client";
 
 import UpdateFunctionForm from "@/components/layout/functions/UpdateFunctionForm";
+import Loader from "@/components/layout/Loader";
 import { authFetch } from "@/lib/actions/helper";
 import { BackendResponse, FunctionType } from "@/lib/type";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -34,7 +35,7 @@ export default function FunctionPage({
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (!functionContent) {

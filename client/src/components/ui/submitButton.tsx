@@ -4,6 +4,7 @@ import React, { ComponentProps } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
+import { LoaderCircle } from "lucide-react";
 
 export default function SubmitButton({
   children,
@@ -18,6 +19,7 @@ export default function SubmitButton({
       aria-disabled={pending}
       disabled={pending || disabled}
     >
+      {pending && <LoaderCircle className="size-5 animate-spin" />}
       {pending ? "Submitting..." : children}
     </Button>
   );

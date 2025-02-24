@@ -1,5 +1,6 @@
 "use client";
 
+import Loader from "@/components/layout/Loader";
 import ProjectsListItem from "@/components/layout/ProjectsListItem";
 import {
   Dialog,
@@ -68,7 +69,7 @@ export default function ProjectsPage() {
   }
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   return (
