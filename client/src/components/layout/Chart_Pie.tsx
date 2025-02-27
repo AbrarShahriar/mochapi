@@ -10,6 +10,7 @@ import {
 } from "../ui/card";
 import Chart_Tooltip from "./Chart_Tooltip";
 import { formatByteSize } from "@/lib/utils";
+import NoData from "./NoData";
 
 type ChartDataType = {
   [key: string]: string | number;
@@ -32,7 +33,7 @@ interface Props {
 }
 
 export default function Chart_Pie({ data, title, desc }: Props) {
-  const keys = Object.keys(data[0]);
+  const keys = data && data[0] ? Object.keys(data[0]) : [];
 
   const renderCustomizedLabel = ({
     cx,
@@ -67,38 +68,42 @@ export default function Chart_Pie({ data, title, desc }: Props) {
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                dataKey="size"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                stroke="#27272a"
-                fill="#8884d8"
-                labelLine={false}
-                label={renderCustomizedLabel}
-              >
-                {data.map((_, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={`hsl(${index * 45}, 70%, 60%)`}
-                  />
-                ))}
-              </Pie>
-              <Tooltip
-                content={
-                  <Chart_Tooltip
-                    dataKey={keys[1]}
-                    type="pie"
-                    valueFormatter={formatByteSize}
-                  />
-                }
-              />
-            </PieChart>
-          </ResponsiveContainer>
+          {data && data.length !== 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={data}
+                  dataKey="size"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  stroke="#27272a"
+                  fill="#8884d8"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                >
+                  {data.map((_, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={`hsl(${index * 45}, 70%, 60%)`}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip
+                  content={
+                    <Chart_Tooltip
+                      dataKey={keys[1]}
+                      type="pie"
+                      valueFormatter={formatByteSize}
+                    />
+                  }
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          ) : (
+            <NoData subtitle="No data found for disk usage" />
+          )}
         </div>
       </CardContent>
     </Card>

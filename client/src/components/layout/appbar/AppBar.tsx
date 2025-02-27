@@ -45,8 +45,6 @@ export default async function AppBar() {
       </SidebarHeader>
       <SidebarContent className="bg-zinc-900 text-white">
         <NavItems />
-
-        {/* <NavProjects /> */}
       </SidebarContent>
       <SidebarFooter className="bg-zinc-800 flex-row items-center gap-4 ">
         <Avatar>

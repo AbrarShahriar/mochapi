@@ -3,6 +3,7 @@ import { format, intervalToDuration, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { Endpoint } from "./type";
 import { LOCALSTORAGE_FUNCTION_DRAFT_KEY } from "./constants";
+import { UAParser } from "ua-parser-js";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -11,11 +12,12 @@ export function cn(...inputs: ClassValue[]) {
 export function calculateByte(str: string) {
   return str.length * 2;
 }
-export function formatByteSize(bytes: number) {
+export function formatByteSize(bytes: number, precision: number = 3) {
   if (bytes < 1024) return bytes + " bytes";
-  else if (bytes < 1048576) return (bytes / 1024).toFixed(3) + " KiB";
-  else if (bytes < 1073741824) return (bytes / 1048576).toFixed(3) + " MiB";
-  else return (bytes / 1073741824).toFixed(3) + " GiB";
+  else if (bytes < 1048576) return (bytes / 1024).toFixed(precision) + " KiB";
+  else if (bytes < 1073741824)
+    return (bytes / 1048576).toFixed(precision) + " MiB";
+  else return (bytes / 1073741824).toFixed(precision) + " GiB";
 }
 
 export function calculateResourceAllocation(endpoints: Endpoint[]) {
@@ -55,4 +57,38 @@ export function saveFunctionToDraft(fnBody: string) {
 
 export function loadFunctionFromDraft(): string | null {
   return localStorage.getItem(LOCALSTORAGE_FUNCTION_DRAFT_KEY);
+}
+
+export function simplifyUserAgent(
+  userAgent: string,
+  maxLength: number = 50
+): string {
+  const parser = new UAParser(userAgent);
+  const browser = parser.getBrowser();
+  const os = parser.getOS();
+
+  const apiClients = [
+    "Thunder Client",
+    "PostmanRuntime",
+    "curl",
+    "Wget",
+    "HTTPie",
+  ];
+  for (const client of apiClients) {
+    if (userAgent.includes(client)) {
+      return client;
+    }
+  }
+
+  // Build a simplified user agent string
+  let simplifiedUA =
+    `${browser.name || "Unknown Browser"} - ` + `${os.name || "Unknown OS"}`;
+
+  // Trim excessive spaces
+  simplifiedUA = simplifiedUA.replace(/\s+/g, " ").trim();
+
+  // Truncate if needed
+  return simplifiedUA.length > maxLength
+    ? simplifiedUA.slice(0, maxLength) + "..."
+    : simplifiedUA;
 }

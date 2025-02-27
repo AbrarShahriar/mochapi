@@ -56,3 +56,16 @@ export type BackendResponse<T> = {
   message?: string;
   payload?: T;
 };
+
+export type AnalyticsData = {
+  timestamp: string;
+  projectId: string;
+  projectName: string;
+  endpointName: string;
+  method: "GET" | "POST";
+  request: { path: string; host: string };
+  response: { message: null | string; statusCode: number; size: number };
+  duration: number;
+  ip: string;
+  userAgent: string;
+};

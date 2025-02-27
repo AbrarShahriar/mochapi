@@ -27,6 +27,7 @@ import {
   CardContent,
 } from "../ui/card";
 import { capitalize } from "@/lib/utils";
+import NoData from "./NoData";
 
 const CustomTooltip = ({
   active,
@@ -159,50 +160,54 @@ const FunctionTimer = ({ data, title, desc }: Props) => {
       </CardHeader>
       <CardContent>
         <div className="h-[300px] py-2">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={executionData}>
-              <CartesianGrid
-                opacity={0.25}
-                strokeWidth={0.5}
-                vertical={false}
-              />
-              <XAxis
-                dataKey={"name"}
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                fontSize={14}
-              />
-              <YAxis
-                dataKey={"maxTime"}
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-              />
-              <Tooltip
-                cursor={{ fill: "#18181b", radius: 16 }}
-                content={<CustomTooltip />}
-              />
-              <Legend
-                wrapperStyle={{ bottom: -10 }}
-                formatter={(value) => capitalize(value)}
-              />
-              <Bar
-                dataKey={"avgTime"}
-                fill="#ffc658"
-                className="bg-green-500"
-                radius={16}
-                minPointSize={5}
-              />
-              <Bar
-                dataKey={"minTime"}
-                fill="#22c55e"
-                radius={16}
-                minPointSize={10}
-              />
-              <Bar dataKey={"maxTime"} fill="#3b82f6" radius={16} />
-            </BarChart>
-          </ResponsiveContainer>
+          {data && data.length !== 0 ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={executionData}>
+                <CartesianGrid
+                  opacity={0.25}
+                  strokeWidth={0.5}
+                  vertical={false}
+                />
+                <XAxis
+                  dataKey={"name"}
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                  fontSize={14}
+                />
+                <YAxis
+                  dataKey={"maxTime"}
+                  tickLine={false}
+                  tickMargin={10}
+                  axisLine={false}
+                />
+                <Tooltip
+                  cursor={{ fill: "#18181b", radius: 16 }}
+                  content={<CustomTooltip />}
+                />
+                <Legend
+                  wrapperStyle={{ bottom: -10 }}
+                  formatter={(value) => capitalize(value)}
+                />
+                <Bar
+                  dataKey={"avgTime"}
+                  fill="#ffc658"
+                  className="bg-green-500"
+                  radius={16}
+                  minPointSize={5}
+                />
+                <Bar
+                  dataKey={"minTime"}
+                  fill="#22c55e"
+                  radius={16}
+                  minPointSize={10}
+                />
+                <Bar dataKey={"maxTime"} fill="#3b82f6" radius={16} />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <NoData subtitle="No data found for functions" />
+          )}
         </div>
       </CardContent>
     </Card>

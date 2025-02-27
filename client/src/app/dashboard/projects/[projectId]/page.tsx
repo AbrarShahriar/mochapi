@@ -58,6 +58,7 @@ export default function Page({ params }: { params: { projectId: string } }) {
 
       setLoading(false);
     };
+
     getProject();
   }, [callEffect, params.projectId]);
 

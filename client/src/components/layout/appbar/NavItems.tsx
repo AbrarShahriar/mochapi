@@ -16,6 +16,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import {
+  Binoculars,
   BookOpen,
   ChevronRight,
   Folder,
@@ -100,6 +101,17 @@ export default function NavItems() {
             >
               <FunctionSquare />
               Functions
+            </SidebarMenuButton>
+          </Link>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          <Link href="/dashboard/observability">
+            <SidebarMenuButton
+              tooltip={"Observability"}
+              isActive={pathname.includes("/dashboard/observability")}
+            >
+              <Binoculars />
+              Observability
             </SidebarMenuButton>
           </Link>
         </SidebarMenuItem>

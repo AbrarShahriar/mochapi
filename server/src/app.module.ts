@@ -13,16 +13,21 @@ import { APP_GUARD } from '@nestjs/core';
 import { ClerkAuthGuard } from './auth/guards/clerk-auth.guard';
 import { FunctionsModule } from './functions/functions.module';
 import { ApiModule } from './api/api.module';
+import { JwtModule } from '@nestjs/jwt';
+import { RedisService } from './external/services/redis.service';
+import { MonitoringModule } from './monitoring/monitoring.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(typeormConfig),
+    JwtModule,
     AuthModule,
     ProjectModule,
     EndpointModule,
     FunctionsModule,
     ApiModule,
+    MonitoringModule,
   ],
   controllers: [AppController],
   providers: [
@@ -32,7 +37,9 @@ import { ApiModule } from './api/api.module';
       provide: APP_GUARD,
       useClass: ClerkAuthGuard,
     },
+    RedisService,
   ],
+  exports: [RedisService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
