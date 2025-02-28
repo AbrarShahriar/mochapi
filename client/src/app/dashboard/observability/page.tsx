@@ -69,7 +69,7 @@ export default function ObservabilityPage() {
               key={i}
               className="shadow border border-zinc-800 p-4 rounded-md bg-zinc-900 flex items-center justify-between"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 text-center">
                 <p className="text-sm text-white/50">
                   {user?.emailAddresses[0].emailAddress.split("@")[0]}
                 </p>

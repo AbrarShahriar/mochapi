@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className={`antialiased font-geist`}>
         <ClerkProvider appearance={{ baseTheme: dark }}>
           <NextTopLoader showSpinner={false} />
-          <main>{children}</main>
+          {children}
           <Toaster />
         </ClerkProvider>
       </body>

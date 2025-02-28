@@ -5,9 +5,16 @@ import { authFetch } from "./helper";
 import { BackendResponse, Endpoint, Project } from "../type";
 
 export async function createProject(formData: FormData) {
-  const projectName = formData.get("project-name");
+  const projectName = formData.get("project-name")?.toString();
   if (!projectName || projectName == "")
     return { success: false, message: "Write a project name." };
+
+  if (projectName.indexOf(" ") >= 0) {
+    return {
+      success: false,
+      message: "Project name cannot have white spaces.",
+    };
+  }
 
   try {
     const res = await authFetch<BackendResponse<Project>>(`/projects/create`, {
@@ -39,9 +46,16 @@ export async function deleteProject(projectId: string) {
 }
 
 export async function createEndpoint(formData: FormData, projectId: string) {
-  const endpointName = formData.get("endpoint-name");
+  const endpointName = formData.get("endpoint-name")?.toString();
   if (!endpointName || endpointName == "")
     return { success: false, message: "Write an endpoint name." };
+
+  if (endpointName.indexOf(" ") >= 0) {
+    return {
+      success: false,
+      message: "Endpoint name cannot have white spaces.",
+    };
+  }
 
   try {
     const res = await authFetch<BackendResponse<Endpoint>>(

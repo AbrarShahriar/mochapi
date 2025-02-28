@@ -34,12 +34,12 @@ const items = [
     icon: SquareTerminal,
     items: [
       {
-        title: "Templates",
-        url: "#",
+        title: "API Tester",
+        url: "/playground/api-tester",
       },
       {
-        title: "Blank",
-        url: "#",
+        title: "Built-in Functions",
+        url: "/playground/builtin-functions",
       },
     ],
   },
