@@ -2,13 +2,9 @@
 
 import { Editor } from "@monaco-editor/react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
-import { useEffect, useRef, useState } from "react";
+import { HTMLAttributes, useEffect, useRef, useState } from "react";
 import * as monaco from "monaco-editor";
-
-interface Props {
-  apiKey: string;
-  url: string;
-}
+import { cn } from "@/lib/utils";
 
 type Snippet = {
   tabValue: string;
@@ -57,9 +53,66 @@ with urllib.request.urlopen(req) as res:
     echo file_get_contents("${url}", false, $context);
 ?>`,
   },
+  {
+    tabValue: "rust",
+    tabLabel: "Rust",
+    language: "rust",
+    code: (apiKey, url) => `use std::io::Read;
+use std::net::TcpStream;
+
+fn main() {
+    let mut stream = TcpStream::connect("${url}").unwrap();
+    stream.write_all(b"GET / HTTP/1.1\r\nAuthorization: Bearer ${apiKey}\r\n\r\n").unwrap();
+    let mut response = String::new();
+    stream.read_to_string(&mut response).unwrap();
+    println!("{}", response);
+}
+`,
+  },
+  {
+    tabValue: "swift",
+    tabLabel: "Swift",
+    language: "swift",
+    code: (apiKey, url) => `import Foundation
+
+let url = URL(string: "${url}")!
+var req = URLRequest(url: url)
+req.addValue("Bearer ${apiKey}", forHTTPHeaderField: "Authorization")
+
+URLSession.shared.dataTask(with: req) { data, _, _ in
+    if let d = data { print(String(data: d, encoding: .utf8)!) }
+}.resume()
+`,
+  },
+  {
+    tabValue: "java",
+    tabLabel: "Java",
+    language: "java",
+    code: (apiKey, url) => `import java.net.*;
+import java.io.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        HttpURLConnection conn = (HttpURLConnection) new URL("${url}").openConnection();
+        conn.setRequestProperty("Authorization", "Bearer ${apiKey}");
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line;
+        while ((line = in.readLine()) != null) System.out.println(line);
+        in.close();
+    }
+}
+`,
+  },
 ];
 
-export default function CodeCopy({ apiKey, url }: Props) {
+interface Props extends HTMLAttributes<HTMLDivElement> {
+  apiKey: string;
+  url: string;
+  height?: string;
+}
+
+export default function CodeCopy({ apiKey, url, height, className }: Props) {
   const [activeTab, setActiveTab] = useState("curl");
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<typeof monaco | null>(null);
@@ -93,10 +146,10 @@ export default function CodeCopy({ apiKey, url }: Props) {
   return (
     <Tabs
       defaultValue="curl"
-      className="bg-zinc-900 rounded-md"
+      className={cn("bg-zinc-800/50 rounded-md", className)}
       onValueChange={setActiveTab}
     >
-      <TabsList className="bg-zinc-800/50 rounded-b-none w-full justify-start">
+      <TabsList className="bg-zinc-800/50 rounded-b-none w-full justify-start ">
         {snippets.map((snippet, i) => (
           <TabsTrigger key={i} value={snippet.tabValue}>
             {snippet.tabLabel}
@@ -105,7 +158,7 @@ export default function CodeCopy({ apiKey, url }: Props) {
       </TabsList>
       <Editor
         className="p-0"
-        height={"50vh"}
+        height={height || "50vh"}
         defaultLanguage={snippets[0].language}
         theme="vs-dark"
         onMount={handleEditorDidMount}
@@ -117,6 +170,7 @@ export default function CodeCopy({ apiKey, url }: Props) {
           readOnly: true,
         }}
         defaultValue={snippets[0].code(apiKey, url)}
+        value={snippets[0].code(apiKey, url)}
       />
     </Tabs>
   );

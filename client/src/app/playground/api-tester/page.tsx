@@ -55,7 +55,7 @@ export default function ApiTesterPage() {
   };
 
   return (
-    <main className="w-[90%] m-auto my-24">
+    <main className="w-[90%] m-auto mb-24 mt-32">
       <h1 className="text-3xl font-semibold">API Tester</h1>
       <p className="mb-8 text-white/70">
         Test your APIs or other user&apos;s APIs.

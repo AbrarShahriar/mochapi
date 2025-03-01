@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { updateEndpoint } from "@/lib/actions/project-actions";
 import { API_BACKEND_URL } from "@/lib/constants";
 import Loader from "@/components/layout/Loader";
+import CodeCopy from "@/components/layout/CodeCopy";
 
 export default function RoutePage({
   params,
@@ -163,9 +164,7 @@ export default function RoutePage({
         <div className="col-span-2 border border-zinc-700 rounded-md">
           <div className="flex items-center">
             <pre className="text-white/70 overflow-x-scroll p-4">
-              {`${API_BACKEND_URL}/api/v1/${routeData.project.name
-                .split(" ")
-                .join("-")}/${routeData.name.split(" ").join("-")}`}
+              {`${API_BACKEND_URL}/api/v1/${routeData.project.name}/${routeData.name}`}
             </pre>
             <Button
               onClick={handleCopy}
@@ -199,6 +198,13 @@ export default function RoutePage({
           <Switch checked={isPublic} onCheckedChange={handleSwitchChange} />
         </div>
       </div>
+
+      <CodeCopy
+        className="my-8 pb-4"
+        height="25vh"
+        apiKey={routeData.project.apiKey}
+        url={`${API_BACKEND_URL}/api/v1/${routeData.project.name}/${routeData.name}`}
+      />
 
       {/* Schema */}
       <div className="mb-12">

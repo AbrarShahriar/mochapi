@@ -1,12 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // webpack: (config) => {
-  //   config.module.rules.push({
-  //     test: /\.worker\.(js|ts)$/,
-  //     use: { loader: "worker-loader" },
-  //   });
-  //   return config;
-  // },
+  images: {
+    dangerouslyAllowSVG: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "skillicons.dev",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

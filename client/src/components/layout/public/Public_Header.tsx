@@ -1,4 +1,3 @@
-import { NeonGradientCard } from "@/components/magicui/neon-gradient-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,8 +16,7 @@ export default async function Public_Header() {
   const user = await currentUser();
 
   return (
-    // <NeonGradientCard className="w-[90%] m-auto mt-8">
-    <header className="fixed top-8 left-[50%] translate-x-[-50%] z-[999] w-[90%] mx-auto mb-8 backdrop-blur-md rounded-lg flex items-center justify-between p-4  bg-zinc-900/10  shadow-sm ">
+    <header className="fixed top-8 left-[50%] translate-x-[-50%] z-[999] w-[90%] mx-auto mb-8 backdrop-blur-md rounded-lg flex items-center justify-between p-4  bg-zinc-800/25  shadow-sm ">
       <div className="flex items-center gap-4">
         <Link href="/" className="flex items-center gap-2" prefetch={false}>
           <Cloud className="w-6 h-6" />
@@ -41,13 +39,7 @@ export default async function Public_Header() {
           >
             Pricing
           </Link>
-          <Link
-            href="/"
-            className="text-sm font-medium hover:underline underline-offset-4"
-            prefetch={false}
-          >
-            About
-          </Link>
+
           <Link
             href="/"
             className="text-sm font-medium hover:underline underline-offset-4"
@@ -105,6 +97,5 @@ export default async function Public_Header() {
         )}
       </div>
     </header>
-    // </NeonGradientCard>
   );
 }

@@ -3,7 +3,7 @@ import { Github, Twitter, Linkedin } from "lucide-react";
 
 export default function Public_Footer() {
   return (
-    <footer className="border-t">
+    <footer className="border-t border-zinc-800">
       <div className="container flex flex-col gap-8 py-8 md:flex-row md:py-12">
         <div className="flex-1 px-8 py-4">
           <h2 className="font-bold">MochAPI</h2>
@@ -90,7 +90,7 @@ export default function Public_Footer() {
           </div>
         </div>
       </div>
-      <div className="container border-t py-6">
+      <div className="container border-t py-6 border-zinc-800">
         <p className="text-center text-sm text-muted-foreground">
           © {new Date().getFullYear()} Abrar Shariar. All rights reserved.
         </p>
