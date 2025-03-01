@@ -9,14 +9,18 @@ import { ApiService } from './api.service';
 import { Public } from 'src/decorators/public.decorator';
 import { JwtTokenGuard } from './guards/jwt-token/api-jwt-token.guard';
 import { ApiLoggerInterceptor } from 'src/interceptors/api-logger.interceptor';
+import { ThrottlerGuard } from '@nestjs/throttler';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Public()
+@UseGuards(ThrottlerGuard)
+@UseInterceptors(CacheInterceptor)
+@UseInterceptors(ApiLoggerInterceptor)
 @UseGuards(JwtTokenGuard)
 @Controller('api')
 export class ApiController {
   constructor(private readonly apiService: ApiService) {}
 
-  @UseInterceptors(ApiLoggerInterceptor)
   @Get('v1/:projectName/:endpointName')
   async getData(
     @Param('projectName') projectName: string,

@@ -16,11 +16,11 @@ import { ApiModule } from './api/api.module';
 import { JwtModule } from '@nestjs/jwt';
 import { RedisService } from './external/services/redis.service';
 import { MonitoringModule } from './monitoring/monitoring.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(typeormConfig),
+
     JwtModule,
     AuthModule,
     ProjectModule,
