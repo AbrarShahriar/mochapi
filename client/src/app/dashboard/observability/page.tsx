@@ -1,14 +1,10 @@
-"use client";
-
 import Chart_Activity from "@/components/layout/Chart_Activity";
-import Loader from "@/components/layout/Loader";
 import { Button } from "@/components/ui/button";
-import { authFetch } from "@/lib/actions/helper";
-import { BackendResponse, Project } from "@/lib/type";
-import { useUser } from "@clerk/nextjs";
+import { getProjects } from "@/lib/data-access/project-access";
+import { currentUser } from "@clerk/nextjs/server";
 import { Logs, MoveRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 
 type EndpointPayload = {
   projectId: string;
@@ -17,41 +13,24 @@ type EndpointPayload = {
   entries: number;
 };
 
-export default function ObservabilityPage() {
-  const { user } = useUser();
+export default async function ObservabilityPage() {
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
 
-  const [endpointNames, setEndpointNames] = useState<EndpointPayload[]>([]);
-  const [loading, setLoading] = useState(true);
+  const projectsRes = await getProjects();
 
-  useEffect(() => {
-    const getProjects = async () => {
-      const res = await authFetch<BackendResponse<Project[]>>(`/projects/all`);
-
-      if (res.success) {
-        const result = res.payload as Project[];
-
-        const names: EndpointPayload[] = [];
-        result.forEach((project) => {
-          project.endpoints.forEach((endpoint) => {
-            names.push({
-              projectId: project.id,
-              projectName: project.name,
-              endpointName: endpoint.name,
-              entries: endpoint.numOfRows,
-            });
-          });
+  const endpointNames: EndpointPayload[] = [];
+  if (projectsRes.payload) {
+    projectsRes.payload.forEach((project) => {
+      project.endpoints.forEach((endpoint) => {
+        endpointNames.push({
+          projectId: project.id,
+          projectName: project.name,
+          endpointName: endpoint.name,
+          entries: endpoint.numOfRows,
         });
-        setEndpointNames(names);
-      }
-
-      setLoading(false);
-    };
-
-    getProjects();
-  }, []);
-
-  if (loading) {
-    return <Loader />;
+      });
+    });
   }
 
   return (

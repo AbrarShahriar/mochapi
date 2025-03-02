@@ -20,13 +20,15 @@ import {
   TableHead,
   TableBody,
 } from "@/components/ui/table";
-import { authFetch } from "@/lib/actions/helper";
-import { AnalyticsData, BackendResponse } from "@/lib/type";
+import { getLogs } from "@/lib/data-access/observability-access";
+import { AnalyticsData } from "@/lib/type";
 import { Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function RequestsPage() {
+  // AUTH CHECK
+
   const searchParams = useSearchParams();
   const projectId = searchParams.get("projectId");
   const projectName = searchParams.get("projectName");
@@ -37,10 +39,8 @@ export default function RequestsPage() {
   const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
-    const getLogs = async () => {
-      const res = await authFetch<BackendResponse<AnalyticsData[]>>(
-        `/monitoring/logs?projectId=${projectId}&projectName=${projectName}&endpointName=${endpointName}`
-      );
+    const getLogsOnClient = async () => {
+      const res = await getLogs(projectId, projectName, endpointName);
 
       if (res.success && res.payload) {
         setLogs(
@@ -54,7 +54,7 @@ export default function RequestsPage() {
       setLoading(false);
     };
 
-    getLogs();
+    getLogsOnClient();
   }, [endpointName, projectId, projectName]);
 
   if (loading) {

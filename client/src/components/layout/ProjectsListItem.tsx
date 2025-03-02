@@ -2,15 +2,13 @@ import { Project } from "@/lib/type";
 import { calculateUptime, formatDate } from "@/lib/utils";
 import ProjectAction from "./ProjectAction";
 import PulseRing from "./PulseRing";
-import { Dispatch, SetStateAction } from "react";
 import { TableCell, TableRow } from "../ui/table";
 
 interface Props {
   project: Project;
-  setCallEffect: Dispatch<SetStateAction<number>>;
 }
 
-export default function ProjectsListItem({ project, setCallEffect }: Props) {
+export default function ProjectsListItem({ project }: Props) {
   return (
     <TableRow className="hover:bg-zinc-900/40">
       <TableCell>{project.name}</TableCell>
@@ -35,11 +33,7 @@ export default function ProjectsListItem({ project, setCallEffect }: Props) {
         <span className="text-xs">/3</span>
       </TableCell>
       <TableCell className="text-right">
-        <ProjectAction
-          setCallEffect={setCallEffect}
-          projectId={project.id}
-          apiKey={project.apiKey}
-        />
+        <ProjectAction projectId={project.id} apiKey={project.apiKey} />
       </TableCell>
     </TableRow>
   );

@@ -20,21 +20,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { deleteProject } from "@/lib/actions/project-actions";
 import { useToast } from "@/hooks/use-toast";
 
 interface Props {
   apiKey: string;
   projectId: string;
-  setCallEffect: Dispatch<SetStateAction<number>>;
 }
 
-export default function ProjectAction({
-  apiKey,
-  projectId,
-  setCallEffect,
-}: Props) {
+export default function ProjectAction({ apiKey, projectId }: Props) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -55,7 +50,6 @@ export default function ProjectAction({
         description: result.message,
       });
     }
-    setCallEffect((prev) => prev + 1);
     setLoading(false);
     setOpen(false);
   };

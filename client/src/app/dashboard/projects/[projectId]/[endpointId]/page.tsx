@@ -11,16 +11,18 @@ import { Input } from "@/components/ui/input";
 import { BackendResponse, Endpoint } from "@/lib/type";
 import { authFetch } from "@/lib/actions/helper";
 import { useToast } from "@/hooks/use-toast";
-import { updateEndpoint } from "@/lib/actions/project-actions";
 import { API_BACKEND_URL } from "@/lib/constants";
 import Loader from "@/components/layout/Loader";
 import CodeCopy from "@/components/layout/CodeCopy";
+import { updateEndpoint } from "@/lib/actions/endpoint-actions";
 
 export default function RoutePage({
   params,
 }: {
   params: { endpointId: string };
 }) {
+  // AUTH CHECK //
+
   const [routeData, setRouteData] = useState<Endpoint | null>(null);
   const [isPublic, setIsPublic] = useState(false);
   const [numOfRows, setNumOfRows] = useState(1);

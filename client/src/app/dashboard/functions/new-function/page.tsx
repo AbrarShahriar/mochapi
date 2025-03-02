@@ -1,6 +1,11 @@
 import CreateFunctionForm from "@/components/layout/functions/CreateFunctionForm";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-export default function NewFunctionPage() {
+export default async function NewFunctionPage() {
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
+
   return (
     <section>
       <h1 className="text-2xl font-bold">Write Your Function</h1>

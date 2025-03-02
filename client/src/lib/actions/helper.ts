@@ -1,7 +1,8 @@
 "use server";
-
+import "server-only";
 import { currentUser, auth } from "@clerk/nextjs/server";
 import { BACKEND_URL } from "../constants";
+import { redirect } from "next/navigation";
 
 export async function authFetch<T>(
   url: string,
@@ -24,4 +25,9 @@ export async function authFetch<T>(
 
   const data = await res.json();
   return data;
+}
+
+export async function requireSession() {
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
 }

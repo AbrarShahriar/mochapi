@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { authFetch } from "./helper";
-import { BackendResponse, Endpoint, Project } from "../type";
+import { authFetch, requireSession } from "./helper";
+import { BackendResponse, Project } from "../type";
 
 export async function createProject(formData: FormData) {
+  await requireSession();
+
   const projectName = formData.get("project-name")?.toString();
   if (!projectName || projectName == "")
     return { success: false, message: "Write a project name." };
@@ -33,62 +35,18 @@ export async function createProject(formData: FormData) {
 }
 
 export async function deleteProject(projectId: string) {
-  const res = await authFetch<BackendResponse<null>>(
-    `/projects/delete/${projectId}`,
-    {
-      method: "DELETE",
-    }
-  );
-
-  revalidatePath("/dashboard");
-  revalidatePath("/dashboard/projects");
-  return res;
-}
-
-export async function createEndpoint(formData: FormData, projectId: string) {
-  const endpointName = formData.get("endpoint-name")?.toString();
-  if (!endpointName || endpointName == "")
-    return { success: false, message: "Write an endpoint name." };
-
-  if (endpointName.indexOf(" ") >= 0) {
-    return {
-      success: false,
-      message: "Endpoint name cannot have white spaces.",
-    };
-  }
+  await requireSession();
 
   try {
-    const res = await authFetch<BackendResponse<Endpoint>>(
-      `/endpoints/create`,
+    const res = await authFetch<BackendResponse<null>>(
+      `/projects/delete/${projectId}`,
       {
-        method: "POST",
-        body: JSON.stringify({
-          name: endpointName,
-          projectId,
-        }),
+        method: "DELETE",
       }
     );
 
     revalidatePath("/dashboard");
     revalidatePath("/dashboard/projects");
-    revalidatePath(`/dashboard/projects/${projectId}`);
-    return res;
-  } catch (error) {
-    return { success: false, message: (error as Error).message };
-  }
-}
-
-export async function updateEndpoint(body: Endpoint, endpointId: string) {
-  try {
-    const res = await authFetch<BackendResponse<unknown>>(`/endpoints/update`, {
-      method: "PATCH",
-      body: JSON.stringify(body),
-    });
-
-    revalidatePath(`/dashboard`);
-    revalidatePath(`/dashboard/projects`);
-    revalidatePath(`/dashboard/projects/${body.project.id}`);
-    revalidatePath(`/dashboard/projects/${body.project.id}/${endpointId}`);
     return res;
   } catch (error) {
     return { success: false, message: (error as Error).message };

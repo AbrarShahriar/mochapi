@@ -1,37 +1,20 @@
-"use client";
-
 import FunctionCard from "@/components/layout/FunctionCard";
-import Loader from "@/components/layout/Loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { authFetch } from "@/lib/actions/helper";
-import { BackendResponse, FunctionType } from "@/lib/type";
+import { getFunctions } from "@/lib/data-access/functions";
+import { currentUser } from "@clerk/nextjs/server";
 import { Braces, Search } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 
-export default function FunctionsPage() {
-  const [loading, setLoading] = useState(true);
-  const [functions, setFunctions] = useState<FunctionType[]>([]);
+export default async function FunctionsPage() {
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
 
-  useEffect(() => {
-    const getFunctions = async () => {
-      const functionsRes = await authFetch<BackendResponse<FunctionType[]>>(
-        `/functions/all`
-      );
+  const functionsRes = await getFunctions();
 
-      if (functionsRes.success) {
-        const result = functionsRes.payload as FunctionType[];
-        setFunctions(result);
-      }
-      setLoading(false);
-    };
-
-    getFunctions();
-  }, []);
-
-  if (loading) {
-    return <Loader />;
+  if (!functionsRes || !functionsRes.payload) {
+    <p>Something went wrong</p>;
   }
 
   return (
@@ -53,9 +36,14 @@ export default function FunctionsPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-8 flex-wrap items-stretch">
-        {functions.length === 0 && <p>No functions deployed yet.</p>}
-        {functions &&
-          functions.map((func, i) => <FunctionCard key={i} {...func} />)}
+        {functionsRes.payload &&
+          (functionsRes.payload.length === 0 ? (
+            <p>No functions deployed yet.</p>
+          ) : (
+            functionsRes.payload.map((func, i) => (
+              <FunctionCard key={i} {...func} />
+            ))
+          ))}
       </div>
     </main>
   );

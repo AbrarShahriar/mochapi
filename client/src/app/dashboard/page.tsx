@@ -4,16 +4,17 @@ import Chart_Pie from "@/components/layout/Chart_Pie";
 import DashboardCard from "@/components/layout/DashboardCard";
 import { calculateByte, formatByteSize } from "@/lib/utils";
 import { Braces, Database, Layers } from "lucide-react";
-import { authFetch } from "@/lib/actions/helper";
-import { BackendResponse, FunctionType, Project } from "@/lib/type";
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { getProjects } from "@/lib/data-access/project-access";
+import { getFunctions } from "@/lib/data-access/functions";
 
 export default async function Dashboard() {
-  const projectsRes = await authFetch<BackendResponse<Project[]>>(
-    `/projects/all`
-  );
-  const functionsRes = await authFetch<BackendResponse<FunctionType[]>>(
-    `/functions/all`
-  );
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
+
+  const projectsRes = await getProjects();
+  const functionsRes = await getFunctions();
 
   if (!projectsRes.success || !functionsRes.success) {
     return <p>Something went wrong!</p>;

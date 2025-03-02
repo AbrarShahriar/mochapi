@@ -11,6 +11,8 @@ export default function FunctionPage({
 }: {
   params: { functionId: string };
 }) {
+  // AUTH CHECK
+
   const [functionContent, setFunctionContent] = useState<FunctionType | null>(
     null
   );
