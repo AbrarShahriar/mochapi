@@ -8,7 +8,7 @@ export default function Hero() {
     <>
       <section className="container flex min-h-[calc(100vh-3.5rem)] max-w-screen-2xl flex-col items-center justify-center space-y-8 text-center ">
         <div className="space-y-4">
-          <h1 className="text-7xl font-bold tracking-tight ">
+          <h1 className="text-7xl font-bold tracking-tight max-md:text-5xl">
             Build{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
               Mock APIs

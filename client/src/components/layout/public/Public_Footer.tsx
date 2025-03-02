@@ -11,7 +11,7 @@ export default function Public_Footer() {
             Powered by simplicity—build, test, and customize APIs effortlessly.
           </p>
         </div>
-        <div className="grid flex-1 grid-cols-2 gap-12 sm:grid-cols-3">
+        <div className="grid flex-1 grid-cols-2 gap-12 max-md:grid-cols-2 max-md:px-4">
           <div className="space-y-4">
             <h3 className="text-sm font-medium">Solutions</h3>
             <ul className="space-y-3 text-sm">

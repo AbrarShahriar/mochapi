@@ -16,7 +16,7 @@ export default async function Home() {
   return (
     <>
       <Public_Header />
-      <main className="w-[80%] m-auto my-12">
+      <main className="w-[80%] m-auto my-12 max-md:w-[90%]">
         {/* Hero */}
         <Hero />
 
@@ -32,10 +32,13 @@ export default async function Home() {
         </NeonGradientCard>
 
         {/* Feature Cards */}
-        <h1 className="mt-32  text-3xl font-bold text-center mb-4">
+        <h1
+          id="features"
+          className="mt-32  text-3xl font-bold text-center mb-4"
+        >
           Key Features
         </h1>
-        <p className="text-muted-foreground text-center max-w-[50%] m-auto mb-16">
+        <p className="text-muted-foreground text-center  m-auto mb-16 max-w-1/2 max-md:max-w-[80%]">
           Our platform offers a wide range of powerful features to help you
           build and test your web applications with mock data.
         </p>
@@ -45,7 +48,7 @@ export default async function Home() {
         <h1 className="mt-32  text-3xl font-bold text-center mb-4">
           A Glimpse
         </h1>
-        <p className="text-muted-foreground text-center max-w-[50%] m-auto mb-16">
+        <p className="text-muted-foreground text-center m-auto mb-16 max-w-1/2 max-md:max-w-[80%]">
           Take a look at out user-friendly, east-to-start dashboard that only
           shows you whats important - no unnecessary data clogging your view.
         </p>
@@ -55,17 +58,22 @@ export default async function Home() {
         <h1 className="mt-32  text-3xl font-bold text-center mb-4">
           Universal API Compatibility
         </h1>
-        <p className="text-muted-foreground text-center max-w-[50%] m-auto">
+        <p className="text-muted-foreground text-center  m-auto max-w-1/2 max-md:max-w-[80%]">
           Connect with a simple HTTP request from any language
         </p>
         <CrossLanguage />
 
         {/* Pricing */}
-        <section className="relative mb-[50vh] ">
+
+        <section id="pricing" className="relative mb-[50vh] ">
           <div className="relative z-[99]">
-            <h1 className=" text-3xl text-center mb-8">
+            <h1 className=" text-3xl text-center mb-4">
               And the best part is, <SparklesText text="It's free" />
             </h1>
+            <p className="mb-8 text-center text-white/50 m-auto max-w-[50%] max-md:max-w-[80%]">
+              Create upto 3 projects with 3 endpoints each and deploy unlimited
+              functions tailored to your needs!
+            </p>
             <Link href={"/dashboard"} className="grid place-content-center ">
               <Button className="bg-violet-700 hover:bg-violet-600">
                 Start Creating APIs <ArrowRight />

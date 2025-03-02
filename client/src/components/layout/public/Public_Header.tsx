@@ -26,14 +26,14 @@ export default async function Public_Header() {
       <div className="flex items-center gap-4 md:gap-6">
         <nav className="hidden md:flex items-center gap-4">
           <Link
-            href="/"
+            href="#features"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
             Features
           </Link>
           <Link
-            href="/"
+            href="#pricing"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
@@ -41,7 +41,7 @@ export default async function Public_Header() {
           </Link>
 
           <Link
-            href="/"
+            href="/playground/api-tester"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
