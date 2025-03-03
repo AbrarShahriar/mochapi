@@ -97,14 +97,14 @@ export default function Public_Footer() {
         </p>
       </div>
       <Image
-        className="absolute -bottom-full -right-1/3 opacity-5 -rotate-[60deg]"
+        className="absolute -z-10 -bottom-full -right-1/3 opacity-5 -rotate-[60deg]"
         alt="footer"
         src={"/images/footer.svg"}
         width={1920}
         height={512}
       />
       <Image
-        className="absolute -bottom-1/3 -left-1/3 opacity-[7%]"
+        className="absolute -z-10 -bottom-1/3 -left-1/3 opacity-[7%]"
         alt="footer"
         src={"/images/footer.svg"}
         width={1920}
