@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { Github, Twitter, Linkedin } from "lucide-react";
+import Image from "next/image";
 
 export default function Public_Footer() {
   return (
-    <footer className="border-t border-zinc-800">
+    <footer className="relative border-t border-zinc-800/50 overflow-hidden">
       <div className="container flex flex-col gap-8 py-8 md:flex-row md:py-12">
         <div className="flex-1 px-8 py-4">
           <h2 className="font-bold">MochAPI</h2>
@@ -90,11 +91,25 @@ export default function Public_Footer() {
           </div>
         </div>
       </div>
-      <div className="container border-t py-6 border-zinc-800">
+      <div className="container border-t py-6 border-zinc-800/50">
         <p className="text-center text-sm text-muted-foreground">
           © {new Date().getFullYear()} Abrar Shariar. All rights reserved.
         </p>
       </div>
+      <Image
+        className="absolute -bottom-full -right-1/3 opacity-5 -rotate-[60deg]"
+        alt="footer"
+        src={"/images/footer.svg"}
+        width={1920}
+        height={512}
+      />
+      <Image
+        className="absolute -bottom-1/3 -left-1/3 opacity-[7%]"
+        alt="footer"
+        src={"/images/footer.svg"}
+        width={1920}
+        height={512}
+      />
     </footer>
   );
 }

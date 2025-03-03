@@ -15,14 +15,14 @@ export default async function Public_Header() {
       <div className="flex items-center justify-center gap-4 md:gap-6">
         <nav className="hidden md:flex items-center gap-4">
           <Link
-            href="#features"
+            href="/#features"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
             Features
           </Link>
           <Link
-            href="#pricing"
+            href="/#pricing"
             className="text-sm font-medium hover:underline underline-offset-4"
             prefetch={false}
           >
@@ -40,12 +40,12 @@ export default async function Public_Header() {
       </div>
       <div className="flex items-center justify-end gap-4">
         <div className="flex items-center justify-between gap-2">
-          <Link href={"/sign-in"}>
+          <Link href={"/dashboard"}>
             <Button variant={"ghost"} className="text-violet-400">
               Sign In
             </Button>
           </Link>
-          <Link href={"/sign-up"}>
+          <Link href={"/dashboard"}>
             <Button className="bg-violet-700 hover:bg-violet-600 text-white">
               Get Started
             </Button>
