@@ -38,6 +38,7 @@
     "ioredis": "^5.5.0",
     "luxon": "^3.5.0",
     "nanoid": "^5.1.0",
+    "newrelic": "^12.14.0",
     "passport": "^0.7.0",
     "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
