@@ -2,9 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { BackendResponse, Endpoint, FunctionType } from "../type";
-import { authFetch } from "./helper";
+import { authFetch, requireSession } from "./helper";
 
 export async function createFunction(formData: FormData, functionBody: string) {
+  await requireSession();
+
   const functionName = formData.get("function-name");
   if (!functionName || functionName == "")
     return { success: false, message: "Write the name of the function." };
@@ -32,6 +34,8 @@ export async function createFunction(formData: FormData, functionBody: string) {
 }
 
 export async function updateFunction(body: FunctionType, functionId: string) {
+  await requireSession();
+
   const functionName = body.name;
   if (!functionName || functionName == "")
     return { success: false, message: "Write the name of the function." };

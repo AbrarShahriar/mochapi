@@ -1,6 +1,6 @@
 "use server";
 import "server-only";
-import { currentUser, auth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { BACKEND_URL } from "../constants";
 import { redirect } from "next/navigation";
 
@@ -8,9 +8,6 @@ export async function authFetch<T>(
   url: string,
   options?: RequestInit
 ): Promise<T> {
-  const user = await currentUser();
-  if (!user) throw new Error("User is not logged in.");
-
   const { getToken } = await auth();
   const token = await getToken();
   if (!token) throw new Error("Invalid token.");

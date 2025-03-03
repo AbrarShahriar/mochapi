@@ -44,7 +44,7 @@ export default function FeatureCard({
   const size = sizes[index % sizes.length];
 
   return (
-    <div className="relative w-full max-w-md mx-auto overflow-hidden rounded-xl  p-6 shadow-xl">
+    <div className="relative w-full max-w-md mx-auto overflow-hidden rounded-md  p-6 shadow-xl">
       {/* Gradient */}
       <div
         className={`absolute ${position} ${size} rounded-full bg-gradient-to-br ${gradient} opacity-15 blur-2xl`}

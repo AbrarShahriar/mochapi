@@ -23,7 +23,7 @@ export default async function Home() {
         {/* Product Image */}
         <NeonGradientCard borderRadius={5} className="w-full m-auto my-16">
           <Image
-            className="rounded-xl"
+            className="rounded-md"
             alt="dashboard"
             width={1920}
             height={892}

@@ -1,7 +1,4 @@
-"use client";
-
 import Chart_Analytics from "@/components/layout/Chart_Analytics";
-import Loader from "@/components/layout/Loader";
 import LogListItem from "@/components/layout/LogListItem";
 import NoData from "@/components/layout/NoData";
 import {
@@ -21,44 +18,30 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { getLogs } from "@/lib/data-access/observability-access";
-import { AnalyticsData } from "@/lib/type";
+import { currentUser } from "@clerk/nextjs/server";
 import { Search } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 
-export default function RequestsPage() {
-  // AUTH CHECK
+export default async function RequestsPage({
+  searchParams,
+}: {
+  searchParams: {
+    projectId: string;
+    projectName: string;
+    endpointName: string;
+  };
+}) {
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
 
-  const searchParams = useSearchParams();
-  const projectId = searchParams.get("projectId");
-  const projectName = searchParams.get("projectName");
-  const endpointName = searchParams.get("endpointName");
+  const projectId = searchParams.projectId;
+  const projectName = searchParams.projectName;
+  const endpointName = searchParams.endpointName;
 
-  const [logs, setLogs] = useState<AnalyticsData[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchValue, setSearchValue] = useState("");
+  const logsRes = await getLogs(projectId, projectName, endpointName);
 
-  useEffect(() => {
-    const getLogsOnClient = async () => {
-      const res = await getLogs(projectId, projectName, endpointName);
-
-      if (res.success && res.payload) {
-        setLogs(
-          res.payload.sort(
-            (a, b) =>
-              new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-          )
-        );
-      }
-
-      setLoading(false);
-    };
-
-    getLogsOnClient();
-  }, [endpointName, projectId, projectName]);
-
-  if (loading) {
-    return <Loader />;
+  if (!logsRes || !logsRes.payload) {
+    return <p>Something went wrong</p>;
   }
 
   return (
@@ -68,7 +51,7 @@ export default function RequestsPage() {
       <p className="mb-8 text-white/70">
         Daily logs of &quot;/{projectName}/{endpointName}&quot;
       </p>
-      <Chart_Analytics logs={logs} className="mb-8" />
+      <Chart_Analytics logs={logsRes.payload} className="mb-8" />
 
       <Card className="bg-zinc-950 border-zinc-800">
         <CardHeader>
@@ -86,13 +69,11 @@ export default function RequestsPage() {
             <Search className="size-4" />
             <Input
               className="bg-transparent "
-              placeholder={`${logs.length} total logs found...`}
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder={`${logsRes.payload.length} total logs found...`}
             />
           </div>
           <div className="rounded-md border border-zinc-800">
-            {logs && logs.length !== 0 ? (
+            {logsRes.payload.length !== 0 ? (
               <Table className="text-zinc-200">
                 <TableHeader className="border-red-900">
                   <TableRow className="border-zinc-950">
@@ -106,7 +87,7 @@ export default function RequestsPage() {
                 </TableHeader>
 
                 <TableBody>
-                  {logs.map((log, index) => (
+                  {logsRes.payload.map((log, index) => (
                     <LogListItem log={log} key={index} />
                   ))}
                 </TableBody>
