@@ -19,16 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`antialiased font-geist`}>
-        {/* <Script
-          src="https://beamanalytics.b-cdn.net/beam.min.js"
-          data-token={process.env.BEAM_ANALYTICS_TOKEN as string}
-          async
-          id="important-script"
-          strategy="beforeInteractive"
-        /> */}
         <script
           src="https://beamanalytics.b-cdn.net/beam.min.js"
-          data-token="00b1075c-e776-4b86-90d0-0b44d88531d3"
+          data-token={process.env.BEAM_ANALYTICS_TOKEN as string}
           async
         ></script>
         <ClerkProvider appearance={{ baseTheme: dark }}>
