@@ -18,6 +18,7 @@
     "migration:show": "typeorm-ts-node-commonjs migration:show -d src/typeorm.config.ts"
   },
   "dependencies": {
+    "@bitc/cnad": "^1.1.0",
     "@clerk/backend": "^1.24.1",
     "@nestjs/cache-manager": "^3.0.0",
     "@nestjs/common": "^10.0.0",
@@ -37,8 +38,6 @@
     "helmet": "^8.0.0",
     "ioredis": "^5.5.0",
     "luxon": "^3.5.0",
-    "nanoid": "^5.1.0",
-    "newrelic": "^12.14.0",
     "passport": "^0.7.0",
     "passport-custom": "^1.1.1",
     "passport-jwt": "^4.0.1",
@@ -46,7 +45,9 @@
     "postgres": "^3.4.5",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

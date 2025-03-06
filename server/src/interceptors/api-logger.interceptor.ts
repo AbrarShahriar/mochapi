@@ -59,10 +59,6 @@ export class ApiLoggerInterceptor implements NestInterceptor {
         responseObj.statusCode = response.statusCode;
         responseObj.size = JSON.stringify(responseBody).length * 2;
 
-        console.log('host', request.headers.host);
-        console.log('referer', request.headers.referer);
-        console.log('origin', request.headers.origin);
-
         const logEntry = {
           timestamp: DateTime.now().setZone('Asia/Dhaka').toISO(),
           projectId,

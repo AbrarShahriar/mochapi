@@ -26,7 +26,6 @@ export default function FunctionPage({
 
       if (res.success) {
         const result = res.payload as FunctionType;
-        console.log(result);
 
         setFunctionContent(result);
       }

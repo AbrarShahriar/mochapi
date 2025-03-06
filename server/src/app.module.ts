@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { LoggingMiddleware } from './middleware/logging.middleware';
+import { LoggingMiddleware } from './logger/logging.middleware';
 import { typeormConfig } from './typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { ProjectModule } from './project/project.module';

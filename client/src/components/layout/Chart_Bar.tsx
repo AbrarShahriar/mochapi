@@ -26,8 +26,6 @@ interface Props {
 }
 
 export default function Chart_Bar({ data, title, desc }: Props) {
-  // console.log("data", data);
-
   const keys = data && data[0] ? Object.keys(data[0]) : [];
 
   return (

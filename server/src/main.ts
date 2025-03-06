@@ -1,14 +1,17 @@
 import { config } from 'dotenv';
 config();
-import 'newrelic';
 
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
+import * as cnad from '@bitc/cnad';
+
+cnad.config(process.env.CPANEL_DIR);
 
 async function bootstrap() {
+  cnad.start();
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({

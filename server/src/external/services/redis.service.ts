@@ -66,10 +66,7 @@ export class RedisService {
   ): Promise<{ logsDeleted: boolean }> {
     const result = { logsDeleted: false };
 
-    console.log('endpointboom', projectId, projectName, endpointName);
-
     const logKey = `logs:${projectId}:${projectName}:${endpointName}`;
-    console.log('endpointboom:keys', logKey);
     const logExists = await this.redis.exists(logKey);
 
     if (logExists) {

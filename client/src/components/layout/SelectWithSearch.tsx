@@ -41,8 +41,6 @@ export function SelectWithSearch({
     }
 
     if (value) {
-      console.log(functions);
-
       const foundLabel = functions.find((el) => el.value === value)?.label;
       if (!foundLabel) {
         return "Custom function...";

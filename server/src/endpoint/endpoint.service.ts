@@ -111,7 +111,6 @@ export class EndpointService {
 
     try {
       await this.endpointRepo.delete({ userEmail: email, id: endpointId });
-      console.log('calling');
 
       await this.redisService.deleteEndpointData(
         endpoint.project.id,
