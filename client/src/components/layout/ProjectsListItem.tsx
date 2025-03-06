@@ -1,8 +1,8 @@
 import { Project } from "@/lib/type";
 import { calculateUptime, formatDate } from "@/lib/utils";
-import ProjectAction from "./ProjectAction";
 import PulseRing from "./PulseRing";
 import { TableCell, TableRow } from "../ui/table";
+import ProjectAction from "./ProjectAction";
 
 interface Props {
   project: Project;

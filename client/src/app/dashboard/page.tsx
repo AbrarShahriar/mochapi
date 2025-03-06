@@ -27,7 +27,7 @@ export default async function Dashboard() {
         An overview of your entire workspace.
       </p>
 
-      <div className="grid grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-3 gap-6 mb-8 max-md:grid-cols-1">
         {projectsRes.payload && (
           <DashboardCard
             Icon={Layers}
@@ -63,7 +63,7 @@ export default async function Dashboard() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-2 gap-8 mb-8 max-md:grid-cols-1">
         {/* Route Distribution */}
         {projectsRes.payload && (
           <Chart_Bar

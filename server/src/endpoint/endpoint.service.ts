@@ -3,12 +3,14 @@ import { CreateEndpointDTO, UpdateEndpointDTO } from './dto/endpoint.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Endpoint } from './entities/endpoint.entity';
 import { Repository } from 'typeorm';
+import { RedisService } from 'src/external/services/redis.service';
 
 @Injectable()
 export class EndpointService {
   constructor(
     @InjectRepository(Endpoint)
     private readonly endpointRepo: Repository<Endpoint>,
+    private readonly redisService: RedisService,
   ) {}
 
   async create(email: string, endpointDto: CreateEndpointDTO) {
@@ -18,6 +20,16 @@ export class EndpointService {
         project: { id: endpointDto.projectId },
       },
     });
+
+    const endpointExists = endpoints.filter(
+      (endpoint) => endpoint.name === endpointDto.name,
+    );
+    if (endpointExists && endpointExists.length > 0) {
+      return {
+        success: false,
+        message: `Endpoint with name "${endpointDto.name}" already exists.`,
+      };
+    }
 
     if (endpoints.length >= 3) {
       return {
@@ -79,6 +91,34 @@ export class EndpointService {
           'Enpoint updated. Wait a few seconds before making any request to the endpoint.',
         payload: updatedEndpoint.raw[0],
       };
+    } catch (error) {
+      return { success: false, message: (error as Error).message };
+    }
+  }
+
+  async deleteEndpoint(email: string, endpointId: string) {
+    const endpoint = await this.endpointRepo.findOne({
+      where: {
+        userEmail: email,
+        id: endpointId,
+      },
+      relations: { project: true },
+    });
+
+    if (!endpoint) {
+      return { success: false, message: 'Project not found.' };
+    }
+
+    try {
+      await this.endpointRepo.delete({ userEmail: email, id: endpointId });
+      console.log('calling');
+
+      await this.redisService.deleteEndpointData(
+        endpoint.project.id,
+        endpoint.project.name,
+        endpoint.name,
+      );
+      return { success: true, message: `Endpoint "${endpoint.name}" deleted.` };
     } catch (error) {
       return { success: false, message: (error as Error).message };
     }

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { Github, Twitter, Linkedin } from "lucide-react";
+import { Github, Linkedin } from "lucide-react";
 import Image from "next/image";
 
 export default function Public_Footer() {
   return (
-    <footer className="relative border-t border-zinc-800/50 overflow-hidden">
+    <footer className="relative border-t border-zinc-800/50 overflow-hidden ">
       <div className="container flex flex-col gap-8 py-8 md:flex-row md:py-12">
         <div className="flex-1 px-8 py-4">
           <h2 className="font-bold">MochAPI</h2>
@@ -18,6 +18,7 @@ export default function Public_Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
+                  target="_blank"
                   href="/dashboard"
                   className="text-muted-foreground transition-colors"
                 >
@@ -53,35 +54,22 @@ export default function Public_Footer() {
                   About Us
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/careers"
-                  className="text-muted-foreground transition-colors"
-                >
-                  Careers
-                </Link>
-              </li>
             </ul>
           </div>
           <div className="space-y-4">
             <h3 className="text-sm font-medium">Connect</h3>
             <div className="flex space-x-4">
               <Link
-                href="https://github.com/amanesoft"
+                href="https://github.com/AbrarShahriar"
+                target="_blank"
                 className="text-muted-foreground transition-colors"
               >
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
               </Link>
               <Link
-                href="https://twitter.com/amanesoft"
-                className="text-muted-foreground transition-colors"
-              >
-                <Twitter className="h-5 w-5" />
-                <span className="sr-only">Twitter</span>
-              </Link>
-              <Link
-                href="https://linkedin.com/company/amanesoft"
+                target="_blank"
+                href="https://www.linkedin.com/in/abrar-shahriar-kabir/"
                 className="text-muted-foreground transition-colors"
               >
                 <Linkedin className="h-5 w-5" />

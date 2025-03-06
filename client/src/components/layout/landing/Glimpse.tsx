@@ -30,7 +30,7 @@ const glimpses: { title: string; desc: string; imgSrc: string }[] = [
 
 export default function Glimpse() {
   return (
-    <div className="flex flex-col gap-32">
+    <div className="flex flex-col gap-32 m-auto max-md:w-[90%]">
       {glimpses.map((glimpse, i) => (
         <GlimpseItem key={i} index={i + 1} {...glimpse} />
       ))}

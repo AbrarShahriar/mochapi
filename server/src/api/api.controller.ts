@@ -4,6 +4,7 @@ import {
   Param,
   UseGuards,
   UseInterceptors,
+  Version,
 } from '@nestjs/common';
 import { ApiService } from './api.service';
 import { Public } from 'src/decorators/public.decorator';
@@ -21,7 +22,8 @@ import { CacheInterceptor } from '@nestjs/cache-manager';
 export class ApiController {
   constructor(private readonly apiService: ApiService) {}
 
-  @Get('v1/:projectName/:endpointName')
+  @Version('1')
+  @Get(':projectName/:endpointName')
   async getData(
     @Param('projectName') projectName: string,
     @Param('endpointName') endpointName: string,

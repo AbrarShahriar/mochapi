@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { BackendResponse, Endpoint } from "../type";
 import { authFetch, requireSession } from "./helper";
+import { redirect } from "next/navigation";
 
 export async function createEndpoint(formData: FormData, projectId: string) {
   await requireSession();
@@ -55,4 +56,18 @@ export async function updateEndpoint(body: Endpoint, endpointId: string) {
   } catch (error) {
     return { success: false, message: (error as Error).message };
   }
+}
+
+export async function deleteEndpoint(endpointId: string, projectId: string) {
+  await requireSession();
+
+  await authFetch<BackendResponse<null>>(`/endpoints/delete/${endpointId}`, {
+    method: "DELETE",
+  });
+
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/projects");
+  revalidatePath(`/dashboard/projects/${projectId}`);
+
+  redirect(`/dashboard/projects/${projectId}`);
 }

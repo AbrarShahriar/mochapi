@@ -20,9 +20,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { deleteProject } from "@/lib/actions/project-actions";
 import { useToast } from "@/hooks/use-toast";
+import { copyToClipboard } from "@/lib/utils";
+import { Input } from "../ui/input";
 
 interface Props {
   apiKey: string;
@@ -32,7 +34,9 @@ interface Props {
 export default function ProjectAction({ apiKey, projectId }: Props) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const { toast } = useToast();
+  const copyRef = useRef<HTMLInputElement>(null);
 
   const handleDelete = async () => {
     setLoading(true);
@@ -54,8 +58,9 @@ export default function ProjectAction({ apiKey, projectId }: Props) {
     setOpen(false);
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(apiKey);
+  const handleCopy = async () => {
+    await copyToClipboard(apiKey, copyRef);
+
     toast({
       variant: "default",
       title: "Copied!",
@@ -69,7 +74,7 @@ export default function ProjectAction({ apiKey, projectId }: Props) {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="h-8 w-8 p-0 self-center hover:bg-zinc-700 hover:text-white"
+            className="self-center w-8 h-8 p-0 hover:bg-zinc-700 hover:text-white"
           >
             <span className="sr-only">Open menu</span>
             <MoreVertical />
@@ -87,7 +92,8 @@ export default function ProjectAction({ apiKey, projectId }: Props) {
           </DropdownMenuItem>
 
           <DropdownMenuItem onClick={handleCopy}>
-            <Copy /> Copy API Key
+            <Input ref={copyRef} value={apiKey} className="hidden" />
+                  <Copy /> Copy API Key
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -119,7 +125,7 @@ export default function ProjectAction({ apiKey, projectId }: Props) {
               </DialogClose>
               <Button
                 disabled={loading}
-                className=" bg-red-700 hover:bg-red-600"
+                className="bg-red-700  hover:bg-red-600"
                 onClick={handleDelete}
                 type="button"
               >

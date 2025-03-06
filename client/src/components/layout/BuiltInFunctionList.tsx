@@ -30,7 +30,7 @@ export default function BuiltInFunctionList({
     return filtered;
   };
   return (
-    <div className="grid grid-cols-3 gap-8">
+    <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
       {filteredFunctions(searchValue, selectedTag)?.map((func, i) => (
         <BuiltinFunctionCard {...func} key={i} />
       ))}

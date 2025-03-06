@@ -57,7 +57,7 @@ export default function Notifications() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="ml-auto ">
-        <div className="rounded-full p-2 border border-zinc-700 hover:bg-zinc-900/50 transition-colors">
+        <div className="rounded-full p-2.5 border border-zinc-700 hover:bg-zinc-900/50 transition-colors">
           <Bell className="size-4" />
         </div>
       </DropdownMenuTrigger>

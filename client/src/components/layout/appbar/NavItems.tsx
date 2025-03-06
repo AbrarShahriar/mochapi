@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/sidebar";
 import {
   Binoculars,
-  BookOpen,
   ChevronRight,
   Folder,
   FunctionSquare,
@@ -43,25 +42,27 @@ const items = [
       },
     ],
   },
-  {
-    title: "Documentation",
-    url: "#",
-    icon: BookOpen,
-    items: [
-      {
-        title: "Introduction",
-        url: "#",
-      },
-      {
-        title: "Get Started",
-        url: "#",
-      },
-      {
-        title: "Tutorials",
-        url: "#",
-      },
-    ],
-  },
+
+  // After Documentation Finishes
+  // {
+  //   title: "Documentation",
+  //   url: "#",
+  //   icon: BookOpen,
+  //   items: [
+  //     {
+  //       title: "Introduction",
+  //       url: "#",
+  //     },
+  //     {
+  //       title: "Get Started",
+  //       url: "#",
+  //     },
+  //     {
+  //       title: "Tutorials",
+  //       url: "#",
+  //     },
+  //   ],
+  // },
 ];
 
 export default function NavItems() {

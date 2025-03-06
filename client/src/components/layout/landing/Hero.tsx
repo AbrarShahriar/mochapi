@@ -6,9 +6,9 @@ import Link from "next/link";
 export default function Hero() {
   return (
     <>
-      <section className="container flex min-h-[calc(100vh-3.5rem)] max-w-screen-2xl flex-col items-center justify-center space-y-8 text-center ">
-        <div className="space-y-4">
-          <h1 className="text-7xl font-bold tracking-tight max-md:text-5xl mt-12">
+      <section className="container flex min-h-[calc(100vh-3.5rem)] mt-16 max-w-screen-2xl flex-col items-center justify-center  text-center max-md:mt-4">
+        <div className="mb-8">
+          <h1 className="text-7xl font-bold tracking-tight mb-4  max-md:text-5xl ">
             Build{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
               Mock APIs
@@ -17,16 +17,16 @@ export default function Hero() {
             in Seconds
           </h1>
 
-          <p className="mx-auto max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+          <p className="mx-auto w-[60%] leading-normal text-muted-foreground max-md:w-[90%]">
             Generate, customize, and test API endpoints in seconds with built-in
             and user-defined functions, real-time responses, and seamless
             integration—without managing a backend.
           </p>
         </div>
         <div className="flex gap-4">
-          <Link href={"/sign-up"}>
+          <Link href={"/dashboard"}>
             <ShimmerButton className="shadow-2xl">
-              <span className="flex items-center gap-2 justify-center text-sm font-medium leading-none tracking-tight text-white =">
+              <span className="flex items-center gap-2 justify-center text-md font-semibold leading-none tracking-tight text-white">
                 Get Started <ArrowRight />
               </span>
             </ShimmerButton>

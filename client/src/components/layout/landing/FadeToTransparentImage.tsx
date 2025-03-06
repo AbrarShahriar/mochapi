@@ -48,7 +48,7 @@ export default function FadeToTransparentImage({
               : reverse
               ? "bg-gradient-to-r"
               : "bg-gradient-to-l"
-          }  from-transparent to-zinc-950 rounded-lg`}
+          }  from-transparent to-zinc-950 rounded-lg max-md:from-transparent max-md:to-transparent`}
         ></div>
       </div>
     </div>

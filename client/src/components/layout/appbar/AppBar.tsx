@@ -8,11 +8,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import NavItems from "./NavItems";
-import { Cloud } from "lucide-react";
 import Link from "next/link";
 import { currentUser } from "@clerk/nextjs/server";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
+import Image from "next/image";
 
 export default async function AppBar() {
   const user = await currentUser();
@@ -21,7 +21,7 @@ export default async function AppBar() {
       collapsible="icon"
       className="text-white border-r border-r-zinc-700"
     >
-      <SidebarHeader className="bg-zinc-900">
+      <SidebarHeader className="bg-zinc-900 text-white">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
@@ -30,10 +30,14 @@ export default async function AppBar() {
               asChild
               // isActive={}
             >
-              <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Cloud className="size-8 p-1 rounded-md bg-blue-500" />
-                </div>
+              <Link href="/dashboard" className="cursor-pointer">
+                <Image
+                  className="cursor-pointer"
+                  src={"/images/logo.png"}
+                  alt="Logo"
+                  width={32}
+                  height={32}
+                />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">Mochapi</span>
                   <span className="truncate text-xs">Create Mock APIs</span>
@@ -53,8 +57,8 @@ export default async function AppBar() {
             {user?.firstName && user.firstName[0]}
           </AvatarFallback>
         </Avatar>
-        <div className="grid flex-1 text-left text-sm leading-tight">
-          <span className="truncate font-semibold">
+        <div className="grid flex-1 text-left text-sm leading-tight text-white">
+          <span className="truncate">
             {user?.firstName} {user?.lastName}
           </span>
           <span className="truncate text-xs">

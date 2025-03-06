@@ -14,7 +14,16 @@ import { useToast } from "@/hooks/use-toast";
 import { API_BACKEND_URL } from "@/lib/constants";
 import Loader from "@/components/layout/Loader";
 import CodeCopy from "@/components/layout/CodeCopy";
-import { updateEndpoint } from "@/lib/actions/endpoint-actions";
+import { deleteEndpoint, updateEndpoint } from "@/lib/actions/endpoint-actions";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function RoutePage({
   params,
@@ -29,10 +38,13 @@ export default function RoutePage({
   const [dataUpdated, setDataUpdated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [savedLoading, setSavedLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const { toast } = useToast();
 
   const workerRef = useRef<Worker>();
+  const copyRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     workerRef.current = new Worker(
@@ -133,6 +145,14 @@ export default function RoutePage({
     setSavedLoading(false);
   };
 
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+    await deleteEndpoint(params.endpointId, routeData?.project.id as string);
+
+    setDeleteLoading(false);
+    setOpen(false);
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -142,11 +162,7 @@ export default function RoutePage({
   }
 
   const handleCopy = async () => {
-    await copyToClipboard(
-      `${API_BACKEND_URL}/api/v1/${routeData.project.name
-        .split(" ")
-        .join("-")}/${routeData.name.split(" ").join("-")}`
-    );
+    await copyToClipboard(copyRef.current?.value || "", copyRef);
     toast({
       variant: "default",
       title: "Copied",
@@ -162,23 +178,28 @@ export default function RoutePage({
       </p>
 
       <h3 className="text-lg font-semibold text-zinc-100">Endpoint</h3>
-      <div className="grid grid-cols-4 mb-8 gap-4">
-        <div className="col-span-2 border border-zinc-700 rounded-md">
-          <div className="flex items-center">
-            <pre className="text-white/70 overflow-x-scroll p-4">
-              {`${API_BACKEND_URL}/api/v1/${routeData.project.name}/${routeData.name}`}
-            </pre>
+      <div className="grid grid-cols-4 gap-4 mb-8 max-md:w-max">
+        <div className="col-span-2 border rounded-md border-zinc-700">
+          <div className="flex items-center h-full">
+            <Input
+              ref={copyRef}
+              id="copy"
+              className="h-full p-4 overflow-x-scroll font-mono text-white/70"
+              value={`${API_BACKEND_URL}/v1/api/${routeData.project.name}/${routeData.name}`}
+              readOnly
+            />
+
             <Button
               onClick={handleCopy}
-              className="bg-transparent mx-2"
+              className="mx-2 bg-transparent"
               size={"sm"}
             >
               <Copy />
             </Button>
           </div>
         </div>
-        <div className="col-span-1 border border-zinc-700 rounded-md grid place-content-center">
-          <div className="flex items-center justify-center ">
+        <div className="grid col-span-1 border rounded-md border-zinc-700 place-content-center">
+          <div className="flex items-center justify-center p-2">
             <span className="mr-4 text-muted-foreground">
               Rows to generate:{" "}
             </span>
@@ -191,7 +212,7 @@ export default function RoutePage({
           </div>
         </div>
 
-        <div className="col-span-1 justify-self-end flex items-center gap-4">
+        <div className="flex items-center col-span-1 gap-4 justify-self-end">
           {isPublic ? (
             <Globe className="text-green-500" size={20} />
           ) : (
@@ -202,7 +223,7 @@ export default function RoutePage({
       </div>
 
       <CodeCopy
-        className="my-8 pb-4"
+        className="pb-4 my-8"
         height="25vh"
         apiKey={routeData.project.apiKey}
         url={`${API_BACKEND_URL}/api/v1/${routeData.project.name}/${routeData.name}`}
@@ -210,7 +231,7 @@ export default function RoutePage({
 
       {/* Schema */}
       <div className="mb-12">
-        <h3 className="text-lg font-semibold mb-2 text-zinc-100">Schema</h3>
+        <h3 className="mb-2 text-lg font-semibold text-zinc-100">Schema</h3>
         <EditableSchema
           worker={workerRef.current as Worker}
           routeData={routeData}
@@ -220,7 +241,7 @@ export default function RoutePage({
 
       {/* Generated Data */}
       <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex items-center justify-between mb-2">
           <h3 className="text-lg font-semibold text-zinc-100">
             Generated Data
           </h3>
@@ -244,10 +265,41 @@ export default function RoutePage({
         >
           <Save /> {savedLoading ? "Saving..." : "Save"}
         </Button>
-
-        <Button className="border border-red-500 text-red-500 bg-transparent ml-auto">
-          <Trash /> Delete Route
+        <Button
+          onClick={() => setOpen(true)}
+          className="ml-auto text-red-500 bg-transparent border border-red-500"
+        >
+          <Trash /> Delete Endpoint
         </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent className="bg-zinc-900 border-zinc-800 sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Delete Endpoint?</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to permenantly delete this endpoint?
+                Deleting this endpoint will also delete the data.
+              </DialogDescription>
+            </DialogHeader>
+
+            <DialogFooter className="sm:justify-start">
+              <div className="flex items-center justify-between w-full">
+                <DialogClose asChild>
+                  <Button className="bg-sky-600 hover:bg-sky-500" type="button">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button
+                  disabled={deleteLoading}
+                  className="bg-red-700  hover:bg-red-600"
+                  onClick={handleDelete}
+                  type="button"
+                >
+                  {deleteLoading ? "Deleting..." : "Delete"}
+                </Button>
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </main>
   );

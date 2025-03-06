@@ -69,11 +69,11 @@ export default function BuiltinFunctionFilters({
   };
 
   return (
-    <div className="mb-8 grid grid-cols-3 items-center gap-8">
-      <div className="border rounded-md border-zinc-800 px-4 flex items-center justify-between gap-2">
+    <div className="mb-8 grid grid-cols-3 items-center gap-8 max-md:grid-cols-1 max-md:gap-2">
+      <div className="border rounded-md border-zinc-800 px-4 flex items-center justify-between gap-2 ">
         <Search className="size-4" />
         <Input
-          className="bg-transparent "
+          className="bg-transparent w-full"
           placeholder={`Search ${functionMap.length} functions...`}
           value={searchValue}
           onChange={(e) => handleFilterChange("search", e.target.value)}

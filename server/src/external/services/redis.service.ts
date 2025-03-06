@@ -23,7 +23,6 @@ export class RedisService {
 
     await this.redis.zadd(key, timestamp, JSON.stringify(logEntry));
     await this.redis.expire(key, 604800); // 7 days (604800 seconds)
-    await this.redis.hincrby(`analytics:${projectId}`, endpointName, 1);
   }
 
   async getProjectLogs(
@@ -43,7 +42,41 @@ export class RedisService {
     return logs.map((log) => JSON.parse(log));
   }
 
-  async getAnalytics(projectId: string) {
-    return await this.redis.hgetall(`analytics:${projectId}`);
+  async deleteProjectData(projectId: string): Promise<number> {
+    const logKeys = await this.redis.keys(`logs:${projectId}:*`);
+
+    let deletedCount = 0;
+
+    const multi = this.redis.multi();
+
+    if (logKeys.length > 0) {
+      multi.del(...logKeys);
+      deletedCount += logKeys.length;
+    }
+
+    await multi.exec();
+
+    return deletedCount;
+  }
+
+  async deleteEndpointData(
+    projectId: string,
+    projectName: string,
+    endpointName: string,
+  ): Promise<{ logsDeleted: boolean }> {
+    const result = { logsDeleted: false };
+
+    console.log('endpointboom', projectId, projectName, endpointName);
+
+    const logKey = `logs:${projectId}:${projectName}:${endpointName}`;
+    console.log('endpointboom:keys', logKey);
+    const logExists = await this.redis.exists(logKey);
+
+    if (logExists) {
+      await this.redis.del(logKey);
+      result.logsDeleted = true;
+    }
+
+    return result;
   }
 }

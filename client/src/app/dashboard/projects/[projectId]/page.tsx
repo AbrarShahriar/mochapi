@@ -37,7 +37,7 @@ export default async function Page({
 
       <div>
         {/* Overview */}
-        <div className="grid grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-3 gap-6 mb-6 max-md:grid-cols-1">
           {/* Route Count */}
           <DashboardCard
             title={<span>Routes</span>}

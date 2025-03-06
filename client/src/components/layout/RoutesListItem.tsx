@@ -50,7 +50,7 @@ export function RoutesListItem({
           <div className="flex items-center mb-2">
             <h3 className="text-lg font-semibold">{endpointName}</h3>
             {isRecentlyUpdated && (
-              <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+              <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full max-md:hidden">
                 Recently Updated
               </span>
             )}
@@ -58,10 +58,10 @@ export function RoutesListItem({
           <p className="text-sm text-gray-500 mb-2">
             /{projectName}/{endpointName}
           </p>
-          <div className="flex items-center mt-1 text-xs space-x-4">
+          <div className="flex items-center gap-4 mt-1 text-xs">
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger className="flex items-center text-gray-400">
+                <TooltipTrigger className="flex items-center text-gray-400 max-md:hidden">
                   <Clock className="w-3 h-3 mr-1" />
                   Created {createdAgo}
                 </TooltipTrigger>

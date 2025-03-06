@@ -16,14 +16,17 @@ export default async function Home() {
   return (
     <>
       <Public_Header />
-      <main className="w-[80%] m-auto my-12 max-md:w-[90%]">
+      <main className="w-[80%] m-auto my-12 max-md:w-full">
         {/* Hero */}
         <Hero />
 
         {/* Product Image */}
-        <NeonGradientCard borderRadius={5} className="w-full m-auto my-16">
+        <NeonGradientCard
+          borderRadius={5}
+          className="w-full m-auto my-16 max-md:-mt-16 max-md:w-[90%]"
+        >
           <Image
-            className="rounded-md"
+            className="rounded-md shadow-2xl opacity-85"
             alt="dashboard"
             width={1920}
             height={892}
@@ -55,8 +58,8 @@ export default async function Home() {
         <Glimpse />
 
         {/* Support */}
-        <h1 className="mt-32  text-3xl font-bold text-center mb-4">
-          Universal API Compatibility
+        <h1 className="mt-32 text-3xl font-bold m-auto text-center mb-4 max-md:w-[90%]">
+          Use Everywhere
         </h1>
         <p className="text-muted-foreground text-center  m-auto w-1/2 max-md:w-[90%]">
           Connect with a simple HTTP request from any language
@@ -64,11 +67,11 @@ export default async function Home() {
         <CrossLanguage />
 
         {/* Pricing */}
-
         <section className="relative mb-[50vh] ">
           <div className="relative z-[99]">
             <h1 className=" text-3xl text-center mb-4">
-              And the best part is, <SparklesText text="It's free" />
+              And the best part is,{" "}
+              <SparklesText className="max-md:text-5xl" text="It's free" />
             </h1>
             <p className="mb-8 text-center text-white/50 m-auto w-[50%] max-md:w-[90%]">
               Create upto 3 projects with 3 endpoints each and deploy unlimited

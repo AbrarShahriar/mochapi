@@ -5,6 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import { CreateProjectDTO } from './dto/project.dto';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
+import { RedisService } from 'src/external/services/redis.service';
 
 @Injectable()
 export class ProjectService {
@@ -13,6 +14,7 @@ export class ProjectService {
     private readonly projectRepo: Repository<Project>,
     private readonly configService: ConfigService,
     private readonly dataSource: DataSource,
+    private readonly redisService: RedisService,
   ) {}
 
   async getAll(email: string) {
@@ -61,6 +63,16 @@ export class ProjectService {
         userEmail: email,
       },
     });
+
+    const projectExists = projects.filter(
+      (project) => project.name === projectDto.name,
+    );
+    if (projectExists && projectExists.length > 0) {
+      return {
+        success: false,
+        message: `Project with name "${projectDto.name}" already exists.`,
+      };
+    }
 
     if (projects.length >= 3) {
       return {
@@ -115,6 +127,7 @@ export class ProjectService {
 
     try {
       await this.projectRepo.delete({ userEmail: email, id: projectId });
+      await this.redisService.deleteProjectData(projectId);
       return { success: true, message: `Project "${project.name}" deleted.` };
     } catch (error) {
       return { success: false, message: (error as Error).message };

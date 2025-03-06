@@ -17,7 +17,7 @@ export default function CrossLanguage() {
   ];
 
   return (
-    <div className="relative flex h-[500px] w-full flex-col items-center justify-center">
+    <div className="relative flex h-[500px] w-full flex-col items-center justify-center mb-32 overflow-hidden">
       {/* Card content */}
       <div className="grid grid-cols-3 gap-8 ">
         {icons.map((icon, i) => (

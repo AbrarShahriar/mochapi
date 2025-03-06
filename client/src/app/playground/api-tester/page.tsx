@@ -13,7 +13,7 @@ export default function ApiTesterPage() {
   const [fetchedData, setFetchedData] = useState<unknown[]>([]);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [linkState, setLinkState] = useState(
-    "http://localhost:3001/api/v1/test/testendpoint"
+    "http://localhost:3001/v1/api/test/testroute"
   );
   const [apiKey, setApiKey] = useState(
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiJhYzg1Zjk2Zi1lYzUyLTQ4NGUtYWMxNi1iZjYwYTkyMDVkNjkiLCJpYXQiOjE3NDA2NjQwNTB9.2WgrMVkj0iw5a73VVacgaOmxaVxPP90PJ5sYfAFQ7Sc"
@@ -61,8 +61,8 @@ export default function ApiTesterPage() {
         Test your APIs or other user&apos;s APIs.
       </p>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-4 bg-zinc-900/25 p-4 rounded-md">
+      <div className="grid grid-cols-2 w-full gap-4 max-md:grid-cols-1 ">
+        <div className="flex flex-col gap-4 bg-zinc-900/25 p-4 rounded-md ">
           <div>
             <Label htmlFor="url">Endpoint URL:</Label>
             <Input
@@ -97,15 +97,14 @@ export default function ApiTesterPage() {
           </div>
           <CodeCopy apiKey={apiKey} url={linkState} />
         </div>
-        <div>
+        <div className="max-md:p-4">
           <section className="rounded-md shadow h-full overflow-hidden">
             <div className="mr-auto bg-[#1e1e1e] text-sm text-blue-400 border-r-2 border-r-zinc-800 px-4 py-2 ">
               <pre>data.json</pre>
             </div>
 
             <Editor
-              className="p-0"
-              height="100vh"
+              className="p-0 h-screen max-md:h-[50vh]"
               defaultLanguage="json"
               theme="vs-dark"
               options={{

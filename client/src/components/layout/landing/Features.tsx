@@ -79,7 +79,7 @@ const features: {
 
 export default function Features() {
   return (
-    <section className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
+    <section className="grid grid-cols-3 gap-8 m-auto max-md:grid-cols-1 max-md:w-[90%] ">
       {features.map((feature, i) => (
         <FeatureCard key={i} index={i + 1} {...feature} />
       ))}

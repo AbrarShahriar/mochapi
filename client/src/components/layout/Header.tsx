@@ -10,7 +10,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "../ui/button";
 import React, { useEffect, useState } from "react";
 import Notifications from "./Notifications";
 import { UserButton } from "@clerk/nextjs";
@@ -181,7 +180,6 @@ export default function Header() {
           </BreadcrumbList>
         </Breadcrumb>
         <Notifications />
-        <Button variant={"outline"}>Feedback</Button>
 
         <UserButton
           appearance={{

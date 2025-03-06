@@ -13,14 +13,14 @@ export default function GlimpseItem({ title, desc, imgSrc, index }: Props) {
     <div
       className={` flex max-md:flex-col-reverse ${
         index % 2 == 0 && "flex-row-reverse"
-      } items-center justify-between gap-8`}
+      } items-end justify-between gap-8`}
     >
       <div
-        className={`max-w-[40%] ${
+        className={` ${
           index % 2 != 0 && "text-right"
-        } max-md:text-center max-md:max-w-[90%]`}
+        } w-[70%] max-md:text-center max-md:w-full`}
       >
-        <h1 className="font-bold text-2xl mb-2">{title}</h1>
+        <h1 className="font-bold text-xl mb-2">{title}</h1>
 
         <p className="text-white/50">{desc}</p>
       </div>

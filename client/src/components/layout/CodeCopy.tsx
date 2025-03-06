@@ -149,7 +149,7 @@ export default function CodeCopy({ apiKey, url, height, className }: Props) {
       className={cn("bg-zinc-800/50 rounded-md", className)}
       onValueChange={setActiveTab}
     >
-      <TabsList className="bg-zinc-800/50 rounded-b-none w-full justify-start ">
+      <TabsList className="bg-zinc-800/50 rounded-b-none  justify-start flex-wrap ">
         {snippets.map((snippet, i) => (
           <TabsTrigger key={i} value={snippet.tabValue}>
             {snippet.tabLabel}

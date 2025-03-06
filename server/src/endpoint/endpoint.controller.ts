@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { EndpointService } from './endpoint.service';
 import { CreateEndpointDTO, UpdateEndpointDTO } from './dto/endpoint.dto';
 import { User } from '@clerk/backend';
@@ -31,6 +40,15 @@ export class EndpointController {
     return await this.endpointService.update(
       user.emailAddresses[0].emailAddress,
       updateEndpointDto,
+    );
+  }
+
+  @Delete('delete/:endpointId')
+  async deleteProject(@Param() params: { endpointId: string }, @Req() req) {
+    const user: User = req.user;
+    return await this.endpointService.deleteEndpoint(
+      user.emailAddresses[0].emailAddress,
+      params.endpointId,
     );
   }
 }

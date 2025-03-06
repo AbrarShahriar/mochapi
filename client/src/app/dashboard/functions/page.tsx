@@ -35,7 +35,7 @@ export default async function FunctionsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-8 flex-wrap items-stretch">
+      <div className="grid grid-cols-3 gap-8 flex-wrap items-stretch max-md:grid-cols-1">
         {functionsRes.payload &&
           (functionsRes.payload.length === 0 ? (
             <p>No functions deployed yet.</p>

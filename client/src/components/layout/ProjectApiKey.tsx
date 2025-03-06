@@ -12,6 +12,8 @@ import {
 } from "../ui/dialog";
 import { copyToClipboard } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "../ui/input";
+import { useRef } from "react";
 
 interface Props {
   name: string;
@@ -20,8 +22,11 @@ interface Props {
 
 export default function ProjectApiKey({ apiKey, name }: Props) {
   const { toast } = useToast();
+
+  const copyRef = useRef<HTMLInputElement>(null);
+
   const handleCopy = async () => {
-    await copyToClipboard(apiKey);
+    await copyToClipboard(apiKey, copyRef);
     toast({
       variant: "default",
       title: "Copied :)",
@@ -34,7 +39,7 @@ export default function ProjectApiKey({ apiKey, name }: Props) {
       <p className="text-s font-semibold mb-1">API Key: </p>
       <div className="bg-zinc-900/50 flex items-center rounded-md border border-zinc-700 mb-1">
         <div className="p-4">
-          <pre>{Array(32).fill("*").join("")}</pre>
+          <p>{Array(32).fill("*").join("")}</p>
         </div>
         <div className="ml-auto border-l border-zinc-700">
           <Button
@@ -56,9 +61,12 @@ export default function ProjectApiKey({ apiKey, name }: Props) {
                   Avoid sharing your API key publicly.
                 </DialogDescription>
               </DialogHeader>
-              <p className="break-all p-3 text-white/85 text-sm bg-zinc-900 border border-zinc-800 tracking-wider rounded-md">
-                {apiKey}
-              </p>
+              <Input
+                className="break-all p-3 text-white/85 text-sm bg-zinc-900 border border-zinc-800 tracking-wider rounded-md"
+                value={apiKey}
+                readOnly
+                ref={copyRef}
+              />
               <Button onClick={handleCopy}>
                 <Copy />
                 Copy

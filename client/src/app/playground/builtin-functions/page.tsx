@@ -9,7 +9,7 @@ export default function BuiltinFunctionPage({
   searchParams: { search: string; category: string };
 }) {
   return (
-    <main className="w-[80%] m-auto mb-24 mt-32">
+    <main className="w-[80%] m-auto mb-24 mt-32 max-md:w-[90%]">
       <h1 className="text-3xl font-semibold">Built-in Functions</h1>
 
       <p className="mb-8 text-white/70">Explore our built-in functions.</p>

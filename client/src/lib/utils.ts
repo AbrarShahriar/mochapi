@@ -4,6 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { Endpoint } from "./type";
 import { LOCALSTORAGE_FUNCTION_DRAFT_KEY } from "./constants";
 import { UAParser } from "ua-parser-js";
+import { RefObject } from "react";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -47,8 +48,17 @@ export function calculateUptime(start: string, end: Date = new Date()) {
     : "0s";
 }
 
-export async function copyToClipboard(text: string) {
-  await navigator.clipboard.writeText(text);
+export async function copyToClipboard(
+  text: string,
+  ref: RefObject<HTMLInputElement>
+) {
+  if (window && window.navigator && window.navigator.clipboard) {
+    await navigator.clipboard.writeText(text);
+    ref.current?.select();
+    ref.current?.setSelectionRange(0, 999);
+  } else {
+    throw new Error("Please copy manually");
+  }
 }
 
 export function saveFunctionToDraft(fnBody: string) {
