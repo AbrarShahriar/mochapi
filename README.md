@@ -12,6 +12,8 @@
 ## PAGES:
 
 - Documentation (v2)
+- Privacy Policy
+- Terms of Service
 
 ## FEATURE
 
@@ -21,4 +23,10 @@
 
 ## MEDIA
 
-- Logo
+- Logo (done)
+
+#### CLERK PRODUCTION
+
+- Update env in client and server (done)
+- Add authorizedParty in nextjs middleware and nestjs server (done)
+- Remove unsafe flag from nextjs layout (done)

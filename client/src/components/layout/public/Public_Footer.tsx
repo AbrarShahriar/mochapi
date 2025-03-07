@@ -54,6 +54,22 @@ export default function Public_Footer() {
                   About Us
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/privacy"
+                  className="text-muted-foreground transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms"
+                  className="text-muted-foreground transition-colors"
+                >
+                  Terms of Service
+                </Link>
+              </li>
             </ul>
           </div>
           <div className="space-y-4">

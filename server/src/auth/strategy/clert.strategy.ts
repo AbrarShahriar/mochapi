@@ -3,8 +3,10 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-custom';
-import { Request } from 'express';
 import { ClerkClient } from '@clerk/backend';
+import { Request } from 'express';
+import type { IncomingMessage } from 'http';
+import { createClerkRequest } from '@clerk/backend/internal';
 
 @Injectable()
 export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
@@ -17,23 +19,55 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
   }
 
   async validate(req: Request): Promise<User> {
-    const token = req.headers.authorization?.split(' ').pop();
-
-    if (!token) {
-      throw new UnauthorizedException('No token provided');
-    }
+    const clerkRequest = createClerkRequest(this.incomingMessageToRequest(req));
 
     try {
-      const tokenPayload = await verifyToken(token, {
-        secretKey: this.configService.get('CLERK_SECRET_KEY'),
-      });
+      const { isSignedIn, token } = await this.clerkClient.authenticateRequest(
+        clerkRequest,
+        {
+          jwtKey: this.configService.get<string>('CLERK_JWT_KEY'),
+          authorizedParties: [
+            this.configService.get<string>('CLERK_AUTHORIZED_PARTY'),
+          ],
+        },
+      );
 
-      const user = await this.clerkClient.users.getUser(tokenPayload.sub);
+      if (!token) {
+        throw new UnauthorizedException('No token provided');
+      }
 
-      return user;
+      if (isSignedIn) {
+        const tokenPayload = await verifyToken(token, {
+          secretKey: this.configService.get('CLERK_SECRET_KEY'),
+        });
+
+        const user = await this.clerkClient.users.getUser(tokenPayload.sub);
+        return user;
+      }
+
+      throw new UnauthorizedException('Invalid User');
     } catch (error) {
       console.error(error);
       throw new UnauthorizedException('Invalid token');
     }
+  }
+
+  private incomingMessageToRequest(req: IncomingMessage) {
+    const headers = Object.keys(req.headers).reduce(
+      (acc, key) => Object.assign(acc, { [key]: req?.headers[key] }),
+      {},
+    );
+    // @ts-expect-error Optimistic attempt to get the protocol in case
+    // req extends IncomingMessage in a useful way. No guarantee
+    // it'll work.
+    const protocol = req.connection?.encrypted ? 'https' : 'http';
+    const dummyOriginReqUrl = new URL(
+      req.url || '',
+      `${protocol}://clerk-dummy`,
+    );
+    return new Request(dummyOriginReqUrl, {
+      method: req.method,
+      headers: new Headers(headers),
+    });
   }
 }
