@@ -39,19 +39,22 @@ export default function ApiTesterPage() {
     }
 
     setFetchLoading(true);
+    try {
+      const res = await fetch(linkState, {
+        headers: {
+          authorization: `Bearer ${apiKey}`,
+        },
+      });
 
-    const res = await fetch(linkState, {
-      headers: {
-        authorization: `Bearer ${apiKey}`,
-      },
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      setFetchedData(data);
+      if (res.ok) {
+        const data = await res.json();
+        setFetchedData(data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setFetchLoading(false);
     }
-
-    setFetchLoading(false);
   };
 
   return (
