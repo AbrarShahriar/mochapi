@@ -13,7 +13,7 @@ export default function ApiTesterPage() {
   const [fetchedData, setFetchedData] = useState<unknown[]>([]);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [linkState, setLinkState] = useState(
-    "http://localhost:3001/v1/api/test/testroute"
+    "https://mochapi-api.abrarshahriar.com/v1/api/test/testroute"
   );
   const [apiKey, setApiKey] = useState(
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiJhYzg1Zjk2Zi1lYzUyLTQ4NGUtYWMxNi1iZjYwYTkyMDVkNjkiLCJpYXQiOjE3NDA2NjQwNTB9.2WgrMVkj0iw5a73VVacgaOmxaVxPP90PJ5sYfAFQ7Sc"
