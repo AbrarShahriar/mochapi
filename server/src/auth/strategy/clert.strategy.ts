@@ -1,4 +1,4 @@
-import { User, verifyToken } from '@clerk/backend';
+import { User } from '@clerk/backend';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -22,7 +22,7 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     const clerkRequest = createClerkRequest(this.incomingMessageToRequest(req));
 
     try {
-      const { isSignedIn, token } = await this.clerkClient.authenticateRequest(
+      const { isSignedIn, toAuth } = await this.clerkClient.authenticateRequest(
         clerkRequest,
         {
           jwtKey: this.configService.get<string>('CLERK_JWT_KEY'),
@@ -32,16 +32,9 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
         },
       );
 
-      if (!token) {
-        throw new UnauthorizedException('No token provided');
-      }
-
       if (isSignedIn) {
-        const tokenPayload = await verifyToken(token, {
-          secretKey: this.configService.get('CLERK_SECRET_KEY'),
-        });
-
-        const user = await this.clerkClient.users.getUser(tokenPayload.sub);
+        const userId = toAuth().userId;
+        const user = await this.clerkClient.users.getUser(userId);
         return user;
       }
 
