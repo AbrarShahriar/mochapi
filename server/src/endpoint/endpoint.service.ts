@@ -1,4 +1,4 @@
-import { Injectable, ServiceUnavailableException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateEndpointDTO, UpdateEndpointDTO } from './dto/endpoint.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Endpoint } from './entities/endpoint.entity';
@@ -50,10 +50,7 @@ export class EndpointService {
         payload: insertedEndpoint,
       };
     } catch (error) {
-      console.error(error);
-      throw new ServiceUnavailableException(
-        `Couldn't create ${endpointDto.name}`,
-      );
+      throw new BadRequestException((error as Error).message, error);
     }
   }
 
@@ -92,7 +89,7 @@ export class EndpointService {
         payload: updatedEndpoint.raw[0],
       };
     } catch (error) {
-      return { success: false, message: (error as Error).message };
+      throw new BadRequestException((error as Error).message, error);
     }
   }
 
@@ -119,7 +116,7 @@ export class EndpointService {
       );
       return { success: true, message: `Endpoint "${endpoint.name}" deleted.` };
     } catch (error) {
-      return { success: false, message: (error as Error).message };
+      throw new BadRequestException((error as Error).message, error);
     }
   }
 }

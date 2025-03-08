@@ -40,7 +40,7 @@ export class ApiJwtStrategy extends PassportStrategy(
 
       return project; // Return the payload to the request object
     } catch (error) {
-      throw new UnauthorizedException((error as Error).message);
+      throw new UnauthorizedException((error as Error).message, error);
     }
   }
 }

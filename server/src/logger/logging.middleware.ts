@@ -24,6 +24,14 @@ export class LoggingMiddleware implements NestMiddleware {
       );
     });
 
+    res.on('error', (err) => {
+      // Log the error
+      this.logger.error(
+        `Error: ${method} ${originalUrl} - ${err.message}`,
+        err.stack,
+      );
+    });
+
     next();
   }
 }

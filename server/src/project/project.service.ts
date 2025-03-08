@@ -1,4 +1,8 @@
-import { Injectable, ServiceUnavailableException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -107,10 +111,7 @@ export class ProjectService {
         message: `Project ${projectDto.name} successfully created.`,
       };
     } catch (error) {
-      console.error(error);
-      throw new ServiceUnavailableException(
-        `Couldn't create ${projectDto.name}`,
-      );
+      throw new ServiceUnavailableException((error as Error).message, error);
     }
   }
 
@@ -130,7 +131,7 @@ export class ProjectService {
       await this.redisService.deleteProjectData(projectId);
       return { success: true, message: `Project "${project.name}" deleted.` };
     } catch (error) {
-      return { success: false, message: (error as Error).message };
+      throw new BadRequestException((error as Error).message, error);
     }
   }
 }

@@ -7,6 +7,7 @@ import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import * as cnad from '@bitc/cnad';
+import { AllExceptionsFilter } from './logger/error.filter';
 
 cnad.config(process.env.CPANEL_DIR);
 
@@ -29,6 +30,8 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   await app.listen(process.env.PORT ?? 3001);
 }

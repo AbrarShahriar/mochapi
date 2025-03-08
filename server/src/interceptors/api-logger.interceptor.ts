@@ -43,8 +43,7 @@ export class ApiLoggerInterceptor implements NestInterceptor {
         });
         projectId = payload.projectId;
       } catch (error) {
-        console.error(error);
-        throw new UnauthorizedException('Not a valid token');
+        throw new UnauthorizedException((error as Error).message, error);
       }
     }
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateFunctionDto, UpdateFunctionDto } from './dto/functions.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Function } from './entities/function.entity';
@@ -36,10 +36,7 @@ export class FunctionsService {
         message: `Function "${createFunctionDto.name}" has been created. Please wait a few seconds as we deploy it."`,
       };
     } catch (error) {
-      return {
-        success: false,
-        message: (error as Error).message,
-      };
+      throw new BadRequestException((error as Error).message, error);
     }
   }
 
@@ -85,7 +82,7 @@ export class FunctionsService {
         payload: updatedFunction.raw[0],
       };
     } catch (error) {
-      return { success: false, message: (error as Error).message };
+      throw new BadRequestException((error as Error).message, error);
     }
   }
 
