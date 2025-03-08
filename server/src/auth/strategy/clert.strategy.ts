@@ -1,4 +1,4 @@
-import { User } from '@clerk/backend';
+import { createClerkClient, User } from '@clerk/backend';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -7,6 +7,7 @@ import { ClerkClient } from '@clerk/backend';
 import { Request } from 'express';
 import type { IncomingMessage } from 'http';
 import { createClerkRequest } from '@clerk/backend/internal';
+import { CustomLogger } from 'src/logger/logger.service';
 
 @Injectable()
 export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
@@ -14,7 +15,12 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     @Inject('ClerkClient')
     private readonly clerkClient: ClerkClient,
     private readonly configService: ConfigService,
+    private readonly logger: CustomLogger,
   ) {
+    clerkClient = createClerkClient({
+      secretKey: configService.get<string>('CLERK_SECRET_KEY'),
+      publishableKey: configService.get<string>('CLERK_PUBLISHABLE_KEY'),
+    });
     super();
   }
 
@@ -22,21 +28,27 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     const clerkRequest = createClerkRequest(this.incomingMessageToRequest(req));
 
     try {
-      let user = null;
+      let user: User | null = null;
       const { isSignedIn, toAuth } = await this.clerkClient.authenticateRequest(
         clerkRequest,
         {
-          jwtKey: this.configService.get<string>('CLERK_JWT_KEY'),
           authorizedParties: [
             this.configService.get<string>('CLERK_AUTHORIZED_PARTY'),
           ],
         },
       );
 
-      if (isSignedIn) {
-        const userId = toAuth().userId;
-        user = await this.clerkClient.users.getUser(userId);
+      const u = toAuth().userId;
+      const a = await this.clerkClient.users.getUser(u);
+      this.logger.log(`userId: ${u}`);
+      this.logger.log(`user: ${JSON.stringify(a)}`);
+
+      if (!isSignedIn) {
+        throw new UnauthorizedException('Not signed in');
       }
+
+      const { userId } = toAuth();
+      user = await this.clerkClient.users.getUser(userId);
 
       if (!user) {
         throw new UnauthorizedException('Invalid User');
