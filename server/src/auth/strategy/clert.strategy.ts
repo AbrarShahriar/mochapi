@@ -1,4 +1,4 @@
-import { User, createClerkClient } from '@clerk/backend';
+import { User } from '@clerk/backend';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
@@ -17,16 +17,16 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     private readonly configService: ConfigService,
     private readonly logger: CustomLogger,
   ) {
-    clerkClient = createClerkClient({
-      secretKey: configService.get<string>('CLERK_SECRET_KEY'),
-      publishableKey: configService.get<string>('CLERK_PUBLISHABLE_KEY'),
-    });
     super();
   }
 
   async validate(req: Request): Promise<User> {
     const clerkRequest = createClerkRequest(this.incomingMessageToRequest(req));
     this.logger.log(JSON.stringify(clerkRequest));
+    this.logger.log(`jwt: ${this.configService.get<string>('CLERK_JWT_KEY')}`);
+    this.logger.log(
+      `authparty: ${this.configService.get<string>('CLERK_AUTHORIZED_PARTY')}`,
+    );
     try {
       const user: User | null = null;
       const { isSignedIn } = await this.clerkClient.authenticateRequest(
