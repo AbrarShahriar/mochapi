@@ -14,6 +14,7 @@ export async function authFetch<T>(
 
   const res = await fetch(`${BACKEND_URL}${url}`, {
     ...options,
+    credentials: "include",
     headers: {
       authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
