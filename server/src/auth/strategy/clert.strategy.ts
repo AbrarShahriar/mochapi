@@ -28,8 +28,8 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     const clerkRequest = createClerkRequest(this.incomingMessageToRequest(req));
 
     try {
-      let user: User | null = null;
-      const { isSignedIn, toAuth } = await this.clerkClient.authenticateRequest(
+      const user: User | null = null;
+      const { isSignedIn } = await this.clerkClient.authenticateRequest(
         clerkRequest,
         {
           jwtKey: this.configService.get<string>('CLERK_JWT_KEY'),
@@ -39,22 +39,24 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
         },
       );
 
-      const u = toAuth().userId;
-      const a = await this.clerkClient.users.getUser(u);
-      this.logger.log(`userId: ${u}`);
-      this.logger.log(`user: ${JSON.stringify(a)}`);
+      // const u = toAuth().userId;
+      // const a = await this.clerkClient.users.getUser(u);
+      // this.logger.log(`userId: ${u}`);
+      this.logger.log(`isSignedIn: ${isSignedIn}`);
+      // this.logger.log(`user: ${JSON.stringify(a)}`);
 
       if (!isSignedIn) {
         throw new UnauthorizedException('Not signed in');
       }
 
-      const { userId } = toAuth();
-      user = await this.clerkClient.users.getUser(userId);
+      // const { userId } = toAuth();
+      // user = await this.clerkClient.users.getUser(userId);
 
-      if (!user) {
-        throw new UnauthorizedException('Invalid User');
-      }
+      // if (!user) {
+      //   throw new UnauthorizedException('Invalid User');
+      // }
 
+      // return user;
       return user;
     } catch (error) {
       throw new UnauthorizedException(error);
