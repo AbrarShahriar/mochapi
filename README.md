@@ -1,5 +1,6 @@
 ## BUGS:
 
+- Request Header issue: Referer
 - Pages that have monaco editor break on sidebar state change
 - Project, Endpoint data saved in Redis needs to be deleted on project, endpoint delete (fixed)
 - Copy API Key bug in [projectId] page. (fixed)

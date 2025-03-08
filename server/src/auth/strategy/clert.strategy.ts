@@ -1,4 +1,4 @@
-import { createClerkClient, User } from '@clerk/backend';
+import { User, createClerkClient } from '@clerk/backend';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
