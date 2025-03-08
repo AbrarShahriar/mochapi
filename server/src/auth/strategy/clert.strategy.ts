@@ -26,7 +26,7 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
 
   async validate(req: Request): Promise<User> {
     const clerkRequest = createClerkRequest(this.incomingMessageToRequest(req));
-
+    this.logger.log(JSON.stringify(clerkRequest));
     try {
       const user: User | null = null;
       const { isSignedIn } = await this.clerkClient.authenticateRequest(
