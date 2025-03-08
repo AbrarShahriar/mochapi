@@ -32,6 +32,7 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
       const { isSignedIn, toAuth } = await this.clerkClient.authenticateRequest(
         clerkRequest,
         {
+          jwtKey: this.configService.get<string>('CLERK_JWT_KEY'),
           authorizedParties: [
             this.configService.get<string>('CLERK_AUTHORIZED_PARTY'),
           ],

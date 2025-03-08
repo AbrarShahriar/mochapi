@@ -1,5 +1,4 @@
 "use server";
-import "server-only";
 import { auth } from "@clerk/nextjs/server";
 import { BACKEND_URL } from "../constants";
 import { redirect } from "next/navigation";
