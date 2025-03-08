@@ -22,6 +22,7 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
     const clerkRequest = createClerkRequest(this.incomingMessageToRequest(req));
 
     try {
+      let user = null;
       const { isSignedIn, toAuth } = await this.clerkClient.authenticateRequest(
         clerkRequest,
         {
@@ -34,11 +35,14 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
 
       if (isSignedIn) {
         const userId = toAuth().userId;
-        const user = await this.clerkClient.users.getUser(userId);
-        return user;
+        user = await this.clerkClient.users.getUser(userId);
       }
 
-      throw new UnauthorizedException('Invalid User');
+      if (!user) {
+        throw new UnauthorizedException('Invalid User');
+      }
+
+      return user;
     } catch (error) {
       throw new UnauthorizedException(error);
     }
