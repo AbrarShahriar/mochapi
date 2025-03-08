@@ -4,7 +4,7 @@ config();
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-// import helmet from 'helmet';
+import helmet from 'helmet';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import * as cnad from '@bitc/cnad';
 import { AllExceptionsFilter } from './logger/error.filter';
@@ -19,7 +19,7 @@ async function bootstrap() {
     origin: process.env.CORS_ORIGIN,
     credentials: true,
   });
-  // app.use(helmet());
+  app.use(helmet());
   app.enableVersioning({
     type: VersioningType.URI,
   });
