@@ -12,29 +12,12 @@ import {
   SchemaField,
 } from "@/lib/type";
 import { authFetch } from "@/lib/actions/helper";
+import { functionMap } from "@/lib/available-functions";
 
-const defaultFunctions = [
-  {
-    value: "faker:name",
-    label: "Name",
-  },
-  {
-    value: "faker:bio",
-    label: "Bio",
-  },
-  {
-    value: "faker:gender",
-    label: "Gender",
-  },
-  {
-    value: "faker:job",
-    label: "Job",
-  },
-  {
-    value: "faker:zodiacSign",
-    label: "Zodiac Sign",
-  },
-];
+const defaultFunctions = functionMap.map((el) => ({
+  value: el.callSignature,
+  label: el.funcName,
+}));
 
 interface EditableSchemaProps {
   worker: Worker;
@@ -130,7 +113,6 @@ export function EditableSchema({
             onChange={(e) => updateField(index, "fieldName", e.target.value)}
             className="bg-zinc-900/50 border border-zinc-800 focus-within:border-zinc-700 transition-colors"
           />
-
           <SelectWithSearch
             functionsLoading={loading}
             functions={functions}

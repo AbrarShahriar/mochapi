@@ -10,13 +10,14 @@ export class SignatureValidationMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const signature = req.headers['x-signature'] as string;
 
+    console.log('signature', signature);
+
     if (!signature) {
       return res.status(400).json({ message: 'Missing signature' });
     }
 
     // Reconstruct the signed data
     let dataToSign: string;
-    console.log('URL', req.originalUrl, req.headers);
 
     if (req.method === 'GET') {
       dataToSign = req.originalUrl; // Sign the URL for GET requests

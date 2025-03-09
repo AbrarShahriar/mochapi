@@ -43,6 +43,8 @@ export async function createEndpoint(formData: FormData, projectId: string) {
 export async function updateEndpoint(body: Endpoint, endpointId: string) {
   await requireSession();
   try {
+    console.log("nextbody:updateEndpoint", JSON.stringify(body));
+
     const res = await authFetch<BackendResponse<unknown>>(`/endpoints/update`, {
       method: "PATCH",
       body: JSON.stringify(body),

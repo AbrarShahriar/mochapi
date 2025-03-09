@@ -1,18 +1,23 @@
+import { functionMap } from "@/lib/available-functions";
 import {
   injectFunctionBody,
   safeContext,
   validator,
 } from "@/lib/code-executor/executor";
 import { SchemaField } from "@/lib/type";
-import { faker } from "@faker-js/faker";
 
-export const defaultCallSignatures: Record<string, () => unknown> = {
-  "faker:name": faker.person.fullName,
-  "faker:gender": faker.person.sex,
-  "faker:job": faker.person.jobTitle,
-  "faker:bio": faker.person.bio,
-  "faker:zodiacSign": faker.person.zodiacSign,
-};
+// export const defaultCallSignatures: Record<string, () => unknown> = {
+//   "faker:name": faker.person.fullName,
+//   "faker:gender": faker.person.sex,
+//   "faker:job": faker.person.jobTitle,
+//   "faker:bio": faker.person.bio,
+//   "faker:zodiacSign": faker.person.zodiacSign,
+// };
+
+export const defaultCallSignatures: Record<string, () => unknown> = {};
+functionMap.forEach((el) => {
+  defaultCallSignatures[el.callSignature] = el.func;
+});
 
 const customCallSignatures: Record<string, () => unknown> = {};
 

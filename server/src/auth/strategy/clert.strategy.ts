@@ -25,8 +25,6 @@ export class ClerkStrategy extends PassportStrategy(Strategy, 'clerk') {
 
     let user: User | null = null;
 
-    console.log(clerkRequest.headers);
-
     const { isSignedIn, toAuth } = await this.clerkClient.authenticateRequest(
       clerkRequest,
       {

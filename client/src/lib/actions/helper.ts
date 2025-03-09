@@ -5,16 +5,18 @@ import { BACKEND_URL } from "../constants";
 import { redirect } from "next/navigation";
 import { generateSignature } from "../utils";
 
-export async function authFetch<T>(
-  url: string,
-  options?: RequestInit
-): Promise<T> {
+interface IOption extends RequestInit {
+  body?: string;
+}
+
+export async function authFetch<T>(url: string, options?: IOption): Promise<T> {
   const { getToken } = await auth();
   const token = await getToken();
   if (!token) throw new Error("Invalid token.");
 
-  const dataToSign = options?.body ? JSON.stringify(options.body) : url;
+  const dataToSign = options?.body ? options.body : url;
   const signature = generateSignature(dataToSign);
+  console.log("nextsig", signature);
 
   const res = await fetch(`${BACKEND_URL}${url}`, {
     ...options,
