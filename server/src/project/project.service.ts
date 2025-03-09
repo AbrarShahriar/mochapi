@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  ServiceUnavailableException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Project } from './entities/project.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -85,34 +81,30 @@ export class ProjectService {
       };
     }
 
-    try {
-      await this.dataSource.transaction(async (manager) => {
-        // Insert the project inside the transaction
-        const insertResult = await manager.insert(Project, {
-          userEmail: email,
-          name: projectDto.name,
-        });
-
-        // Get the inserted project ID
-        const projectId = insertResult.identifiers[0].id;
-
-        // Generate the API key
-        const apiKey = jwt.sign(
-          { projectId },
-          this.configService.get('API_JWT_SECRET'),
-        );
-
-        // Update the project with the API key
-        await manager.update(Project, projectId, { apiKey });
+    await this.dataSource.transaction(async (manager) => {
+      // Insert the project inside the transaction
+      const insertResult = await manager.insert(Project, {
+        userEmail: email,
+        name: projectDto.name,
       });
 
-      return {
-        success: true,
-        message: `Project ${projectDto.name} successfully created.`,
-      };
-    } catch (error) {
-      throw new ServiceUnavailableException((error as Error).message, error);
-    }
+      // Get the inserted project ID
+      const projectId = insertResult.identifiers[0].id;
+
+      // Generate the API key
+      const apiKey = jwt.sign(
+        { projectId },
+        this.configService.get('API_JWT_SECRET'),
+      );
+
+      // Update the project with the API key
+      await manager.update(Project, projectId, { apiKey });
+    });
+
+    return {
+      success: true,
+      message: `Project ${projectDto.name} successfully created.`,
+    };
   }
 
   async deleteProject(email: string, projectId: string) {
@@ -126,12 +118,8 @@ export class ProjectService {
       return { success: false, message: 'Project not found.' };
     }
 
-    try {
-      await this.projectRepo.delete({ userEmail: email, id: projectId });
-      await this.redisService.deleteProjectData(projectId);
-      return { success: true, message: `Project "${project.name}" deleted.` };
-    } catch (error) {
-      throw new BadRequestException((error as Error).message, error);
-    }
+    await this.projectRepo.delete({ userEmail: email, id: projectId });
+    await this.redisService.deleteProjectData(projectId);
+    return { success: true, message: `Project "${project.name}" deleted.` };
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateEndpointDTO, UpdateEndpointDTO } from './dto/endpoint.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Endpoint } from './entities/endpoint.entity';
@@ -37,21 +37,16 @@ export class EndpointService {
         message: "Can't create more than 3 endpoints.",
       };
     }
-
-    try {
-      const insertedEndpoint = await this.endpointRepo.insert({
-        userEmail: email,
-        name: endpointDto.name,
-        project: { id: endpointDto.projectId },
-      });
-      return {
-        success: true,
-        message: `endpoint ${endpointDto.name} successfully created.`,
-        payload: insertedEndpoint,
-      };
-    } catch (error) {
-      throw new BadRequestException((error as Error).message, error);
-    }
+    const insertedEndpoint = await this.endpointRepo.insert({
+      userEmail: email,
+      name: endpointDto.name,
+      project: { id: endpointDto.projectId },
+    });
+    return {
+      success: true,
+      message: `endpoint ${endpointDto.name} successfully created.`,
+      payload: insertedEndpoint,
+    };
   }
 
   async getOne(email: string, endpointId: string) {
@@ -74,23 +69,19 @@ export class EndpointService {
   }
 
   async update(email: string, updateEndpointDto: UpdateEndpointDTO) {
-    try {
-      const updatedEndpoint = await this.endpointRepo.update(
-        { id: updateEndpointDto.id, userEmail: email },
-        {
-          ...updateEndpointDto,
-        },
-      );
+    const updatedEndpoint = await this.endpointRepo.update(
+      { id: updateEndpointDto.id, userEmail: email },
+      {
+        ...updateEndpointDto,
+      },
+    );
 
-      return {
-        success: true,
-        message:
-          'Enpoint updated. Wait a few seconds before making any request to the endpoint.',
-        payload: updatedEndpoint.raw[0],
-      };
-    } catch (error) {
-      throw new BadRequestException((error as Error).message, error);
-    }
+    return {
+      success: true,
+      message:
+        'Enpoint updated. Wait a few seconds before making any request to the endpoint.',
+      payload: updatedEndpoint.raw[0],
+    };
   }
 
   async deleteEndpoint(email: string, endpointId: string) {
@@ -106,17 +97,13 @@ export class EndpointService {
       return { success: false, message: 'Project not found.' };
     }
 
-    try {
-      await this.endpointRepo.delete({ userEmail: email, id: endpointId });
+    await this.endpointRepo.delete({ userEmail: email, id: endpointId });
 
-      await this.redisService.deleteEndpointData(
-        endpoint.project.id,
-        endpoint.project.name,
-        endpoint.name,
-      );
-      return { success: true, message: `Endpoint "${endpoint.name}" deleted.` };
-    } catch (error) {
-      throw new BadRequestException((error as Error).message, error);
-    }
+    await this.redisService.deleteEndpointData(
+      endpoint.project.id,
+      endpoint.project.name,
+      endpoint.name,
+    );
+    return { success: true, message: `Endpoint "${endpoint.name}" deleted.` };
   }
 }

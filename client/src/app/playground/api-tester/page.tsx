@@ -51,7 +51,11 @@ export default function ApiTesterPage() {
         setFetchedData(data);
       }
     } catch (error) {
-      console.log(error);
+      toast({
+        variant: "destructive",
+        title: "Failure :(",
+        description: (error as Error).message,
+      });
     } finally {
       setFetchLoading(false);
     }

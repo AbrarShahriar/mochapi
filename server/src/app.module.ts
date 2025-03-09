@@ -1,8 +1,8 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggingMiddleware } from './logger/logging.middleware';
 import { typeormConfig } from './typeorm.config';
 import { AuthModule } from './auth/auth.module';
@@ -16,6 +16,9 @@ import { ApiModule } from './api/api.module';
 import { JwtModule } from '@nestjs/jwt';
 import { RedisService } from './external/services/redis.service';
 import { MonitoringModule } from './monitoring/monitoring.module';
+import * as cors from 'cors';
+import { SignatureValidationMiddleware } from './middleware/signature-validation.middleware';
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -31,18 +34,48 @@ import { MonitoringModule } from './monitoring/monitoring.module';
   ],
   controllers: [AppController],
   providers: [
-    AppService,
-    ClerkClientProvider,
     {
       provide: APP_GUARD,
       useClass: ClerkAuthGuard,
     },
+    AppService,
+    ClerkClientProvider,
     RedisService,
   ],
   exports: [RedisService],
 })
 export class AppModule {
+  constructor(private readonly configService: ConfigService) {}
   configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(SignatureValidationMiddleware)
+      .exclude({
+        path: '/api/:projectName/:endpointName',
+        method: RequestMethod.GET,
+        version: '1',
+      })
+      .forRoutes('*');
     consumer.apply(LoggingMiddleware).forRoutes('*');
+    consumer
+      .apply(
+        cors({
+          origin: (
+            requestOrigin: string,
+            callback: (err: Error, origin?: boolean) => void,
+          ) => {
+            const allowedOrigins = [
+              this.configService.get<string>('CORS_ORIGIN'),
+            ];
+            callback(null, allowedOrigins.includes(requestOrigin));
+          },
+          credentials: true,
+        }),
+      )
+      .exclude({
+        path: '/api/:projectName/:endpointName',
+        method: RequestMethod.GET,
+        version: '1',
+      })
+      .forRoutes('*');
   }
 }

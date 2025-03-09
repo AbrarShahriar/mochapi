@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateFunctionDto, UpdateFunctionDto } from './dto/functions.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Function } from './entities/function.entity';
@@ -25,19 +25,15 @@ export class FunctionsService {
       };
     }
 
-    try {
-      await this.functionRepo.insert({
-        ...createFunctionDto,
-        userEmail: email,
-        callSignature: `${email.split('@')[0]}:${createFunctionDto.callSignature}`,
-      });
-      return {
-        success: true,
-        message: `Function "${createFunctionDto.name}" has been created. Please wait a few seconds as we deploy it."`,
-      };
-    } catch (error) {
-      throw new BadRequestException((error as Error).message, error);
-    }
+    await this.functionRepo.insert({
+      ...createFunctionDto,
+      userEmail: email,
+      callSignature: `${email.split('@')[0]}:${createFunctionDto.callSignature}`,
+    });
+    return {
+      success: true,
+      message: `Function "${createFunctionDto.name}" has been created. Please wait a few seconds as we deploy it."`,
+    };
   }
 
   async findAll(email: string) {
@@ -67,23 +63,19 @@ export class FunctionsService {
   }
 
   async update(email: string, updateFunctionDto: UpdateFunctionDto) {
-    try {
-      const updatedFunction = await this.functionRepo.update(
-        { id: updateFunctionDto.id, userEmail: email },
-        {
-          ...updateFunctionDto,
-        },
-      );
+    const updatedFunction = await this.functionRepo.update(
+      { id: updateFunctionDto.id, userEmail: email },
+      {
+        ...updateFunctionDto,
+      },
+    );
 
-      return {
-        success: true,
-        message:
-          'Function updated. Wait a few seconds before making any request to the endpoint.',
-        payload: updatedFunction.raw[0],
-      };
-    } catch (error) {
-      throw new BadRequestException((error as Error).message, error);
-    }
+    return {
+      success: true,
+      message:
+        'Function updated. Wait a few seconds before making any request to the endpoint.',
+      payload: updatedFunction.raw[0],
+    };
   }
 
   remove(id: number) {

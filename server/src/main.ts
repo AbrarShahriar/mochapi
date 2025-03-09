@@ -13,12 +13,10 @@ cnad.config(process.env.CPANEL_DIR);
 
 async function bootstrap() {
   cnad.start();
+
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true,
-  });
+  app.enableCors();
   app.use(helmet());
   app.enableVersioning({
     type: VersioningType.URI,

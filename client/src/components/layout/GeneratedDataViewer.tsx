@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Copy, Sparkles } from "lucide-react";
 import { Endpoint, SchemaField } from "@/lib/type";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Props {
   generatedData: Record<string, unknown>[];
@@ -26,15 +27,29 @@ export default function GeneratedDataViewer({
   const [editorValue, setEditorValue] =
     useState<Record<string, unknown>[]>(generatedData);
 
+  const { toast } = useToast();
+
   useEffect(() => {
     worker.onmessage = (
-      event: MessageEvent<{ payload: Record<string, unknown>[] }>
+      event: MessageEvent<{
+        payload: Record<string, unknown>[];
+        type: "SUCCESS" | "ERROR";
+      }>
     ) => {
-      setEditorValue(event.data.payload);
-      setDataUpdated(true);
-      setRouteData((prev) => {
-        return prev && { ...prev, generatedData: event.data.payload };
-      });
+      if (event.data.type === "SUCCESS") {
+        setEditorValue(event.data.payload);
+        setDataUpdated(true);
+        setRouteData((prev) => {
+          return prev && { ...prev, generatedData: event.data.payload };
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Data generation failed :(",
+          description:
+            "Likely due to invalid functions. If the issue persists, contact us.",
+        });
+      }
     };
   }, []);
 

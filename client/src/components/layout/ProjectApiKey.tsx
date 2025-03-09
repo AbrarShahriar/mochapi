@@ -12,8 +12,8 @@ import {
 } from "../ui/dialog";
 import { copyToClipboard } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { Input } from "../ui/input";
 import { useRef } from "react";
+import { Textarea } from "../ui/textarea";
 
 interface Props {
   name: string;
@@ -23,7 +23,7 @@ interface Props {
 export default function ProjectApiKey({ apiKey, name }: Props) {
   const { toast } = useToast();
 
-  const copyRef = useRef<HTMLInputElement>(null);
+  const copyRef = useRef<HTMLTextAreaElement>(null);
 
   const handleCopy = async () => {
     await copyToClipboard(apiKey, copyRef);
@@ -61,8 +61,8 @@ export default function ProjectApiKey({ apiKey, name }: Props) {
                   Avoid sharing your API key publicly.
                 </DialogDescription>
               </DialogHeader>
-              <Input
-                className="break-all p-3 text-white/85 text-sm bg-zinc-900 border border-zinc-800 tracking-wider rounded-md"
+              <Textarea
+                className="break-all p-3 max-w-full h-28 text-white/85 text-sm bg-zinc-900 border border-zinc-800 tracking-wider rounded-md resize-none"
                 value={apiKey}
                 readOnly
                 ref={copyRef}

@@ -1,6 +1,12 @@
+## Revision #1
+
+- Demo page url and api key needs update
+- Default functions list update
+
 ## BUGS:
 
-- Request Header issue: Referer
+- Exception filter catching all excepions and nesting them inside each other
+- Remove cors from public api route
 - Pages that have monaco editor break on sidebar state change
 - Project, Endpoint data saved in Redis needs to be deleted on project, endpoint delete (fixed)
 - Copy API Key bug in [projectId] page. (fixed)

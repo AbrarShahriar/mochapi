@@ -70,7 +70,6 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
           }
 
           // Generate data
-
           const data = generateData(numOfRows, schema, customCallSignatures);
 
           // Send back results

@@ -184,7 +184,7 @@ export default function RoutePage({
             <Input
               ref={copyRef}
               id="copy"
-              className="h-full p-4 overflow-x-scroll font-mono text-white/70"
+              className="h-full p-4 overflow-x-scroll font-mono text-white/70 bg-transparent"
               value={`${API_BACKEND_URL}/v1/api/${routeData.project.name}/${routeData.name}`}
               readOnly
             />

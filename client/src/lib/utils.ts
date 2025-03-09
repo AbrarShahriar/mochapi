@@ -5,6 +5,7 @@ import { Endpoint } from "./type";
 import { LOCALSTORAGE_FUNCTION_DRAFT_KEY } from "./constants";
 import { UAParser } from "ua-parser-js";
 import { RefObject } from "react";
+import * as crypto from "crypto";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -50,7 +51,7 @@ export function calculateUptime(start: string, end: Date = new Date()) {
 
 export async function copyToClipboard(
   text: string,
-  ref: RefObject<HTMLInputElement>
+  ref: RefObject<HTMLInputElement | HTMLTextAreaElement>
 ) {
   if (window && window.navigator && window.navigator.clipboard) {
     await navigator.clipboard.writeText(text);
@@ -101,4 +102,11 @@ export function simplifyUserAgent(
   return simplifiedUA.length > maxLength
     ? simplifiedUA.slice(0, maxLength) + "..."
     : simplifiedUA;
+}
+
+export function generateSignature(data: string): string {
+  return crypto
+    .createHmac("sha256", process.env.SIGNATURE_KEY as string)
+    .update(data)
+    .digest("hex");
 }

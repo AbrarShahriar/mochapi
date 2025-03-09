@@ -26,7 +26,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getResponse()
         : 'Internal server error';
 
-    if (exception instanceof Error) {
+    if (exception instanceof Error && status === 500) {
       const cause = (exception as any).cause; // Access the cause of the error
       this.logger.error(
         `Error: ${request.method} ${request.url} - ${status}`,
@@ -41,11 +41,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
       );
     }
 
-    response.status(status).json({
-      statusCode: status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      message: message,
-    });
+    response.status(status).json(message);
   }
 }
