@@ -24,6 +24,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { TabsList, Tabs, TabsTrigger } from "@/components/ui/tabs";
+import { TabsContent } from "@radix-ui/react-tabs";
+import GeneratedDataTable from "@/components/layout/GeneratedDataTable";
 
 export default function RoutePage({
   params,
@@ -246,14 +249,32 @@ export default function RoutePage({
             Generated Data
           </h3>
         </div>
-        <GeneratedDataViewer
-          worker={workerRef.current as Worker}
-          numOfRows={routeData.numOfRows}
-          schema={routeData.schema}
-          generatedData={routeData.generatedData}
-          setDataUpdated={setDataUpdated}
-          setRouteData={setRouteData}
-        />
+        <Tabs defaultValue="json">
+          <TabsList className="grid w-full grid-cols-2 p-0 rounded-b-none">
+            <TabsTrigger className="rounded-bl-none" value="json">
+              JSON
+            </TabsTrigger>
+            <TabsTrigger className="rounded-br-none" value="table">
+              Table
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="json">
+            <GeneratedDataViewer
+              worker={workerRef.current as Worker}
+              numOfRows={routeData.numOfRows}
+              schema={routeData.schema}
+              generatedData={routeData.generatedData}
+              setDataUpdated={setDataUpdated}
+              setRouteData={setRouteData}
+            />
+          </TabsContent>
+          <TabsContent value="table">
+            <GeneratedDataTable
+              schema={routeData.schema}
+              generatedData={routeData.generatedData}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Save or Reset */}

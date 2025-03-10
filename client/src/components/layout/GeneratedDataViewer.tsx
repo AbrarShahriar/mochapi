@@ -74,8 +74,8 @@ export default function GeneratedDataViewer({
   };
 
   return (
-    <section className="border border-zinc-700 rounded-md  shadow">
-      <div className="w-full flex items-center justify-end bg-[#1e1e1e] rounded-t-md">
+    <section className="border border-zinc-700 rounded-b-md  shadow w-full">
+      <div className="w-full flex items-center justify-end bg-[#1e1e1e]">
         <div className="mr-auto  text-sm text-blue-400 border-r-2 border-r-zinc-800 px-4 ">
           <pre>data.json</pre>
         </div>
