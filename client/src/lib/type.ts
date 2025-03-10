@@ -69,3 +69,9 @@ export type AnalyticsData = {
   ip: string;
   userAgent: string;
 };
+
+export type FunctionForSelectType = {
+  label: string;
+  value: string;
+  category: string;
+};

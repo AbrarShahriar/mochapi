@@ -28,19 +28,15 @@ export class ApiJwtStrategy extends PassportStrategy(
   }
 
   async validate(payload: ApiJwtPayload) {
-    try {
-      const project = await this.projectRepo.findOne({
-        where: { id: payload.projectId },
-        relations: { endpoints: true },
-      });
+    const project = await this.projectRepo.findOne({
+      where: { id: payload.projectId },
+      relations: { endpoints: true },
+    });
 
-      if (!project) {
-        throw new UnauthorizedException('Project not found');
-      }
-
-      return project; // Return the payload to the request object
-    } catch (error) {
-      throw new UnauthorizedException((error as Error).message, error);
+    if (!project) {
+      throw new UnauthorizedException('Project not found');
     }
+
+    return project; // Return the payload to the request object
   }
 }

@@ -91,11 +91,13 @@ export default function BuiltinFunctionFilters({
           </SelectTriggerWithoutIcon>
           <SelectContent className="bg-zinc-900 border-zinc-700 text-white">
             <SelectItem value="all">All</SelectItem>
-            {functionCategories.map((category, i) => (
-              <SelectItem value={category} key={i}>
-                {capitalize(category)}
-              </SelectItem>
-            ))}
+            {functionCategories
+              .slice(0, functionCategories.length - 1)
+              .map((category, i) => (
+                <SelectItem value={category} key={i}>
+                  {capitalize(category)}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
         <Button

@@ -8,15 +8,17 @@ import { SelectWithSearch } from "./SelectWithSearch";
 import {
   BackendResponse,
   Endpoint,
+  FunctionForSelectType,
   FunctionType,
   SchemaField,
 } from "@/lib/type";
 import { authFetch } from "@/lib/actions/helper";
 import { functionMap } from "@/lib/available-functions";
 
-const defaultFunctions = functionMap.map((el) => ({
+const defaultFunctions: FunctionForSelectType[] = functionMap.map((el) => ({
   value: el.callSignature,
   label: el.funcName,
+  category: el.tags[0],
 }));
 
 interface EditableSchemaProps {
@@ -42,7 +44,7 @@ export function EditableSchema({
       if (!functionsRes.success || !functionsRes.payload) {
       } else {
         const result = functionsRes.payload;
-        const newFn: { value: string; label: string }[] = [];
+        const newFn: FunctionForSelectType[] = [];
 
         result.forEach((fetchedFn) => {
           worker.postMessage({
@@ -57,6 +59,7 @@ export function EditableSchema({
           newFn.push({
             label: fetchedFn.name,
             value: fetchedFn.callSignature,
+            category: "custom",
           });
         });
 

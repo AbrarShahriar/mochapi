@@ -16,7 +16,6 @@ export async function authFetch<T>(url: string, options?: IOption): Promise<T> {
 
   const dataToSign = options?.body ? options.body : url;
   const signature = generateSignature(dataToSign);
-  console.log("nextsig", signature);
 
   const res = await fetch(`${BACKEND_URL}${url}`, {
     ...options,

@@ -11,6 +11,7 @@ import {
   CardFooter,
 } from "../ui/card";
 import { ChevronRight, CirclePlay } from "lucide-react";
+import { Textarea } from "../ui/textarea";
 
 interface Props {
   funcName: string;
@@ -47,12 +48,17 @@ export default function BuiltinFunctionCard({
         </Button>
       </CardContent>
 
-      <CardFooter className="bg-zinc-700/25 py-2 px-4 font-mono ">
-        <div className="flex items-start gap-2">
+      <CardFooter className="bg-zinc-700/25 py-2 *outline *outline-white font-mono ">
+        <div className="flex items-start gap-2 w-full">
           <p className="flex items-center gap-1 text-muted-foreground">
             <ChevronRight className="size-5" /> Output:
           </p>
-          <p>{output}</p>
+          <Textarea
+            rows={2}
+            className="min-h-5 w-full overflow-y-scroll p-1 px-2 resize-none border-0"
+            readOnly
+            value={output}
+          />
         </div>
       </CardFooter>
     </Card>

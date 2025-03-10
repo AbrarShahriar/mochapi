@@ -46,11 +46,10 @@ export default function ApiTesterPage() {
         },
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        setFetchedData(data);
-      }
+      const data = await res.json();
+      setFetchedData(data);
     } catch (error) {
+      setFetchedData([{ message: (error as Error).message }]);
       toast({
         variant: "destructive",
         title: "Failure :(",

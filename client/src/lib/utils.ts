@@ -105,8 +105,6 @@ export function simplifyUserAgent(
 }
 
 export function generateSignature(data: string): string {
-  console.log("ENV", process.env.SIGNATURE_KEY);
-
   return crypto
     .createHmac("sha256", process.env.SIGNATURE_KEY as string)
     .update(data)

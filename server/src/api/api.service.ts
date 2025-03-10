@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Endpoint } from 'src/endpoint/entities/endpoint.entity';
 import { Repository } from 'typeorm';
@@ -22,6 +22,10 @@ export class ApiService {
       return {
         message: `Endpoint "${endpointName}" doesn't exist on project: ${projectName}`,
       };
+
+    if (!endpoint.isPublic) {
+      throw new UnauthorizedException('API Endpoint is private');
+    }
 
     return endpoint.generatedData;
   }

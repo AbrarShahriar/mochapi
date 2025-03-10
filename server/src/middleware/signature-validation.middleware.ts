@@ -10,8 +10,6 @@ export class SignatureValidationMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const signature = req.headers['x-signature'] as string;
 
-    console.log('signature', signature);
-
     if (!signature) {
       return res.status(400).json({ message: 'Missing signature' });
     }

@@ -4,8 +4,10 @@ import { Editor } from "@monaco-editor/react";
 import { Button } from "../ui/button";
 import { Copy, Sparkles } from "lucide-react";
 import { Endpoint, SchemaField } from "@/lib/type";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Input } from "../ui/input";
+import { copyToClipboard } from "@/lib/utils";
 
 interface Props {
   generatedData: Record<string, unknown>[];
@@ -26,6 +28,8 @@ export default function GeneratedDataViewer({
 }: Props) {
   const [editorValue, setEditorValue] =
     useState<Record<string, unknown>[]>(generatedData);
+
+  const copyRef = useRef<HTMLInputElement>(null);
 
   const { toast } = useToast();
 
@@ -60,6 +64,15 @@ export default function GeneratedDataViewer({
     });
   };
 
+  const handleCopy = async () => {
+    await copyToClipboard(copyRef.current?.value || "", copyRef);
+    toast({
+      variant: "default",
+      title: "Copied",
+      description: "Generated Data copied",
+    });
+  };
+
   return (
     <section className="border border-zinc-700 rounded-md  shadow">
       <div className="w-full flex items-center justify-end bg-[#1e1e1e] rounded-t-md">
@@ -72,9 +85,17 @@ export default function GeneratedDataViewer({
         >
           <Sparkles /> Generate
         </Button>
-        <Button className="rounded-none hover:bg-zinc-800 bg-transparent">
+        <Button
+          onClick={handleCopy}
+          className="rounded-none hover:bg-zinc-800 bg-transparent"
+        >
           <Copy />
           Copy Data
+          <Input
+            ref={copyRef}
+            className="hidden"
+            value={JSON.stringify(editorValue, null, 2)}
+          />
         </Button>
       </div>
 
