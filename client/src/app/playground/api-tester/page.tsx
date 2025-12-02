@@ -12,11 +12,8 @@ import { useState } from "react";
 export default function ApiTesterPage() {
   const [fetchedData, setFetchedData] = useState<unknown[]>([]);
   const [fetchLoading, setFetchLoading] = useState(false);
-  // const [linkState, setLinkState] = useState(
-  //   "https://mochapi-api.abrarshahriar.com/v1/api/test/testendpoint
-  // );
   const [linkState, setLinkState] = useState(
-    "http://localhost:3001/v1/api/test/testendpoint"
+    "https://mochapi-api.abrarshahriar.com/v1/api/test/testendpoint"
   );
   const [apiKey, setApiKey] = useState(
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiJlOWM2YzgxNy1jODYyLTRhZWQtYmU1ZS1jNDgwZGNjYjhmMmQiLCJpYXQiOjE3NDE0NTYxMTd9.Gblcu6wTfE3iCS6uLihnu0whnDbRypOPXwD_Xiz_m_U"
