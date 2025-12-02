@@ -14,10 +14,9 @@ import { ClerkAuthGuard } from './auth/guards/clerk-auth.guard';
 import { FunctionsModule } from './functions/functions.module';
 import { ApiModule } from './api/api.module';
 import { JwtModule } from '@nestjs/jwt';
-import { RedisService } from './external/services/redis.service';
-import { MonitoringModule } from './monitoring/monitoring.module';
 import * as cors from 'cors';
 import { SignatureValidationMiddleware } from './middleware/signature-validation.middleware';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -30,7 +29,7 @@ import { SignatureValidationMiddleware } from './middleware/signature-validation
     EndpointModule,
     FunctionsModule,
     ApiModule,
-    MonitoringModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -40,9 +39,7 @@ import { SignatureValidationMiddleware } from './middleware/signature-validation
     },
     AppService,
     ClerkClientProvider,
-    RedisService,
   ],
-  exports: [RedisService],
 })
 export class AppModule {
   constructor(private readonly configService: ConfigService) {}

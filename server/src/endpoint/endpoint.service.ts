@@ -3,14 +3,14 @@ import { CreateEndpointDTO, UpdateEndpointDTO } from './dto/endpoint.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Endpoint } from './entities/endpoint.entity';
 import { Repository } from 'typeorm';
-import { RedisService } from 'src/external/services/redis.service';
+// import { RedisService } from 'src/external/services/redis.service';
 
 @Injectable()
 export class EndpointService {
   constructor(
     @InjectRepository(Endpoint)
     private readonly endpointRepo: Repository<Endpoint>,
-    private readonly redisService: RedisService,
+    // private readonly redisService: RedisService,
   ) {}
 
   async create(email: string, endpointDto: CreateEndpointDTO) {
@@ -99,11 +99,11 @@ export class EndpointService {
 
     await this.endpointRepo.delete({ userEmail: email, id: endpointId });
 
-    await this.redisService.deleteEndpointData(
-      endpoint.project.id,
-      endpoint.project.name,
-      endpoint.name,
-    );
+    // await this.redisService.deleteEndpointData(
+    //   endpoint.project.id,
+    //   endpoint.project.name,
+    //   endpoint.name,
+    // );
     return { success: true, message: `Endpoint "${endpoint.name}" deleted.` };
   }
 }

@@ -5,7 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import { CreateProjectDTO } from './dto/project.dto';
 import { ConfigService } from '@nestjs/config';
 import * as jwt from 'jsonwebtoken';
-import { RedisService } from 'src/external/services/redis.service';
+// import { RedisService } from 'src/external/services/redis.service';
 
 @Injectable()
 export class ProjectService {
@@ -14,7 +14,7 @@ export class ProjectService {
     private readonly projectRepo: Repository<Project>,
     private readonly configService: ConfigService,
     private readonly dataSource: DataSource,
-    private readonly redisService: RedisService,
+    // private readonly redisService: RedisService,
   ) {}
 
   async getAll(email: string) {
@@ -119,7 +119,7 @@ export class ProjectService {
     }
 
     await this.projectRepo.delete({ userEmail: email, id: projectId });
-    await this.redisService.deleteProjectData(projectId);
+    // await this.redisService.deleteProjectData(projectId);
     return { success: true, message: `Project "${project.name}" deleted.` };
   }
 }

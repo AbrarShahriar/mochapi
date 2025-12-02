@@ -40,6 +40,8 @@ export default async function RequestsPage({
 
   const logsRes = await getLogs(projectId, projectName, endpointName);
 
+  console.log("solo", logsRes.payload && logsRes.payload);
+
   if (!logsRes || !logsRes.payload) {
     return <p>Something went wrong</p>;
   }

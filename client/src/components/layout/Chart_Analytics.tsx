@@ -32,7 +32,7 @@ const generateDateRange = () => {
 const calculateRequestsOverTime = (logs: AnalyticsData[]) => {
   return generateDateRange().map((dateObj) => {
     const count = logs.filter((log) => {
-      return format(parseISO(log.timestamp), "yyyy-MM-dd") === dateObj.day;
+      return format(parseISO(log.createdAt), "yyyy-MM-dd") === dateObj.day;
     });
 
     return {

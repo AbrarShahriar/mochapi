@@ -12,11 +12,14 @@ import { useState } from "react";
 export default function ApiTesterPage() {
   const [fetchedData, setFetchedData] = useState<unknown[]>([]);
   const [fetchLoading, setFetchLoading] = useState(false);
+  // const [linkState, setLinkState] = useState(
+  //   "https://mochapi-api.abrarshahriar.com/v1/api/test/testendpoint
+  // );
   const [linkState, setLinkState] = useState(
-    "https://mochapi-api.abrarshahriar.com/v1/api/test/testroute"
+    "http://localhost:3001/v1/api/test/testendpoint"
   );
   const [apiKey, setApiKey] = useState(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiJhYzg1Zjk2Zi1lYzUyLTQ4NGUtYWMxNi1iZjYwYTkyMDVkNjkiLCJpYXQiOjE3NDA2NjQwNTB9.2WgrMVkj0iw5a73VVacgaOmxaVxPP90PJ5sYfAFQ7Sc"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0SWQiOiJlOWM2YzgxNy1jODYyLTRhZWQtYmU1ZS1jNDgwZGNjYjhmMmQiLCJpYXQiOjE3NDE0NTYxMTd9.Gblcu6wTfE3iCS6uLihnu0whnDbRypOPXwD_Xiz_m_U"
   );
 
   const { toast } = useToast();

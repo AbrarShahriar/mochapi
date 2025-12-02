@@ -32,9 +32,9 @@ export default function LogListItem({ log }: Props) {
       <TableCell>
         <p>
           <span className="text-muted-foreground">
-            {format(parseISO(log.timestamp), "MMM dd").toUpperCase()}
+            {format(parseISO(log.createdAt), "MMM dd").toUpperCase()}
           </span>{" "}
-          <span>{format(parseISO(log.timestamp), "HH:mmaaa")}</span>
+          <span>{format(parseISO(log.createdAt), "HH:mmaaa")}</span>
         </p>
       </TableCell>
       <TableCell>

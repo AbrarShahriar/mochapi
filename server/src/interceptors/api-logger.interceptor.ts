@@ -8,15 +8,15 @@ import {
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { JwtService } from '@nestjs/jwt';
-import { RedisService } from '../external/services/redis.service';
 import { ConfigService } from '@nestjs/config';
-import { DateTime } from 'luxon';
 import { Request } from 'express';
+import { LogEntry, ResponseObj } from './api-logger.types';
+import { AnalyticsService } from 'src/analytics/analytics.service';
 
 @Injectable()
 export class ApiLoggerInterceptor implements NestInterceptor {
   constructor(
-    private readonly redisService: RedisService,
+    private readonly analyticsService: AnalyticsService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -51,15 +51,19 @@ export class ApiLoggerInterceptor implements NestInterceptor {
       tap(async (responseBody) => {
         const duration = Date.now() - startTime;
 
-        const responseObj = { message: null, statusCode: 0, size: 0 };
+        const responseObj: ResponseObj = {
+          message: null,
+          statusCode: 0,
+          size: 0,
+        };
+
         if (responseBody.success) {
           responseObj.message = responseBody.message;
         }
         responseObj.statusCode = response.statusCode;
         responseObj.size = JSON.stringify(responseBody).length * 2;
 
-        const logEntry = {
-          timestamp: DateTime.now().setZone('Asia/Dhaka').toISO(),
+        const logEntry: LogEntry = {
           projectId,
           projectName,
           endpointName,
@@ -71,7 +75,9 @@ export class ApiLoggerInterceptor implements NestInterceptor {
           userAgent: request.headers['user-agent'],
         };
 
-        await this.redisService.logRequest(
+        console.log(logEntry);
+
+        await this.analyticsService.logRequest(
           projectId,
           projectName,
           endpointName,

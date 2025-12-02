@@ -1,3 +1,4 @@
+import { Analytics } from '../../analytics/entities/analytics.entity';
 import { Endpoint } from '../../endpoint/entities/endpoint.entity';
 import { ProjectStatus } from '../../types/database-types';
 import {
@@ -32,6 +33,9 @@ export class Project {
 
   @OneToMany(() => Endpoint, (endpoint) => endpoint.project)
   endpoints: Endpoint[];
+
+  @OneToMany(() => Analytics, (analytics) => analytics.project)
+  analytics: Analytics[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

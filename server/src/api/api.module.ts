@@ -6,15 +6,17 @@ import { ApiJwtStrategy } from './strategy/api-jwt.strategy';
 import { Project } from 'src/project/entities/project.entity';
 import { ApiService } from './api.service';
 import { Endpoint } from 'src/endpoint/entities/endpoint.entity';
-import { RedisService } from 'src/external/services/redis.service';
+// import { RedisService } from 'src/external/services/redis.service';
 import { JwtService } from '@nestjs/jwt';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
+import { AnalyticsModule } from 'src/analytics/analytics.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Project, Endpoint]),
     PassportModule,
+    AnalyticsModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',
@@ -37,6 +39,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     }),
   ],
   controllers: [ApiController],
-  providers: [ApiService, ApiJwtStrategy, RedisService, JwtService],
+  providers: [ApiService, ApiJwtStrategy, JwtService],
+  // providers: [ApiService, ApiJwtStrategy, RedisService, JwtService],
 })
 export class ApiModule {}

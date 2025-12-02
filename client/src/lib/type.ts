@@ -57,17 +57,37 @@ export type BackendResponse<T> = {
   payload?: T;
 };
 
+// export type AnalyticsData = {
+//   timestamp: string;
+//   projectId: string;
+//   projectName: string;
+//   endpointName: string;
+//   method: "GET" | "POST";
+//   request: { path: string; host: string };
+//   response: { message: null | string; statusCode: number; size: number };
+//   duration: number;
+//   ip: string;
+//   userAgent: string;
+// };
+
 export type AnalyticsData = {
-  timestamp: string;
   projectId: string;
   projectName: string;
   endpointName: string;
-  method: "GET" | "POST";
-  request: { path: string; host: string };
-  response: { message: null | string; statusCode: number; size: number };
+  method: string;
+  request: {
+    host: string;
+    path: string;
+  };
+  response: {
+    message: string | null;
+    statusCode: number;
+    size: number;
+  };
   duration: number;
   ip: string;
   userAgent: string;
+  createdAt: string;
 };
 
 export type FunctionForSelectType = {

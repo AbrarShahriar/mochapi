@@ -1,9 +1,9 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { MonitoringService } from './monitoring.service';
+import { AnalyticsService } from './analytics.service';
 
-@Controller('monitoring')
-export class MonitoringController {
-  constructor(private readonly monitoringService: MonitoringService) {}
+@Controller('analytics')
+export class AnalyticsController {
+  constructor(private readonly analyticsService: AnalyticsService) {}
 
   @Get('/logs')
   async getLogs(
@@ -11,7 +11,7 @@ export class MonitoringController {
     @Query('projectName') projectName: string,
     @Query('endpointName') endpointName: string,
   ) {
-    return await this.monitoringService.getLogs(
+    return await this.analyticsService.getEndpointLogs(
       projectId,
       projectName,
       endpointName,

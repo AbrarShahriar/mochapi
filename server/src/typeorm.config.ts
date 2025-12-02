@@ -3,6 +3,7 @@ import { config } from 'dotenv';
 import { Project } from './project/entities/project.entity';
 import { Endpoint } from './endpoint/entities/endpoint.entity';
 import { Function } from './functions/entities/function.entity';
+import { Analytics } from './analytics/entities/analytics.entity';
 
 config();
 
@@ -13,7 +14,7 @@ export const typeormConfig: DataSourceOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   ssl: true,
-  entities: [Project, Endpoint, Function],
+  entities: [Project, Endpoint, Function, Analytics],
   migrations: [`${__dirname}/migrations/**/*.ts`],
   migrationsTableName: 'migrations',
   migrationsRun: false,

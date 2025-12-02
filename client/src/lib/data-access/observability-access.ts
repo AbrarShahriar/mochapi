@@ -11,9 +11,10 @@ export const getLogs = async (
     return { success: false, payload: [], message: "Invalid search params" };
 
   try {
-    return await authFetch<BackendResponse<AnalyticsData[]>>(
-      `/monitoring/logs?projectId=${projectId}&projectName=${projectName}&endpointName=${endpointName}`
+    const logs = await authFetch<BackendResponse<AnalyticsData[]>>(
+      `/analytics/logs?projectId=${projectId}&projectName=${projectName}&endpointName=${endpointName}`
     );
+    return logs;
   } catch (error) {
     return { success: false, payload: [], message: (error as Error).message };
   }
