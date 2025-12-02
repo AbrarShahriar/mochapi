@@ -42,17 +42,45 @@ import { AnalyticsModule } from './analytics/analytics.module';
   ],
 })
 export class AppModule {
+  private excludedMethodForAPI: {
+    path: string;
+    method: RequestMethod;
+    version: string;
+  }[] = [
+    {
+      path: '/api/:projectName/:endpointName',
+      method: RequestMethod.GET,
+      version: '1',
+    },
+    {
+      path: '/api/:projectName/:endpointName/:id',
+      method: RequestMethod.GET,
+      version: '1',
+    },
+    {
+      path: '/api/:projectName/:endpointName',
+      method: RequestMethod.POST,
+      version: '1',
+    },
+    {
+      path: '/api/:projectName/:endpointName/:id',
+      method: RequestMethod.DELETE,
+      version: '1',
+    },
+  ];
+
   constructor(private readonly configService: ConfigService) {}
   configure(consumer: MiddlewareConsumer) {
+    // API Endpoint method restriction middleware
     consumer
       .apply(SignatureValidationMiddleware)
-      .exclude({
-        path: '/api/:projectName/:endpointName',
-        method: RequestMethod.GET,
-        version: '1',
-      })
+      .exclude(...this.excludedMethodForAPI)
       .forRoutes('*');
+
+    // Logging middleware
     consumer.apply(LoggingMiddleware).forRoutes('*');
+
+    // CORS middleware
     consumer
       .apply(
         cors({
@@ -68,11 +96,7 @@ export class AppModule {
           credentials: true,
         }),
       )
-      .exclude({
-        path: '/api/:projectName/:endpointName',
-        method: RequestMethod.GET,
-        version: '1',
-      })
+      .exclude(...this.excludedMethodForAPI)
       .forRoutes('*');
   }
 }

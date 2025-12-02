@@ -34,7 +34,7 @@ function generateData(
   const results = [];
 
   for (let i = 0; i < Math.min(numOfRows, 1000); i++) {
-    const obj: Record<string, unknown> = {};
+    const obj: Record<string, unknown> = { id: i };
     for (let j = 0; j < schema.length; j++) {
       if (defaultFunctions.includes(schema[j].functionSignature)) {
         obj[schema[j].fieldName] = (

@@ -27,6 +27,19 @@ export default function LogListItem({ log }: Props) {
     }
   };
 
+  const getMethodColor = (method: string) => {
+    switch (method) {
+      case "GET":
+        return <span className="text-blue-600">{method}</span>;
+      case "POST":
+        return <span className="text-yellow-600">{method}</span>;
+      case "DELETE":
+        return <span className="text-red-600">{method}</span>;
+      default:
+        return <span>{method}</span>;
+    }
+  };
+
   return (
     <TableRow className="font-mono [&_td]:px-4 [&_td]:py-2 odd:bg-zinc-900/50">
       <TableCell>
@@ -38,8 +51,11 @@ export default function LogListItem({ log }: Props) {
         </p>
       </TableCell>
       <TableCell>
+        <p className="truncate max-w-[250px]">{getMethodColor(log.method)}</p>
+      </TableCell>
+      <TableCell>
         <p className="truncate max-w-[250px]">
-          <span>{log.method}</span> {getStatusBadge(log.response.statusCode)}
+          {getStatusBadge(log.response.statusCode)}
         </p>
       </TableCell>
       <TableCell>{log.request.host || "N/A"}</TableCell>

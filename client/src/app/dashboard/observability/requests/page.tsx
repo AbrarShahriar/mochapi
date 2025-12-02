@@ -80,6 +80,7 @@ export default async function RequestsPage({
                 <TableHeader className="border-red-900">
                   <TableRow className="border-zinc-950">
                     <TableHead className="text-zinc-400">Timestamp</TableHead>
+                    <TableHead className="text-zinc-400">Method</TableHead>
                     <TableHead className="text-zinc-400">Status</TableHead>
                     <TableHead className="text-zinc-400">Host</TableHead>
                     <TableHead className="text-zinc-400">Duration</TableHead>
