@@ -1,4 +1,3 @@
-import { SchemaField } from "@/lib/type";
 import {
   TableHeader,
   TableRow,
@@ -10,20 +9,19 @@ import {
 
 interface Props {
   generatedData: Record<string, unknown>[];
-  schema: SchemaField[];
 }
 
-export default function GeneratedDataTable({ schema, generatedData }: Props) {
+export default function GeneratedDataTable({ generatedData }: Props) {
   return (
     <Table>
       <TableHeader className="border border-zinc-700">
         <TableRow>
-          {schema.map((el) => (
+          {Object.keys(generatedData[0]).map((key) => (
             <TableHead
               className="border border-zinc-700 text-md font-bold text-white"
-              key={el.fieldName}
+              key={key}
             >
-              {el.fieldName}
+              {key[0].toUpperCase() + key.slice(1, key.length)}
             </TableHead>
           ))}
         </TableRow>
