@@ -4,7 +4,10 @@ import { Editor } from "@monaco-editor/react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { HTMLAttributes, useEffect, useRef, useState } from "react";
 import * as monaco from "monaco-editor";
-import { cn } from "@/lib/utils";
+import { cn, copyToClipboard } from "@/lib/utils";
+import { Copy } from "lucide-react";
+import { Button } from "../ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 type Snippet = {
   tabValue: string;
@@ -117,6 +120,8 @@ export default function CodeCopy({ apiKey, url, height, className }: Props) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const monacoRef = useRef<typeof monaco | null>(null);
 
+  const { toast } = useToast();
+
   const handleEditorDidMount = (
     editor: monaco.editor.IStandaloneCodeEditor,
     monacoInstance: typeof monaco
@@ -129,19 +134,27 @@ export default function CodeCopy({ apiKey, url, height, className }: Props) {
     if (editorRef.current && monacoRef.current) {
       const model = editorRef.current.getModel();
       if (model) {
-        monacoRef.current.editor.setModelLanguage(
-          model,
-          (snippets.find((el) => el.tabValue == activeTab) as Snippet).language
-        );
-        editorRef.current.setValue(
-          (snippets.find((el) => el.tabValue == activeTab) as Snippet).code(
-            apiKey,
-            url
-          )
-        );
+        const snippet = snippets.find(
+          (el) => el.tabValue == activeTab
+        ) as Snippet;
+        const code = snippet.code(apiKey, url);
+        monacoRef.current.editor.setModelLanguage(model, snippet.language);
+        editorRef.current.setValue(code);
       }
     }
   }, [activeTab]);
+
+  const handleCopy = async () => {
+    if (editorRef.current) {
+      await copyToClipboard(editorRef.current?.getValue() || "");
+
+      toast({
+        variant: "default",
+        title: "Copied",
+        description: "Code copied",
+      });
+    }
+  };
 
   return (
     <Tabs
@@ -155,6 +168,13 @@ export default function CodeCopy({ apiKey, url, height, className }: Props) {
             {snippet.tabLabel}
           </TabsTrigger>
         ))}
+        <Button
+          onClick={handleCopy}
+          className="mx-2 bg-transparent ml-auto"
+          size={"sm"}
+        >
+          <Copy />
+        </Button>
       </TabsList>
       <Editor
         className="p-0"

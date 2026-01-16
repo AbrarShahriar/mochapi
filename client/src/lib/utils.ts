@@ -51,12 +51,15 @@ export function calculateUptime(start: string, end: Date = new Date()) {
 
 export async function copyToClipboard(
   text: string,
-  ref: RefObject<HTMLInputElement | HTMLTextAreaElement>
+  ref?: RefObject<HTMLInputElement | HTMLTextAreaElement>
 ) {
   if (window && window.navigator && window.navigator.clipboard) {
     await navigator.clipboard.writeText(text);
-    ref.current?.select();
-    ref.current?.setSelectionRange(0, 999);
+
+    if (ref) {
+      ref.current?.select();
+      ref.current?.setSelectionRange(0, 999);
+    }
   } else {
     throw new Error("Please copy manually");
   }
