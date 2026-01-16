@@ -27,6 +27,7 @@ import {
 import { TabsList, Tabs, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
 import GeneratedDataTable from "@/components/layout/GeneratedDataTable";
+import DownloadData from "@/components/layout/DownloadData";
 
 export default function RoutePage({
   params,
@@ -283,6 +284,13 @@ export default function RoutePage({
         >
           <Save /> {savedLoading ? "Saving..." : "Save"}
         </Button>
+        <DownloadData
+          data={routeData.generatedData}
+          project={{
+            endpointName: routeData.name,
+            projectName: routeData.project.name,
+          }}
+        />
         <Button
           onClick={() => setOpen(true)}
           className="ml-auto text-red-500 bg-transparent border border-red-500"
