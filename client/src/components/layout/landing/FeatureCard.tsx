@@ -44,17 +44,17 @@ export default function FeatureCard({
   const size = sizes[index % sizes.length];
 
   return (
-    <div className="relative w-full max-w-md mx-auto overflow-hidden rounded-md  p-6 shadow-xl">
+    <div className="group relative w-full max-w-md mx-auto overflow-hidden rounded-md  p-6 shadow-xl">
       {/* Gradient */}
       <div
-        className={`absolute ${position} ${size} rounded-full bg-gradient-to-br ${gradient} opacity-15 blur-2xl`}
+        className={`absolute ${position} ${size} rounded-full bg-gradient-to-br ${gradient} opacity-15 blur-2xl transition-colors group-hover:bg-gradient-to-tl`}
       ></div>
 
       {/* Card content */}
-      <div className="relative z-10">
+      <div className="group relative z-10">
         <div className="flex items-center gap-4">
-          <div className="bg-white/5 backdrop-blur-sm rounded-md p-3 flex items-center justify-center">
-            <Icon className="w-6 h-6 text-primary-foreground" />
+          <div className="bg-white/5 backdrop-blur-sm rounded-md p-3 flex items-center justify-center transition-transform group-hover:scale-105">
+            <Icon className="w-6 h-6 text-primary-foreground transition-transform group-hover:scale-110" />
           </div>
           <div className="space-y-1">
             <h3 className="text-lg font-semibold">{title}</h3>

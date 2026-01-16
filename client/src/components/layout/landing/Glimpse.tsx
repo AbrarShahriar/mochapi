@@ -26,6 +26,11 @@ const glimpses: { title: string; desc: string; imgSrc: string }[] = [
     desc: "Track API requests with detailed logs and insights. See who sent requests, view response data, and analyze request trends with a 7-day activity chart.",
     imgSrc: "/images/observability.png",
   },
+  {
+    title: "Export Your Data in Multiple Formats",
+    desc: "Download your endpoint data as JSON, CSV, or Markdown tables for testing, documentation, or sharing.",
+    imgSrc: "/images/download-data.png",
+  },
 ];
 
 export default function Glimpse() {
