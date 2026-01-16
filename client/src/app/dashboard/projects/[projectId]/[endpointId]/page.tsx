@@ -269,10 +269,7 @@ export default function RoutePage({
             />
           </TabsContent>
           <TabsContent value="table">
-            <GeneratedDataTable
-              schema={routeData.schema}
-              generatedData={routeData.generatedData}
-            />
+            <GeneratedDataTable generatedData={routeData.generatedData} />
           </TabsContent>
         </Tabs>
       </div>
