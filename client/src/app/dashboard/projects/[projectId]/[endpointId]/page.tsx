@@ -229,7 +229,7 @@ export default function RoutePage({
         className="pb-4 my-8"
         height="25vh"
         apiKey={routeData.project.apiKey}
-        url={`${API_BACKEND_URL}/api/v1/${routeData.project.name}/${routeData.name}`}
+        url={`${API_BACKEND_URL}/v1/api/${routeData.project.name}/${routeData.name}`}
       />
 
       {/* Schema */}
